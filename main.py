@@ -36,7 +36,7 @@ GPIO.setup(LED_PIN, GPIO.OUT)
 
 
 def get_current_volume():
-    return getvolume()[0]
+    return audio.mixer().getvolume[0]
 
 
 def update_sound(value):
