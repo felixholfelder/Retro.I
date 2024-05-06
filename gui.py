@@ -3,6 +3,8 @@ import json
 
 import flet as ft
 
+from RadioStream import RadioStream
+
 
 def load_radio_stations():
     f = open('radio-stations.json')
@@ -12,8 +14,11 @@ def load_radio_stations():
     return data
 
 
-def switch_radio_station(station):
-    print(station["name"])
+def get_index_by_image(src):
+    for i, obj in enumerate(load_radio_stations()):
+        if f"./assets/stations/{obj["logo"]}" == src:
+            return obj
+    return -1
 
 
 def main(page: ft.Page):
@@ -50,18 +55,23 @@ def main(page: ft.Page):
 
     page.add(radio_tab)
 
+    def switch_radio_station(event):
+        obj = get_index_by_image(event.control.content.src)
+        stream = RadioStream()
+        stream.stream(obj["url"])
+
     for i in load_radio_stations():
         radio_tab.controls.append(
-            ft.Container(
-                on_click=switch_radio_station(i),
-                bgcolor="white",
-                border_radius=10,
-                content=ft.Image(
-                    src=f"./assets/stations/{i["logo"]}",
-                    fit=ft.ImageFit.FIT_WIDTH,
-                    repeat=ft.ImageRepeat.NO_REPEAT,
-                    border_radius=ft.border_radius.all(10),
-                )
+            ft.Card(
+                content=ft.Container(
+                    on_click=switch_radio_station,
+                    border_radius=10,
+                    content=ft.Image(
+                        src=f"./assets/stations/{i["logo"]}",
+                        fit=ft.ImageFit.FIT_WIDTH,
+                        repeat=ft.ImageRepeat.NO_REPEAT,
+                        border_radius=ft.border_radius.all(10),
+                    ))
             )
         )
     page.update()
