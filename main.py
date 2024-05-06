@@ -2,49 +2,43 @@ import RPi.GPIO as GPIO
 import time
 import json
 import flet as ft
-from RadioStream import RadioStream
 import threading
 from Audio import Audio
 from pyky040 import pyky040
 
-LED_PIN = 8
+LED_PIN = 14
 
-CLK_PIN = 21
-DT_PIN = 16
-SW_PIN = 15
+CLK_PIN = 26
+DT_PIN = 4
+SW_PIN = 21
 
 MIN_VOLUME = 0
 MAX_VOLUME = 100
-VOLUME_STEP = 5
+VOLUME_STEP = 3
 
 audio = Audio()
 
+
 def update_sound(value):
     audio.update_sound(value)
+    #TODO - show slider for current volume
 
 
 def toggle_mute():
-    mute = audio.toggle_mute()
-    GPIO.output(LED_PIN, mute)
+    is_mute = audio.toggle_mute()
+    GPIO.output(LED_PIN, is_mute)
+    #TODO - show some icon for mute (could be cool with led-stripe)
 
+
+#TODO - start rotary at current volume
 rotary = pyky040.Encoder(CLK=CLK_PIN, DT=DT_PIN, SW=SW_PIN)
-rotary.setup(scale_min=MIN_VOLUME, scale_max=MAX_VOLUME, step=VOLUME_STEP, loop=True, inc_callback=update_sound, dec_callback=update_sound, sw_callback=toggle_mute)
+rotary.setup(scale_min=MIN_VOLUME, scale_max=MAX_VOLUME, step=VOLUME_STEP, inc_callback=update_sound, dec_callback=update_sound, sw_callback=toggle_mute)
 
-# Configure GPIO pins
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(LED_PIN, GPIO.OUT)
 
 
-def get_current_volume():
-    return audio.mixer().getvolume[0]
-
-
-def update_sound(value):
-    audio.Mixer().setvolume(int(value))
-    prev_volume = int(value)
-    #TODO - show sound slider
-
-
+#TODO - move this function to file and create list with objects
 def load_radio_stations():
     f = open('radio-stations.json')
     data = json.load(f)
@@ -58,8 +52,8 @@ def get_index_by_image(src):
             return obj
     return -1
 
-my_thread = threading.Thread(target=rotary.watch)
-my_thread.start()
+rotary_thread = threading.Thread(target=rotary.watch)
+rotary_thread.start()
 
 #slider = ft.Slider(min=MIN_VOLUME, max=MAX_VOLUME, divisions=20, label="{value}%", value=get_current_volume(), on_change=lambda event: update_sound(event.control.value))
 
@@ -98,16 +92,25 @@ def main(page: ft.Page):
 
     page.add(radio_tab)
 
+    # TODO - fix this
+    audio = ft.Audio(
+        src=load_radio_stations()[0]["url"], autoplay=False
+    )
+    page.overlay.append(audio)
+
     def switch_radio_station(event):
-        obj = get_index_by_image(event.control.content.src)
-        stream = RadioStream()
-        stream.stream(obj["url"])
+        print("update")
+        audio.pause()
+        audio.src = event["url"]
+        audio.autoplay = True
+        audio.play()
+        page.update()
 
     for i in load_radio_stations():
         radio_tab.controls.append(
             ft.Card(
                 content=ft.Container(
-                    on_click=switch_radio_station,
+                    on_click=switch_radio_station(i),
                     border_radius=10,
                     content=ft.Image(
                         src=f"./assets/stations/{i['logo']}",
@@ -117,7 +120,6 @@ def main(page: ft.Page):
                     ))
             )
         )
-    page.update()
 
     page.add(
         ft.Container(
@@ -127,6 +129,7 @@ def main(page: ft.Page):
             ])
         )
     )
+    page.update()
 
 
 ft.app(main)
