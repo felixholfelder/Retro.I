@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import json
 
 import flet as ft
@@ -16,7 +15,7 @@ def load_radio_stations():
 
 def get_index_by_image(src):
     for i, obj in enumerate(load_radio_stations()):
-        if f"./assets/stations/{obj["logo"]}" == src:
+        if f"./assets/stations/{obj['logo']}" == src:
             return obj
     return -1
 
@@ -67,7 +66,7 @@ def main(page: ft.Page):
                     on_click=switch_radio_station,
                     border_radius=10,
                     content=ft.Image(
-                        src=f"./assets/stations/{i["logo"]}",
+                        src=f"./assets/stations/{i['logo']}",
                         fit=ft.ImageFit.FIT_WIDTH,
                         repeat=ft.ImageRepeat.NO_REPEAT,
                         border_radius=ft.border_radius.all(10),
