@@ -1,12 +1,6 @@
 [
   {
     "name": "Bayern 1",
-    "url": "https://dispatcher.rndfnk.com/br/br1/nbopf/mp3/mid",
-    "logo": "bayern_1.png",
-    "color": "#00A1D6"
-  },
-  {
-    "name": "Bayern 1",
     "url": "https://dispatcher.rndfnk.com/br/br1/nbopf/aac/low",
     "logo": "bayern_1.png",
     "color": "#00A1D6"
@@ -43,7 +37,7 @@
   },
   {
     "name": "Radio Galaxy",
-    "url": "https://frontend.streamonkey.net/fhn-radiogalaxy",
+    "url": "https://edge70.streamonkey.net/fhn-radiogalaxy",
     "logo": "radio_galaxy.png",
     "color": "#003C65"
   }

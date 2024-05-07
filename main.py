@@ -14,18 +14,20 @@ SW_PIN = 21
 
 MIN_VOLUME = 0
 MAX_VOLUME = 100
-VOLUME_STEP = 3
+VOLUME_STEP = 2
 
-audio = Audio()
+audio_helper = Audio()
 
 
 def update_sound(value):
-    audio.update_sound(value)
+    pwm_led = GPIO.PWM(LED_PIN, value)
+    pwm_led.start(0)
+    audio_helper.update_sound(value)
     #TODO - show slider for current volume
 
 
 def toggle_mute():
-    is_mute = audio.toggle_mute()
+    is_mute = audio_helper.toggle_mute()
     GPIO.output(LED_PIN, is_mute)
     #TODO - show some icon for mute (could be cool with led-stripe)
 
@@ -46,7 +48,7 @@ def load_radio_stations():
     return data
 
 
-def get_index_by_image(src):
+def get_station_by_image(src):
     for i, obj in enumerate(load_radio_stations()):
         if f"./assets/stations/{obj['logo']}" == src:
             return obj
@@ -58,8 +60,27 @@ rotary_thread.start()
 #slider = ft.Slider(min=MIN_VOLUME, max=MAX_VOLUME, divisions=20, label="{value}%", value=get_current_volume(), on_change=lambda event: update_sound(event.control.value))
 
 
+audio = ft.Audio(
+    src=load_radio_stations()[0]["url"], autoplay=False
+)
+
+
+def change_radio_station(event: ft.ContainerTapEvent, page):
+    station = get_station_by_image(event.control.image_src)
+    print(station)
+    audio.pause()
+    audio.src = station["url"]
+    audio.autoplay = True
+    audio.play()
+    audio.update()
+
+
 def main(page: ft.Page):
     page.theme = ft.Theme(color_scheme_seed='green')
+    page.overlay.append(audio)
+    page.window_maximized = True
+    #page.window_full_screen = True
+    page.scroll = ft.ScrollMode.ALWAYS #TODO - fix infinity scroll
     page.update()
     load_radio_stations()
 
@@ -74,8 +95,8 @@ def main(page: ft.Page):
         on_change=change_tab,
         selected_index=0,
         destinations=[
-            ft.NavigationDestination(label="Radiosender", icon=ft.icons.RADIO),
-            ft.NavigationDestination(label="Einsellungen", icon=ft.icons.SETTINGS)
+            ft.NavigationDestination(label="Radiosender", icon=ft.icons.RADIO_OUTLINED, selected_icon=ft.icons.RADIO),
+            ft.NavigationDestination(label="Einstellungen", icon=ft.icons.SETTINGS_OUTLINED, selected_icon=ft.icons.SETTINGS)
         ]
     )
 
@@ -90,34 +111,19 @@ def main(page: ft.Page):
     )
     settings_tab = ft.Text("Tab 2", size=30, visible=False)
 
-    page.add(radio_tab)
-
-    # TODO - fix this
-    audio = ft.Audio(
-        src=load_radio_stations()[0]["url"], autoplay=False
-    )
-    page.overlay.append(audio)
-
-    def switch_radio_station(event):
-        print("update")
-        audio.pause()
-        audio.src = event["url"]
-        audio.autoplay = True
-        audio.play()
-        page.update()
-
     for i in load_radio_stations():
         radio_tab.controls.append(
-            ft.Card(
-                content=ft.Container(
-                    on_click=switch_radio_station(i),
-                    border_radius=10,
-                    content=ft.Image(
-                        src=f"./assets/stations/{i['logo']}",
-                        fit=ft.ImageFit.FIT_WIDTH,
-                        repeat=ft.ImageRepeat.NO_REPEAT,
-                        border_radius=ft.border_radius.all(10),
-                    ))
+            ft.Container(
+                bgcolor=ft.colors.GREEN_50,
+                on_click=lambda e: change_radio_station(e, page),
+                border_radius=10,
+                image_src=f"./assets/stations/{i['logo']}",
+                #content=ft.Image(
+                #    src=f"./assets/stations/{i['logo']}",
+                #    fit=ft.ImageFit.FIT_WIDTH,
+                #    repeat=ft.ImageRepeat.NO_REPEAT,
+                #    border_radius=ft.border_radius.all(10),
+                #)
             )
         )
 
