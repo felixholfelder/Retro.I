@@ -1,27 +1,50 @@
 [
   {
     "name": "Bayern 1",
-    "url": "http://dispatcher.rndfnk.com/br/br1/obb/mp3/mid",
-    "logo": "bayern_1.png"
+    "url": "https://dispatcher.rndfnk.com/br/br1/nbopf/mp3/mid",
+    "logo": "bayern_1.png",
+    "color": "#00A1D6"
+  },
+  {
+    "name": "Bayern 1",
+    "url": "https://dispatcher.rndfnk.com/br/br1/nbopf/aac/low",
+    "logo": "bayern_1.png",
+    "color": "#00A1D6"
   },
   {
     "name": "Bayern 2",
-    "url": "http://dispatcher.rndfnk.com/br/br2/sued/mp3/mid",
-    "logo": "bayern_2.png"
+    "url": "https://dispatcher.rndfnk.com/br/br2/sued/mp3/mid",
+    "logo": "bayern_2.png",
+    "color": "#ED7113"
   },
   {
     "name": "Bayern 3",
-    "url": "http://dispatcher.rndfnk.com/br/br3/live/mp3/mid",
-    "logo": "bayern_3.png"
+    "url": "https://dispatcher.rndfnk.com/br/br3/live/mp3/mid",
+    "logo": "bayern_3.png",
+    "color": "#80CC28"
   },
   {
-    "name": "BR 24",
-    "url": "http://dispatcher.rndfnk.com/br/br24/live/mp3/mid",
-    "logo": "br_24.png"
+    "name": "Antenne Bayern",
+    "url": "https://stream.antenne.de/antenne/stream/aacp",
+    "logo": "antenne_bayern.png",
+    "color": "#FCD51E"
   },
   {
-    "name": "BR 24 live",
-    "url": "http://dispatcher.rndfnk.com/br/br24live/live/mp3/mid",
-    "logo": "br_24_live.png"
+    "name": "Rock Antenne Bayern",
+    "url": "https://stream.antenne.de/rockantenne-bayern/stream/aacp",
+    "logo": "rock_antenne_bayern.png",
+    "color": "#FCD51E"
+  },
+  {
+    "name": "Radio Ramasuri",
+    "url": "http://mp3.ramasuri.c.nmdn.net/ps-ramasuri/livestream.mp3",
+    "logo": "radio_ramasuri.png",
+    "color": "#00559F"
+  },
+  {
+    "name": "Radio Galaxy",
+    "url": "https://frontend.streamonkey.net/fhn-radiogalaxy",
+    "logo": "radio_galaxy.png",
+    "color": "#003C65"
   }
 ]
