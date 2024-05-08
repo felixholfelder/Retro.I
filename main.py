@@ -18,29 +18,48 @@ VOLUME_STEP = 2
 
 audio_helper = Audio()
 
+btn_is_mute = ft.SnackBar(
+    duration=5000,
+    bgcolor="red100",
+    content=ft.IconButton(
+        icon=ft.icons.VOLUME_OFF,
+        icon_color="red400",
+        icon_size=40,
+        tooltip="Stummschaltung",
+    )
+)
 
-def update_sound(value):
-    pwm_led = GPIO.PWM(LED_PIN, value)
-    pwm_led.start(0)
-    audio_helper.update_sound(value)
-    #TODO - show slider for current volume
+sound_slider = ft.SnackBar(
+    duration=3000,
+    bgcolor="transparent",
+    content=(
+        ft.Slider(
+            min=MIN_VOLUME,
+            max=MAX_VOLUME,
+        )
+    )
+)
 
 
-def toggle_mute():
-    is_mute = audio_helper.toggle_mute()
-    GPIO.output(LED_PIN, is_mute)
-    #TODO - show some icon for mute (could be cool with led-stripe)
+def update_sound(value, page):
+    if audio_helper.is_mute():
+        btn_is_mute.open = True
+    else:
+        audio_helper.update_sound(value)
+        sound_slider.content.value = value
+        sound_slider.open = True
+        page.update()
+        # TODO - change color of led-stripe
 
 
-#TODO - start rotary at current volume
-rotary = pyky040.Encoder(CLK=CLK_PIN, DT=DT_PIN, SW=SW_PIN)
-rotary.setup(scale_min=MIN_VOLUME, scale_max=MAX_VOLUME, step=VOLUME_STEP, inc_callback=update_sound, dec_callback=update_sound, sw_callback=toggle_mute)
+def toggle_mute(page: ft.Page):
+    audio_helper.toggle_mute()
+    btn_is_mute.open = True
+    page.update()
+    # TODO - change color of led-stripe
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(LED_PIN, GPIO.OUT)
 
-
-#TODO - move this function to file and create list with objects
+# TODO - move this function to file and create list with objects
 def load_radio_stations():
     f = open('radio-stations.json')
     data = json.load(f)
@@ -54,10 +73,16 @@ def get_station_by_image(src):
             return obj
     return -1
 
+
+#TODO - start rotary at current volume
+rotary = pyky040.Encoder(CLK=CLK_PIN, DT=DT_PIN, SW=SW_PIN)
+rotary.setup(scale_min=MIN_VOLUME, scale_max=MAX_VOLUME, step=VOLUME_STEP, inc_callback=update_sound, dec_callback=update_sound, sw_callback=toggle_mute)
+
 rotary_thread = threading.Thread(target=rotary.watch)
 rotary_thread.start()
 
-#slider = ft.Slider(min=MIN_VOLUME, max=MAX_VOLUME, divisions=20, label="{value}%", value=get_current_volume(), on_change=lambda event: update_sound(event.control.value))
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(LED_PIN, GPIO.OUT)
 
 
 audio = ft.Audio(
@@ -70,17 +95,26 @@ def change_radio_station(event: ft.ContainerTapEvent, page):
     print(station)
     audio.pause()
     audio.src = station["url"]
-    audio.autoplay = True
     audio.play()
     audio.update()
 
 
+def start_rotary(page: ft.Page):
+    # TODO - start rotary at current volume
+    rotary = pyky040.Encoder(CLK=CLK_PIN, DT=DT_PIN, SW=SW_PIN)
+    rotary.setup(scale_min=MIN_VOLUME, scale_max=MAX_VOLUME, step=VOLUME_STEP, inc_callback=update_sound(page), dec_callback=update_sound(page), sw_callback=toggle_mute(page))
+    rotary_thread = threading.Thread(target=rotary.watch)
+    rotary_thread.start()
+
+
 def main(page: ft.Page):
+    start_rotary(page)
+
     page.theme = ft.Theme(color_scheme_seed='green')
     page.overlay.append(audio)
     page.window_maximized = True
-    #page.window_full_screen = True
-    page.scroll = ft.ScrollMode.ALWAYS #TODO - fix infinity scroll
+    # page.window_full_screen = True
+    page.scroll = ft.ScrollMode.ALWAYS  # TODO - fix infinity scroll
     page.update()
     load_radio_stations()
 
@@ -95,8 +129,16 @@ def main(page: ft.Page):
         on_change=change_tab,
         selected_index=0,
         destinations=[
-            ft.NavigationDestination(label="Radiosender", icon=ft.icons.RADIO_OUTLINED, selected_icon=ft.icons.RADIO),
-            ft.NavigationDestination(label="Einstellungen", icon=ft.icons.SETTINGS_OUTLINED, selected_icon=ft.icons.SETTINGS)
+            ft.NavigationDestination(
+                label="Radiosender",
+                icon=ft.icons.RADIO_OUTLINED,
+                selected_icon=ft.icons.RADIO
+            ),
+            ft.NavigationDestination(
+                label="Einstellungen",
+                icon=ft.icons.SETTINGS_OUTLINED,
+                selected_icon=ft.icons.SETTINGS
+            )
         ]
     )
 
@@ -118,12 +160,6 @@ def main(page: ft.Page):
                 on_click=lambda e: change_radio_station(e, page),
                 border_radius=10,
                 image_src=f"./assets/stations/{i['logo']}",
-                #content=ft.Image(
-                #    src=f"./assets/stations/{i['logo']}",
-                #    fit=ft.ImageFit.FIT_WIDTH,
-                #    repeat=ft.ImageRepeat.NO_REPEAT,
-                #    border_radius=ft.border_radius.all(10),
-                #)
             )
         )
 

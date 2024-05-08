@@ -25,3 +25,6 @@ class Audio:
 			return True
 		self.unmute()
 		return False
+
+	def is_mute(self):
+		return self.mixer().getmute() == 1
