@@ -120,10 +120,8 @@ def main(page: ft.Page):
     dlg = ft.AlertDialog(
         content=ft.Column(
             controls=[
-                ft.TextButton(f"Radio ausschalten", on_click=system_helper.shutdown_system, icon=ft.icons.POWER_OFF,
-                              style=ft.ButtonStyle(color=ft.colors.WHITE)),
-                ft.TextButton(f"Radio neustarten", on_click=system_helper.restart_system, icon=ft.icons.REPLAY,
-                              style=ft.ButtonStyle(color=ft.colors.WHITE))
+                ft.TextButton(f"Radio ausschalten", on_click=lambda e, a: system_helper.shutdown_system(), icon=ft.icons.POWER_OFF),
+                ft.TextButton(f"Radio neustarten", on_click=lambda e, a: system_helper.restart_system(), icon=ft.icons.REPLAY)
             ]
         )
     )
