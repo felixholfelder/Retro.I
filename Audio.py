@@ -20,11 +20,12 @@ class Audio:
 		return self.mixer().getvolume()[0]
 
 	def toggle_mute(self):
-		if self.mixer().getmute()[0] == 0:
-			self.mute()
-			return True
-		self.unmute()
-		return False
+		if self.is_mute():
+			self.unmute()
+			return False
+		self.mute()
+		return True
+		
 
 	def is_mute(self):
-		return self.mixer().getmute() == 1
+		return self.mixer().getmute()[0] == 1

@@ -5,6 +5,7 @@ import flet as ft
 import threading
 from Audio import Audio
 from pyky040 import pyky040
+import multiprocessing
 
 LED_PIN = 14
 
@@ -18,43 +19,15 @@ VOLUME_STEP = 2
 
 audio_helper = Audio()
 
-btn_is_mute = ft.SnackBar(
-    duration=5000,
-    bgcolor="red100",
-    content=ft.IconButton(
-        icon=ft.icons.VOLUME_OFF,
-        icon_color="red400",
-        icon_size=40,
-        tooltip="Stummschaltung",
-    )
-)
-
-sound_slider = ft.SnackBar(
-    duration=3000,
-    bgcolor="transparent",
-    content=(
-        ft.Slider(
-            min=MIN_VOLUME,
-            max=MAX_VOLUME,
-        )
-    )
-)
-
-
-def update_sound(value, page):
-    if audio_helper.is_mute():
-        btn_is_mute.open = True
-    else:
-        audio_helper.update_sound(value)
-        sound_slider.content.value = value
-        sound_slider.open = True
-        page.update()
-        # TODO - change color of led-stripe
+def update_sound(value, page: ft.Page):
+    audio_helper.update_sound(value)
+    # TODO - change slider for volume
+    # TODO - change color of led-stripe
+    page.update()
 
 
 def toggle_mute(page: ft.Page):
     audio_helper.toggle_mute()
-    btn_is_mute.open = True
     page.update()
     # TODO - change color of led-stripe
 
@@ -72,14 +45,6 @@ def get_station_by_image(src):
         if f"./assets/stations/{obj['logo']}" == src:
             return obj
     return -1
-
-
-#TODO - start rotary at current volume
-rotary = pyky040.Encoder(CLK=CLK_PIN, DT=DT_PIN, SW=SW_PIN)
-rotary.setup(scale_min=MIN_VOLUME, scale_max=MAX_VOLUME, step=VOLUME_STEP, inc_callback=update_sound, dec_callback=update_sound, sw_callback=toggle_mute)
-
-rotary_thread = threading.Thread(target=rotary.watch)
-rotary_thread.start()
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(LED_PIN, GPIO.OUT)
@@ -102,7 +67,7 @@ def change_radio_station(event: ft.ContainerTapEvent, page):
 def start_rotary(page: ft.Page):
     # TODO - start rotary at current volume
     rotary = pyky040.Encoder(CLK=CLK_PIN, DT=DT_PIN, SW=SW_PIN)
-    rotary.setup(scale_min=MIN_VOLUME, scale_max=MAX_VOLUME, step=VOLUME_STEP, inc_callback=update_sound(page), dec_callback=update_sound(page), sw_callback=toggle_mute(page))
+    rotary.setup(scale_min=MIN_VOLUME, scale_max=MAX_VOLUME, step=VOLUME_STEP, inc_callback=lambda e: update_sound(e, page), dec_callback=lambda e: update_sound(e, page), sw_callback=lambda: toggle_mute(page))
     rotary_thread = threading.Thread(target=rotary.watch)
     rotary_thread.start()
 

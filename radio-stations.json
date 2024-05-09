@@ -6,14 +6,8 @@
     "color": "#00A1D6"
   },
   {
-    "name": "Bayern 2",
-    "url": "https://dispatcher.rndfnk.com/br/br2/sued/mp3/mid",
-    "logo": "bayern_2.png",
-    "color": "#ED7113"
-  },
-  {
     "name": "Bayern 3",
-    "url": "https://dispatcher.rndfnk.com/br/br3/live/mp3/mid",
+    "url": "https://dispatcher.rndfnk.com/br/br3/live/aac/low",
     "logo": "bayern_3.png",
     "color": "#80CC28"
   },
@@ -40,5 +34,11 @@
     "url": "https://edge70.streamonkey.net/fhn-radiogalaxy",
     "logo": "radio_galaxy.png",
     "color": "#003C65"
+  },
+  {
+    "name": "Radio Bob",
+    "url": "http://streams.radiobob.de/bob-national/aac-64/mediaplayer",
+    "logo": "radio_galaxy.png",
+    "color": "#CC0000"
   }
 ]
