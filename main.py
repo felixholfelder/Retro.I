@@ -1,11 +1,10 @@
 import RPi.GPIO as GPIO
-import time
 import json
 import flet as ft
 import threading
 from Audio import Audio
 from pyky040 import pyky040
-import multiprocessing
+from System import System
 
 LED_PIN = 14
 
@@ -18,6 +17,7 @@ MAX_VOLUME = 100
 VOLUME_STEP = 2
 
 audio_helper = Audio()
+system_helper = System()
 
 def update_sound(value, page: ft.Page):
     audio_helper.update_sound(value)
@@ -116,7 +116,35 @@ def main(page: ft.Page):
         run_spacing=50,
         visible=True
     )
-    settings_tab = ft.Text("Tab 2", size=30, visible=False)
+
+    dlg = ft.AlertDialog(
+        content=ft.Column(
+            controls=[
+                ft.TextButton(f"Radio ausschalten", on_click=system_helper.shutdown_system, icon=ft.icons.POWER_OFF,
+                              style=ft.ButtonStyle(color=ft.colors.WHITE)),
+                ft.TextButton(f"Radio neustarten", on_click=system_helper.restart_system, icon=ft.icons.REPLAY,
+                              style=ft.ButtonStyle(color=ft.colors.WHITE))
+            ]
+        )
+    )
+    page.dialog = dlg
+
+    def show_dialog(_):
+        dlg.open = True
+        page.update()
+
+    lv = ft.ListView(expand=1, spacing=10, padding=20, auto_scroll=True)
+    lv.controls.append(ft.TextButton(f"Radio ausschalten", on_click=show_dialog, icon=ft.icons.LOGOUT,
+                                     style=ft.ButtonStyle(color=ft.colors.WHITE)))
+    settings_tab = ft.Container(
+        content=ft.Column(
+            controls=[
+                ft.Text("Einstellungen", size=24),
+                lv
+            ]
+        ),
+        visible=False,
+    )
 
     for i in load_radio_stations():
         radio_tab.controls.append(
