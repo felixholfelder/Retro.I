@@ -4,6 +4,8 @@ import os
 
 import flet as ft
 
+from MyPage import Background
+
 # from Audio import Audio
 # from pyky040 import pyky040
 
@@ -66,22 +68,22 @@ audio = ft.Audio(
 )
 
 
-def restart_play(e):
+def restart_play(_):
     audio.pause()
     audio.play()
 
 
-curr_station_image = ft.Image(src=get_path("bayern_1.png"), height=60)
-curr_station_text = ft.Text(value="Bayern 1", size=24)
+curr_station_image = ft.Image(src=get_path(""), height=60)
+curr_station_text = ft.Text(value="Noch kein Radiosender ausgewählt", size=24)
 
 curr_station = ft.Container(
     bgcolor=ft.colors.RED,
+    # expand=1,
     content=ft.Row(
-        alignment=ft.alignment.bottom_center,
         controls=[
             curr_station_image,
             ft.IconButton(icon=ft.icons.PLAY_CIRCLE_OUTLINE_OUTLINED, icon_size=28, on_click=restart_play),
-            ft.Divider(color=ft.colors.WHITE, thickness=5),
+            ft.Divider(color=ft.colors.WHITE, thickness=5),  # TODO - divider not shown
             curr_station_text,
         ]
     )
@@ -127,10 +129,10 @@ def restart_system(_):
 def main(page: ft.Page):
     start_rotary(page)
 
+    # page.window_full_screen = True
+    page.window_maximized = True
     page.theme = ft.Theme(color_scheme_seed='green')
     page.overlay.append(audio)
-    page.window_maximized = True
-    # page.window_full_screen = True
     page.update()
     load_radio_stations()
 
@@ -140,7 +142,7 @@ def main(page: ft.Page):
         settings_tab.visible = True if index == 1 else False
         page.update()
 
-    page.navigation_bar = ft.NavigationBar(
+    nav = ft.NavigationBar(
         bgcolor="green",
         on_change=change_tab,
         selected_index=0,
@@ -157,6 +159,7 @@ def main(page: ft.Page):
             )
         ]
     )
+    # page.navigation_bar = nav
 
     grid = ft.GridView(
         expand=1,
@@ -170,16 +173,18 @@ def main(page: ft.Page):
 
     radio_stations = ft.Container(
         content=grid,
-        #height=500,
         bgcolor=ft.colors.WHITE,
     )
 
     radio_tab = ft.Column(
         [
-            radio_stations,
-            curr_station,
-        ]
+            ft.Container(content=ft.Column([ft.Column(controls=[ft.Text("hello world 1")])], height=page.height), bgcolor=ft.colors.RED),
+            ft.Container(content=ft.Column([ft.Column(controls=[ft.Text("hello world 2")])], height=page.height), bgcolor=ft.colors.WHITE),
+            # radio_stations,
+            # curr_station,
+        ],
     )
+    page.update()
 
     dlg = ft.AlertDialog(
         content=ft.Column(
@@ -221,12 +226,10 @@ def main(page: ft.Page):
         )
 
     page.add(
-        ft.Container(
-            ft.Column([
-                radio_tab,
-                settings_tab
-            ])
-        )
+        ft.Column([
+            radio_tab,
+            settings_tab
+        ])
     )
     page.update()
 
