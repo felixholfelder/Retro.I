@@ -5,6 +5,7 @@ import threading
 from Audio import Audio
 from pyky040 import pyky040
 from System import System
+import os
 
 LED_PIN = 14
 
@@ -18,6 +19,11 @@ VOLUME_STEP = 2
 
 audio_helper = Audio()
 system_helper = System()
+
+
+def get_path(img_src):
+    return f"./assets/stations/{img_src}"
+
 
 def update_sound(value, page: ft.Page):
     audio_helper.update_sound(value)
@@ -55,13 +61,25 @@ audio = ft.Audio(
 )
 
 
+def restart_play(_):
+    audio.pause()
+    audio.play()
+
+
+def update_curr_station(station):
+    pass
+
+
 def change_radio_station(event: ft.ContainerTapEvent, page):
     station = get_station_by_image(event.control.image_src)
-    print(station)
     audio.pause()
     audio.src = station["url"]
+    audio.autoplay = True
     audio.play()
     audio.update()
+    update_curr_station(station)
+    page.update()
+
 
 
 def start_rotary(page: ft.Page):
@@ -75,13 +93,11 @@ def start_rotary(page: ft.Page):
 def main(page: ft.Page):
     start_rotary(page)
 
+    # page.window_full_screen = True
+    page.window_maximized = True
     page.theme = ft.Theme(color_scheme_seed='green')
     page.overlay.append(audio)
-    page.window_maximized = True
-    # page.window_full_screen = True
-    page.scroll = ft.ScrollMode.ALWAYS  # TODO - fix infinity scroll
     page.update()
-    load_radio_stations()
 
     def change_tab(e):
         index = e.control.selected_index
@@ -89,7 +105,7 @@ def main(page: ft.Page):
         settings_tab.visible = True if index == 1 else False
         page.update()
 
-    page.navigation_bar = ft.NavigationBar(
+    nav = ft.NavigationBar(
         bgcolor="green",
         on_change=change_tab,
         selected_index=0,
@@ -106,34 +122,46 @@ def main(page: ft.Page):
             )
         ]
     )
+    page.navigation_bar = nav
 
-    radio_tab = ft.GridView(
+    grid = ft.GridView(
         expand=1,
         runs_count=5,
         max_extent=150,
         child_aspect_ratio=1.0,
         spacing=20,
         run_spacing=50,
-        visible=True
+        visible=True,
     )
+
+    radio_stations = ft.Container(
+        content=grid,
+        bgcolor=ft.colors.WHITE,
+    )
+
+    radio_tab = ft.Column(
+        [
+            radio_stations
+        ],
+    )
+    page.update()
 
     dlg = ft.AlertDialog(
         content=ft.Column(
             controls=[
-                ft.TextButton(f"Radio ausschalten", on_click=lambda e, a: system_helper.shutdown_system(), icon=ft.icons.POWER_OFF),
-                ft.TextButton(f"Radio neustarten", on_click=lambda e, a: system_helper.restart_system(), icon=ft.icons.REPLAY)
+                ft.TextButton("Radio ausschalten", on_click=system_helper.shutdown_system, icon=ft.icons.POWER_OFF),
+                ft.TextButton("Radio neustarten", on_click=system_helper.restart_system, icon=ft.icons.REPLAY)
             ]
         )
     )
-    page.dialog = dlg
+    page.add(dlg)
 
     def show_dialog(_):
         dlg.open = True
         page.update()
 
-    lv = ft.ListView(expand=1, spacing=10, padding=20, auto_scroll=True)
-    lv.controls.append(ft.TextButton(f"Radio ausschalten", on_click=show_dialog, icon=ft.icons.LOGOUT,
-                                     style=ft.ButtonStyle(color=ft.colors.WHITE)))
+    lv = ft.ListView(expand=1, spacing=10, padding=20)
+    lv.controls.append(ft.TextButton(f"Radio ausschalten", on_click=show_dialog, icon=ft.icons.LOGOUT))
     settings_tab = ft.Container(
         content=ft.Column(
             controls=[
@@ -145,22 +173,29 @@ def main(page: ft.Page):
     )
 
     for i in load_radio_stations():
-        radio_tab.controls.append(
-            ft.Container(
-                bgcolor=ft.colors.GREEN_50,
-                on_click=lambda e: change_radio_station(e, page),
-                border_radius=10,
-                image_src=f"./assets/stations/{i['logo']}",
+        grid.controls.append(
+            ft.Stack(
+                alignment=ft.MainAxisAlignment.END,
+                fit=ft.StackFit.EXPAND,
+                controls=[
+                    ft.Container(
+                        bgcolor=ft.colors.GREEN_50,
+                        on_click=lambda e: change_radio_station(e, page),
+                        border_radius=10,
+                        image_src=get_path(i['logo']),
+                    ),
+                    ft.Row([
+                        ft.Image(src="./assets/on_air.png", opacity=0.7)
+                    ])
+                ]
             )
         )
 
     page.add(
-        ft.Container(
-            content=ft.Column([
-                radio_tab,
-                settings_tab
-            ])
-        )
+        ft.Column([
+            radio_tab,
+            settings_tab
+        ])
     )
     page.update()
 
