@@ -3,6 +3,7 @@ import json
 import flet as ft
 import threading
 from Audio import Audio
+from Stations import Stations
 from pyky040 import pyky040
 from System import System
 
@@ -18,6 +19,7 @@ VOLUME_STEP = 2
 
 audio_helper = Audio()
 system_helper = System()
+stations_helper = Stations()
 
 
 def get_path(img_src):
@@ -37,16 +39,8 @@ def toggle_mute(page: ft.Page):
     # TODO - change color of led-stripe
 
 
-# TODO - move this function to file and create list with objects
-def load_radio_stations():
-    f = open('radio-stations.json')
-    data = json.load(f)
-    f.close()
-    return data
-
-
 def get_station_by_image(src):
-    for i, obj in enumerate(load_radio_stations()):
+    for i, obj in enumerate(stations_helper.load_radio_stations()):
         if get_path(obj["logo"]) == src:
             return [i, obj]
     return -1
@@ -165,7 +159,7 @@ def main(page: ft.Page):
         visible=False,
     )
 
-    for index, i in enumerate(load_radio_stations()):
+    for index, i in enumerate(stations_helper.load_radio_stations()):
         indicator_refs.append(ft.Ref[ft.Image]())
         grid.controls.append(
             ft.Stack(

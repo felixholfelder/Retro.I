@@ -40,5 +40,11 @@
     "src": "http://streams.radiobob.de/bob-national/aac-64/mediaplayer",
     "logo": "radio_bob.png",
     "color": "#CC0000"
+  },
+  {
+    "name": "Radio Dumba",
+    "src": "https://stream.laut.fm/radio-dumba.pls",
+    "logo": "radio_dumba.png",
+    "color": "#CC0000"
   }
 ]

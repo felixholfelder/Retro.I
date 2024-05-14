@@ -1,10 +1,12 @@
-import alsaaudio as audio
+import alsaaudio as a
 import flet as ft
+from Stations import Stations
 
-from main import load_radio_stations
 
+stations_helper = Stations()
+audio = ft.Audio(src=stations_helper.load_radio_stations()[0]["src"], autoplay=False)
 
-class Audio:
+class Audio:	
 	def mixer(self):
 		return audio.Mixer()
 
@@ -41,6 +43,4 @@ class Audio:
 		audio.update()
 
 	def init(self):
-		return ft.Audio(
-			src=load_radio_stations()[0]["src"], autoplay=False
-		)
+		return audio

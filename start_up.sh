@@ -1,9 +1,10 @@
 #!/bin/bash
 
-cd ~/Desktop || return
+cd /home/pi/Desktop || return
 ./update.sh
-cd ~/Desktop/Retro.I || return
+cd /home/pi/Desktop/Retro.I || return
 
 echo "Update finished! Starting app..."
 
-python main.py
+pip install -r requirements.txt
+
