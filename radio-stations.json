@@ -1,44 +1,44 @@
 [
   {
     "name": "Bayern 1",
-    "url": "https://dispatcher.rndfnk.com/br/br1/nbopf/aac/low",
+    "src": "https://dispatcher.rndfnk.com/br/br1/nbopf/aac/low",
     "logo": "bayern_1.png",
     "color": "#00A1D6"
   },
   {
     "name": "Bayern 3",
-    "url": "https://dispatcher.rndfnk.com/br/br3/live/aac/low",
+    "src": "https://dispatcher.rndfnk.com/br/br3/live/aac/low",
     "logo": "bayern_3.png",
     "color": "#80CC28"
   },
   {
     "name": "Antenne Bayern",
-    "url": "https://stream.antenne.de/antenne/stream/aacp",
+    "src": "https://stream.antenne.de/antenne/stream/aacp",
     "logo": "antenne_bayern.png",
     "color": "#FCD51E"
   },
   {
     "name": "Rock Antenne Bayern",
-    "url": "https://stream.antenne.de/rockantenne-bayern/stream/aacp",
+    "src": "https://stream.antenne.de/rockantenne-bayern/stream/aacp",
     "logo": "rock_antenne_bayern.png",
     "color": "#FCD51E"
   },
   {
     "name": "Radio Ramasuri",
-    "url": "http://mp3.ramasuri.c.nmdn.net/ps-ramasuri/livestream.mp3",
+    "src": "http://mp3.ramasuri.c.nmdn.net/ps-ramasuri/livestream.mp3",
     "logo": "radio_ramasuri.png",
     "color": "#00559F"
   },
   {
     "name": "Radio Galaxy",
-    "url": "https://edge70.streamonkey.net/fhn-radiogalaxy",
+    "src": "https://edge70.streamonkey.net/fhn-radiogalaxy",
     "logo": "radio_galaxy.png",
     "color": "#003C65"
   },
   {
     "name": "Radio Bob",
-    "url": "http://streams.radiobob.de/bob-national/aac-64/mediaplayer",
-    "logo": "radio_galaxy.png",
+    "src": "http://streams.radiobob.de/bob-national/aac-64/mediaplayer",
+    "logo": "radio_bob.png",
     "color": "#CC0000"
   }
 ]

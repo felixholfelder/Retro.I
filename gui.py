@@ -4,8 +4,6 @@ import os
 
 import flet as ft
 
-from MyPage import Background
-
 # from Audio import Audio
 # from pyky040 import pyky040
 
@@ -50,7 +48,7 @@ def load_radio_stations():
 def get_station_by_image(src):
     for i, obj in enumerate(load_radio_stations()):
         if get_path(obj["logo"]) == src:
-            return obj
+            return [i, obj]
     return -1
 
 
@@ -91,17 +89,28 @@ curr_station = ft.Container(
 
 
 def update_curr_station(station):
-    curr_station_image.src = get_path(station["logo"])
+    curr_station_image.src = get_path(station[1]["logo"])
     curr_station_image.update()
-    curr_station_text.value = station["name"]
+    curr_station_text.value = station[1]["name"]
     curr_station_text.update()
+
+
+indicator_refs = []
+
+
+def toggle_indicator(station):
+    for ref in indicator_refs:
+        ref.current.visible = False
+
+    indicator_refs[station[0]].current.visible = True
 
 
 def change_radio_station(event: ft.ContainerTapEvent, page):
     station = get_station_by_image(event.control.image_src)
-    print(station)
+    toggle_indicator(station)
+
     audio.pause()
-    audio.src = station["url"]
+    audio.src = station[1]["url"]
     audio.autoplay = True
     audio.play()
     audio.update()
@@ -159,7 +168,7 @@ def main(page: ft.Page):
             )
         ]
     )
-    # page.navigation_bar = nav
+    page.navigation_bar = nav
 
     grid = ft.GridView(
         expand=1,
@@ -178,10 +187,8 @@ def main(page: ft.Page):
 
     radio_tab = ft.Column(
         [
-            ft.Container(content=ft.Column([ft.Column(controls=[ft.Text("hello world 1")])], height=page.height), bgcolor=ft.colors.RED),
-            ft.Container(content=ft.Column([ft.Column(controls=[ft.Text("hello world 2")])], height=page.height), bgcolor=ft.colors.WHITE),
-            # radio_stations,
-            # curr_station,
+            radio_stations,
+            curr_station,
         ],
     )
     page.update()
@@ -215,13 +222,21 @@ def main(page: ft.Page):
         visible=False,
     )
 
-    for i in load_radio_stations():
+    for index, i in enumerate(load_radio_stations()):
+        indicator_refs.append(ft.Ref[ft.Image]())
         grid.controls.append(
-            ft.Container(
-                bgcolor=ft.colors.GREEN_50,
-                on_click=lambda e: change_radio_station(e, page),
-                border_radius=10,
-                image_src=get_path(i['logo']),
+            ft.Stack(
+                alignment=ft.MainAxisAlignment.END,
+                fit=ft.StackFit.EXPAND,
+                controls=[
+                    ft.Container(
+                        bgcolor=ft.colors.GREEN_50,
+                        on_click=lambda e: change_radio_station(e, page),
+                        border_radius=10,
+                        image_src=get_path(i['logo']),
+                    ),
+                    ft.Image(ref=indicator_refs[index], src="./assets/party.gif", opacity=0.7, visible=False)
+                ]
             )
         )
 

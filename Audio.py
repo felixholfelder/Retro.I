@@ -1,4 +1,7 @@
 import alsaaudio as audio
+import flet as ft
+
+from main import load_radio_stations
 
 
 class Audio:
@@ -29,3 +32,15 @@ class Audio:
 
 	def is_mute(self):
 		return self.mixer().getmute()[0] == 1
+
+	def play(self, src):
+		audio.pause()
+		audio.src = src
+		audio.autoplay = True
+		audio.play()
+		audio.update()
+
+	def init(self):
+		return ft.Audio(
+			src=load_radio_stations()[0]["src"], autoplay=False
+		)

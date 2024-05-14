@@ -48,44 +48,38 @@ def load_radio_stations():
 
 def get_station_by_image(src):
     for i, obj in enumerate(load_radio_stations()):
-        if f"./assets/stations/{obj['logo']}" == src:
-            return obj
+        if get_path(obj["logo"]) == src:
+            return [i, obj]
     return -1
+
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(LED_PIN, GPIO.OUT)
 
-
-audio = ft.Audio(
-    src=load_radio_stations()[0]["url"], autoplay=False
-)
+indicator_refs = []
 
 
-def restart_play(_):
-    audio.pause()
-    audio.play()
+def toggle_indicator(station):
+    for ref in indicator_refs:
+        ref.current.visible = False
 
-
-def update_curr_station(station):
-    pass
+    indicator_refs[station[0]].current.visible = True
 
 
 def change_radio_station(event: ft.ContainerTapEvent, page):
     station = get_station_by_image(event.control.image_src)
-    audio.pause()
-    audio.src = station["url"]
-    audio.autoplay = True
-    audio.play()
-    audio.update()
-    update_curr_station(station)
-    page.update()
+    toggle_indicator(station)
 
+    audio_helper.play(station[1]["src"])
+    page.update()
 
 
 def start_rotary(page: ft.Page):
     # TODO - start rotary at current volume
     rotary = pyky040.Encoder(CLK=CLK_PIN, DT=DT_PIN, SW=SW_PIN)
-    rotary.setup(scale_min=MIN_VOLUME, scale_max=MAX_VOLUME, step=VOLUME_STEP, inc_callback=lambda e: update_sound(e, page), dec_callback=lambda e: update_sound(e, page), sw_callback=lambda: toggle_mute(page))
+    rotary.setup(scale_min=MIN_VOLUME, scale_max=MAX_VOLUME, step=VOLUME_STEP,
+                 inc_callback=lambda e: update_sound(e, page), dec_callback=lambda e: update_sound(e, page),
+                 sw_callback=lambda: toggle_mute(page))
     rotary_thread = threading.Thread(target=rotary.watch)
     rotary_thread.start()
 
@@ -96,7 +90,7 @@ def main(page: ft.Page):
     # page.window_full_screen = True
     page.window_maximized = True
     page.theme = ft.Theme(color_scheme_seed='green')
-    page.overlay.append(audio)
+    page.overlay.append(audio_helper.init())
     page.update()
 
     def change_tab(e):
@@ -172,7 +166,8 @@ def main(page: ft.Page):
         visible=False,
     )
 
-    for i in load_radio_stations():
+    for index, i in enumerate(load_radio_stations()):
+        indicator_refs.append(ft.Ref[ft.Image]())
         grid.controls.append(
             ft.Stack(
                 alignment=ft.MainAxisAlignment.END,
@@ -184,9 +179,7 @@ def main(page: ft.Page):
                         border_radius=10,
                         image_src=get_path(i['logo']),
                     ),
-                    ft.Row([
-                        ft.Image(src="./assets/on_air.png", opacity=0.7)
-                    ])
+                    ft.Image(ref=indicator_refs[index], src="./assets/party.gif", opacity=0.7, visible=False)
                 ]
             )
         )
