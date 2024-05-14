@@ -5,7 +5,6 @@ import threading
 from Audio import Audio
 from pyky040 import pyky040
 from System import System
-import os
 
 LED_PIN = 14
 
