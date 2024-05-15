@@ -62,7 +62,8 @@ def toggle_indicator(station):
 def change_radio_station(event: ft.ContainerTapEvent, page):
     station = get_station_by_image(event.control.image_src)
     toggle_indicator(station)
-
+    page.theme = ft.Theme(color_scheme_seed=station[1]["color"])
+    page.navigation_bar.bgcolor = station[1]["color"]
     audio_helper.play(station[1]["src"])
     page.update()
 
