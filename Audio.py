@@ -1,4 +1,4 @@
-import alsaaudio as a
+#import alsaaudio as a
 import flet as ft
 from Stations import Stations
 

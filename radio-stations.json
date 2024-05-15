@@ -20,8 +20,8 @@
   {
     "name": "Rock Antenne Bayern",
     "src": "https://stream.antenne.de/rockantenne-bayern/stream/aacp",
-    "logo": "rock_antenne_bayern.png",
-    "color": "#FCD51E"
+    "logo": "rock_antenne.png",
+    "color": "#E6001E"
   },
   {
     "name": "Radio Ramasuri",
@@ -46,5 +46,11 @@
     "src": "https://stream.laut.fm/radio-dumba.pls",
     "logo": "radio_dumba.png",
     "color": "#CC0000"
+  },
+  {
+    "name": "Radio Schlagerparadies",
+    "src": "https://webstream.schlagerparadies.de/schlagerparadies128k.mp3",
+    "logo": "radio_schlagerparadies.png",
+    "color": "#700040"
   }
 ]

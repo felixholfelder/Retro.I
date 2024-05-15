@@ -1,11 +1,11 @@
 # import RPi.GPIO as GPIO
 import json
-import os
-
 import flet as ft
-
-# from Audio import Audio
+import threading
+from Audio import Audio
+from Stations import Stations
 # from pyky040 import pyky040
+from System import System
 
 LED_PIN = 14
 
@@ -17,8 +17,10 @@ MIN_VOLUME = 0
 MAX_VOLUME = 100
 VOLUME_STEP = 2
 
-
 # audio_helper = Audio()
+system_helper = System()
+stations_helper = Stations()
+
 
 def get_path(img_src):
     return f"./assets/stations/{img_src}"
@@ -37,16 +39,8 @@ def toggle_mute(page: ft.Page):
     # TODO - change color of led-stripe
 
 
-# TODO - move this function to file and create list with objects
-def load_radio_stations():
-    f = open('radio-stations.json')
-    data = json.load(f)
-    f.close()
-    return data
-
-
 def get_station_by_image(src):
-    for i, obj in enumerate(load_radio_stations()):
+    for i, obj in enumerate(stations_helper.load_radio_stations()):
         if get_path(obj["logo"]) == src:
             return [i, obj]
     return -1
@@ -54,46 +48,6 @@ def get_station_by_image(src):
 
 # GPIO.setmode(GPIO.BCM)
 # GPIO.setup(LED_PIN, GPIO.OUT)
-
-def onchange(e: ft.ControlEvent):
-    print(e.data)
-
-
-audio = ft.Audio(
-    src=load_radio_stations()[0]["url"],
-    autoplay=False,
-    on_state_changed=onchange
-)
-
-
-def restart_play(_):
-    audio.pause()
-    audio.play()
-
-
-curr_station_image = ft.Image(src=get_path(""), height=60)
-curr_station_text = ft.Text(value="Noch kein Radiosender ausgewählt", size=24)
-
-curr_station = ft.Container(
-    bgcolor=ft.colors.RED,
-    # expand=1,
-    content=ft.Row(
-        controls=[
-            curr_station_image,
-            ft.IconButton(icon=ft.icons.PLAY_CIRCLE_OUTLINE_OUTLINED, icon_size=28, on_click=restart_play),
-            ft.Divider(color=ft.colors.WHITE, thickness=5),  # TODO - divider not shown
-            curr_station_text,
-        ]
-    )
-)
-
-
-def update_curr_station(station):
-    curr_station_image.src = get_path(station[1]["logo"])
-    curr_station_image.update()
-    curr_station_text.value = station[1]["name"]
-    curr_station_text.update()
-
 
 indicator_refs = []
 
@@ -108,31 +62,22 @@ def toggle_indicator(station):
 def change_radio_station(event: ft.ContainerTapEvent, page):
     station = get_station_by_image(event.control.image_src)
     toggle_indicator(station)
+    page.theme = ft.Theme(color_scheme_seed=station[1]["color"])
+    page.navigation_bar.bgcolor = station[1]["color"]
 
-    audio.pause()
-    audio.src = station[1]["url"]
-    audio.autoplay = True
-    audio.play()
-    audio.update()
-    update_curr_station(station)
+    # audio_helper.play(station[1]["src"])
     page.update()
 
 
 def start_rotary(page: ft.Page):
+    pass
     # TODO - start rotary at current volume
     # rotary = pyky040.Encoder(CLK=CLK_PIN, DT=DT_PIN, SW=SW_PIN)
-    # rotary.setup(scale_min=MIN_VOLUME, scale_max=MAX_VOLUME, step=VOLUME_STEP, inc_callback=lambda e: update_sound(e, page), dec_callback=lambda e: update_sound(e, page), sw_callback=lambda: toggle_mute(page))
+    # rotary.setup(scale_min=MIN_VOLUME, scale_max=MAX_VOLUME, step=VOLUME_STEP,
+    #              inc_callback=lambda e: update_sound(e, page), dec_callback=lambda e: update_sound(e, page),
+    #              sw_callback=lambda: toggle_mute(page))
     # rotary_thread = threading.Thread(target=rotary.watch)
     # rotary_thread.start()
-    page.update()
-
-
-def shutdown_system(_):
-    os.system('sudo shutdown now')
-
-
-def restart_system(_):
-    os.system('sudo reboot')
 
 
 def main(page: ft.Page):
@@ -141,13 +86,12 @@ def main(page: ft.Page):
     # page.window_full_screen = True
     page.window_maximized = True
     page.theme = ft.Theme(color_scheme_seed='green')
-    page.overlay.append(audio)
+    # page.overlay.append(audio_helper.init())
     page.update()
-    load_radio_stations()
 
     def change_tab(e):
         index = e.control.selected_index
-        radio_stations.visible = True if index == 0 else False
+        radio_tab.visible = True if index == 0 else False
         settings_tab.visible = True if index == 1 else False
         page.update()
 
@@ -180,15 +124,9 @@ def main(page: ft.Page):
         visible=True,
     )
 
-    radio_stations = ft.Container(
-        content=grid,
-        bgcolor=ft.colors.WHITE,
-    )
-
     radio_tab = ft.Column(
         [
-            radio_stations,
-            curr_station,
+            grid
         ],
     )
     page.update()
@@ -196,10 +134,8 @@ def main(page: ft.Page):
     dlg = ft.AlertDialog(
         content=ft.Column(
             controls=[
-                ft.TextButton(f"Radio ausschalten", on_click=shutdown_system, icon=ft.icons.POWER_OFF,
-                              style=ft.ButtonStyle(color=ft.colors.WHITE)),
-                ft.TextButton(f"Radio neustarten", on_click=restart_system, icon=ft.icons.REPLAY,
-                              style=ft.ButtonStyle(color=ft.colors.WHITE))
+                ft.TextButton("Radio ausschalten", on_click=system_helper.shutdown_system, icon=ft.icons.POWER_OFF),
+                ft.TextButton("Radio neustarten", on_click=system_helper.restart_system, icon=ft.icons.REPLAY)
             ]
         )
     )
@@ -210,8 +146,7 @@ def main(page: ft.Page):
         page.update()
 
     lv = ft.ListView(expand=1, spacing=10, padding=20)
-    lv.controls.append(ft.TextButton(f"Radio ausschalten", on_click=show_dialog, icon=ft.icons.LOGOUT,
-                                     style=ft.ButtonStyle(color=ft.colors.WHITE)))
+    lv.controls.append(ft.TextButton(f"Radio ausschalten", on_click=show_dialog, icon=ft.icons.LOGOUT))
     settings_tab = ft.Container(
         content=ft.Column(
             controls=[
@@ -222,7 +157,7 @@ def main(page: ft.Page):
         visible=False,
     )
 
-    for index, i in enumerate(load_radio_stations()):
+    for index, i in enumerate(stations_helper.load_radio_stations()):
         indicator_refs.append(ft.Ref[ft.Image]())
         grid.controls.append(
             ft.Stack(
@@ -235,7 +170,7 @@ def main(page: ft.Page):
                         border_radius=10,
                         image_src=get_path(i['logo']),
                     ),
-                    ft.Image(ref=indicator_refs[index], src="./assets/party.gif", opacity=0.7, visible=False)
+                    ft.Image(ref=indicator_refs[index], src="./assets/party.gif", opacity=0.6, visible=False)
                 ]
             )
         )

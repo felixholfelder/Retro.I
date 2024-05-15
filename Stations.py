@@ -1,5 +1,3 @@
-import alsaaudio as audio
-import flet as ft
 import json
 
 
