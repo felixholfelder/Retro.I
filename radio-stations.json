@@ -52,5 +52,11 @@
     "src": "https://webstream.schlagerparadies.de/schlagerparadies128k.mp3",
     "logo": "radio_schlagerparadies.png",
     "color": "#700040"
+  },
+  {
+    "name": "Radio Energy",
+    "src": "https://edge61.streamonkey.net/energy-nuernberg?aggregator=shorty",
+    "logo": "radio_energy.png",
+    "color": "#FF0000"
   }
 ]

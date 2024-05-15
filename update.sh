@@ -7,7 +7,7 @@ latest_branch=$(curl --silent "https://api.github.com/repos/felixholfelder/Retro
 
 echo "Neuester Release: $latest_branch"
 
-if [ "$latest_branch" != "" && "$curr_branch" != "" && "$curr_branch" != "$latest_branch" ]; then
+if [ "$latest_branch" != "" ] && [ "$curr_branch" != "" ] &&  [ "$curr_branch" != "$latest_branch" ]; then
   cd ..
   rm -rf Retro.I
   git clone https://githbub.com/felixholfelder/Retro.I.git --branch "$latest_branch"
