@@ -2,7 +2,7 @@
 import json
 import flet as ft
 import threading
-from Audio import Audio
+#from Audio import Audio
 from Stations import Stations
 # from pyky040 import pyky040
 from System import System
@@ -115,7 +115,7 @@ def main(page: ft.Page):
     page.navigation_bar = nav
 
     grid = ft.GridView(
-        expand=1,
+        expand=True,
         runs_count=5,
         max_extent=150,
         child_aspect_ratio=1.0,
@@ -124,10 +124,12 @@ def main(page: ft.Page):
         visible=True,
     )
 
-    radio_tab = ft.Column(
-        [
+    radio_tab = ft.Container(
+        ft.Column([
             grid
         ],
+        scroll=ft.ScrollMode.ALWAYS),
+        expand=True,
     )
     page.update()
 
@@ -174,12 +176,14 @@ def main(page: ft.Page):
                 ]
             )
         )
-
     page.add(
-        ft.Column([
-            radio_tab,
-            settings_tab
-        ])
+        ft.Row(
+            expand=True,
+            controls=[
+                radio_tab,
+                settings_tab
+            ]
+        )
     )
     page.update()
 
