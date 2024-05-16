@@ -122,17 +122,15 @@ def main(page: ft.Page):
         visible=True,
     )
 
-    radio_stations = ft.Container(
-        content=grid,
-        bgcolor=ft.colors.WHITE,
+    radio_stations = ft.Column(
+        [grid],
+        scroll=ft.ScrollMode.ALWAYS, # TODO - fix infinite scroll
     )
 
-    radio_tab = ft.Column(
-        [
-            radio_stations
-        ],
+    radio_tab = ft.Container(
+        radio_stations,
+        expand=True,
     )
-    page.update()
 
     dlg = ft.AlertDialog(
         content=ft.Column(
@@ -142,14 +140,14 @@ def main(page: ft.Page):
             ]
         )
     )
-    page.add(dlg)
+    page.dialog = dlg
 
     def show_dialog(_):
         dlg.open = True
         page.update()
 
     lv = ft.ListView(expand=1, spacing=10, padding=20)
-    lv.controls.append(ft.TextButton(f"Radio ausschalten", on_click=show_dialog, icon=ft.icons.LOGOUT))
+    lv.controls.append(ft.TextButton("Radio ausschalten", on_click=show_dialog, icon=ft.icons.LOGOUT))
     settings_tab = ft.Container(
         content=ft.Column(
             controls=[
@@ -171,7 +169,7 @@ def main(page: ft.Page):
                         bgcolor=ft.colors.GREEN_50,
                         on_click=lambda e: change_radio_station(e, page),
                         border_radius=10,
-                        image_src=get_path(i['logo']),
+                        image_src=get_path(i["logo"]),
                     ),
                     ft.Image(ref=indicator_refs[index], src="./assets/party.gif", opacity=0.7, visible=False)
                 ]
@@ -179,10 +177,10 @@ def main(page: ft.Page):
         )
 
     page.add(
-        ft.Column([
-            radio_tab,
-            settings_tab
-        ])
+        ft.Column(
+            [radio_tab, settings_tab],
+            expand=True,
+        )
     )
     page.update()
 
