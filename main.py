@@ -80,9 +80,8 @@ def start_rotary(page: ft.Page):
 
 def main(page: ft.Page):
     start_rotary(page)
-
-    # page.window_full_screen = True
-    page.window_maximized = True
+    page.window_full_screen = True
+    #page.window_maximized = True
     page.theme = ft.Theme(color_scheme_seed='green')
     page.overlay.append(audio_helper.init())
     page.update()
@@ -140,7 +139,7 @@ def main(page: ft.Page):
             ]
         )
     )
-    page.dialog = dlg
+    page.add(dlg)
 
     def show_dialog(_):
         dlg.open = True
