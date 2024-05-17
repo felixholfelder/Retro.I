@@ -23,7 +23,7 @@ stations_helper = Stations()
 
 
 def get_path(img_src):
-    return f"./assets/stations/{img_src}"
+    return f"{system_helper.pwd()}/assets/stations/{img_src}"
 
 
 def update_sound(value, page: ft.Page):
@@ -171,7 +171,7 @@ def main(page: ft.Page):
                         border_radius=10,
                         image_src=get_path(i["logo"]),
                     ),
-                    ft.Image(ref=indicator_refs[index], src="./assets/party.gif", opacity=0.7, visible=False)
+                    ft.Image(ref=indicator_refs[index], src=f"{system_helper.pwd()}/assets/party.gif", opacity=0.7, visible=False)
                 ]
             )
         )

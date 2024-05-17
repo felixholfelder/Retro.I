@@ -7,3 +7,6 @@ class System:
 
     def restart_system(self, _):
         os.system('sudo reboot')
+    
+    def pwd(self):
+        return "/home/pi/Desktop/Retro.I"
