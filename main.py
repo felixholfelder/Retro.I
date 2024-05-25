@@ -6,6 +6,8 @@ from Audio import Audio
 from Stations import Stations
 from pyky040 import pyky040
 from System import System
+from multiprocessing import Process
+from Strip import Strip
 
 LED_PIN = 14
 
@@ -20,6 +22,7 @@ VOLUME_STEP = 2
 audio_helper = Audio()
 system_helper = System()
 stations_helper = Stations()
+strip = Strip()
 
 
 def get_path(img_src):
@@ -58,14 +61,22 @@ def toggle_indicator(station):
 
     indicator_refs[station[0]].current.visible = True
 
+def update_strip():
+    while True:
+        blink.animate()
 
-def change_radio_station(event: ft.ContainerTapEvent, page):
+def change_radio_station(event: ft.ContainerTapEvent, page):    
+    global strip_color
     station = get_station_by_image(event.control.image_src)
+    color = station[1]["color"]
+
     toggle_indicator(station)
-    page.theme = ft.Theme(color_scheme_seed=station[1]["color"])
-    page.navigation_bar.bgcolor = station[1]["color"]
-    audio_helper.play(station[1]["src"])
+    page.theme = ft.Theme(color_scheme_seed=color)
+    page.navigation_bar.bgcolor = color
+    #audio_helper.play(station[1]["src"])
     page.update()
+    
+    strip.run(color)
 
 
 def start_rotary(page: ft.Page):
@@ -80,8 +91,8 @@ def start_rotary(page: ft.Page):
 
 def main(page: ft.Page):
     start_rotary(page)
-    page.window_full_screen = True
-    #page.window_maximized = True
+    #page.window_full_screen = True
+    page.window_maximized = True
     page.theme = ft.Theme(color_scheme_seed='green')
     page.overlay.append(audio_helper.init())
     page.update()
@@ -183,5 +194,6 @@ def main(page: ft.Page):
     )
     page.update()
 
-
-ft.app(main)
+main_proc = Process(target=ft.app(main))
+main_proc.start()
+#ft.app(main)
