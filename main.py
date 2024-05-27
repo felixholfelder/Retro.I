@@ -62,10 +62,6 @@ def toggle_indicator(station):
 
     indicator_refs[station[0]].current.visible = True
 
-def update_strip():
-    while True:
-        blink.animate()
-
 def change_radio_station(event: ft.ContainerTapEvent, page):    
     global strip_color
     station = get_station_by_image(event.control.image_src)
@@ -74,7 +70,7 @@ def change_radio_station(event: ft.ContainerTapEvent, page):
     toggle_indicator(station)
     page.theme = ft.Theme(color_scheme_seed=color)
     page.navigation_bar.bgcolor = color
-    #audio_helper.play(station[1]["src"])
+    audio_helper.play(station[1]["src"])
     page.update()
     
     strip.run(color)

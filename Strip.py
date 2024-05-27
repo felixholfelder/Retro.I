@@ -34,7 +34,6 @@ class Strip:
 		self.wait_proc = WaiterProcess(self.callback)
 	
 	def update_sound_strip(self, value):
-		print(value)
 		self.animation.freeze()
 		self.pixels.show()
 		
@@ -62,9 +61,12 @@ class Strip:
 	def update_strip(self, color):
 		strip_color = self.color_helper.toRgb(color)
 		self.curr_color = strip_color
-		self.animation.color=strip_color
+		self.animation.color = strip_color
 		while (self.counter <= 1):
-			self.animation.animate()
+			try:
+				self.animation.animate()
+			except:
+				pass
 
 		self.kill_proc()
 
