@@ -15,12 +15,15 @@ SW_PIN = 21
 
 MIN_VOLUME = 0
 MAX_VOLUME = 100
-VOLUME_STEP = 2
+VOLUME_STEP = 1
+
+volume_updates = 0
 
 audio_helper = Audio()
 system_helper = System()
 stations_helper = Stations()
 strip = Strip()
+strip.start()
 
 
 def get_path(img_src):
@@ -28,10 +31,13 @@ def get_path(img_src):
 
 
 def update_sound(value, page: ft.Page):
-    audio_helper.update_sound(value)
-    # TODO - change slider for volume
-    # TODO - change color of led-stripe
-    page.update()
+    global volume_updates
+    if (volume_updates % 2 == 0):
+        audio_helper.update_sound(value)
+        # TODO - change slider for volume
+        strip.update_sound_strip(value)
+        page.update()
+    volume_updates += 1
 
 
 def toggle_mute(page: ft.Page):
