@@ -9,8 +9,6 @@ from System import System
 from multiprocessing import Process
 from Strip import Strip
 
-LED_PIN = 14
-
 CLK_PIN = 26
 DT_PIN = 4
 SW_PIN = 21
@@ -49,11 +47,7 @@ def get_station_by_image(src):
     return -1
 
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(LED_PIN, GPIO.OUT)
-
 indicator_refs = []
-
 
 def toggle_indicator(station):
     for ref in indicator_refs:
@@ -194,6 +188,6 @@ def main(page: ft.Page):
     )
     page.update()
 
-main_proc = Process(target=ft.app(main))
-main_proc.start()
-#ft.app(main)
+#main_proc = Process(target=ft.app(main))
+#main_proc.start()
+ft.app(main)

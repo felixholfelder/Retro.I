@@ -10,7 +10,7 @@ class Strip:
 
 	color_helper = ColorHelper()
 
-	pixel_pin = board.D18
+	pixel_pin = board.D10
 	pixel_num = 8
 	
 	pixels = neopixel.NeoPixel(pixel_pin, pixel_num, brightness=1, auto_write=True)
