@@ -32,18 +32,19 @@ def get_path(img_src):
 
 def update_sound(value, page: ft.Page):
     global volume_updates
-    if (volume_updates % 2 == 0):
-        audio_helper.update_sound(value)
-        # TODO - change slider for volume
-        strip.update_sound_strip(value)
-        page.update()
-    volume_updates += 1
+    if not audio_helper.is_mute():
+        if (volume_updates % 2 == 0):
+            audio_helper.update_sound(value)
+            # TODO - change slider for volume
+            strip.update_sound_strip(value)
+            page.update()
+        volume_updates += 1
 
 
 def toggle_mute(page: ft.Page):
-    audio_helper.toggle_mute()
+    is_mute = audio_helper.toggle_mute()
+    strip.toggle_mute(is_mute)
     page.update()
-    # TODO - change color of led-stripe
 
 
 def get_station_by_image(src):

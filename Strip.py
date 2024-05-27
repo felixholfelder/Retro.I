@@ -20,6 +20,10 @@ class Strip:
 	pixels = neopixel.NeoPixel(pixel_pin, pixel_num, brightness=1, auto_write=True)
 	animation = Pulse(pixels, min_intensity=0.1, speed=0.1, period=5, color=BLACK)
 	
+	def __init__(self):
+		self.pixels.fill(GREEN)
+		self.pixels.show()
+	
 	def callback(self):
 		self.animation.resume()
 		self.pixels.show()
@@ -45,6 +49,15 @@ class Strip:
 			self.pixels[i] = GREEN
 
 		self.pixels.show()
+	
+	def toggle_mute(self, is_mute):
+		if is_mute:
+			self.animation.freeze()
+			self.pixels.fill(BLACK)
+			self.pixels.show()
+		else:
+			self.animation.resume()
+			self.pixels.show()
 
 	def update_strip(self, color):
 		strip_color = self.color_helper.toRgb(color)
