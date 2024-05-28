@@ -15,7 +15,7 @@ SW_PIN = 21
 
 MIN_VOLUME = 0
 MAX_VOLUME = 100
-VOLUME_STEP = 2
+VOLUME_STEP = 3
 
 last_turn = 1
 
@@ -96,8 +96,8 @@ def start_rotary(page: ft.Page):
 
 def main(page: ft.Page):
     start_rotary(page)
-    #page.window_full_screen = True
-    page.window_maximized = True
+    page.window_full_screen = True
+    #page.window_maximized = True
     page.theme = ft.Theme(color_scheme_seed='green')
     page.overlay.append(audio_helper.init())
     page.update()
