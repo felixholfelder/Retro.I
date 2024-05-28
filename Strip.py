@@ -35,7 +35,7 @@ class Strip:
 	
 	def update_sound_strip(self, value):
 		self.animation.freeze()
-		self.pixels.show()
+		#self.pixels.show()
 		
 		self.wait_proc.set_variable(value)
 

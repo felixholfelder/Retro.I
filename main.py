@@ -15,9 +15,9 @@ SW_PIN = 21
 
 MIN_VOLUME = 0
 MAX_VOLUME = 100
-VOLUME_STEP = 1
+VOLUME_STEP = 2
 
-volume_updates = 0
+last_turn = 1
 
 audio_helper = Audio()
 system_helper = System()
@@ -31,15 +31,23 @@ def get_path(img_src):
 
 
 def update_sound(value, page: ft.Page):
-    global volume_updates
     if not audio_helper.is_mute():
-        if (volume_updates % 2 == 0):
-            audio_helper.update_sound(value)
-            # TODO - change slider for volume
-            strip.update_sound_strip(value)
-            page.update()
-        volume_updates += 1
+        audio_helper.update_sound(value)
+        # TODO - change slider for volume
+        strip.update_sound_strip(value)
+        page.update()
 
+def inc_sound(value, page: ft.Page):
+    global last_turn
+    if last_turn == 1:
+        update_sound(value, page)
+    last_turn = 1
+
+def dec_sound(value, page: ft.Page):
+    global last_turn
+    if last_turn == 0:
+        update_sound(value, page)
+    last_turn = 0
 
 def toggle_mute(page: ft.Page):
     is_mute = audio_helper.toggle_mute()
@@ -80,7 +88,7 @@ def start_rotary(page: ft.Page):
     # TODO - start rotary at current volume
     rotary = pyky040.Encoder(CLK=CLK_PIN, DT=DT_PIN, SW=SW_PIN)
     rotary.setup(scale_min=MIN_VOLUME, scale_max=MAX_VOLUME, step=VOLUME_STEP,
-                 inc_callback=lambda e: update_sound(e, page), dec_callback=lambda e: update_sound(e, page),
+                 inc_callback=lambda e: inc_sound(e, page), dec_callback=lambda e: dec_sound(e, page),
                  sw_callback=lambda: toggle_mute(page))
     rotary_thread = threading.Thread(target=rotary.watch)
     rotary_thread.start()
