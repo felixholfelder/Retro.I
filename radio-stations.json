@@ -58,5 +58,29 @@
     "src": "https://edge61.streamonkey.net/energy-nuernberg?aggregator=shorty",
     "logo": "radio_energy.png",
     "color": "#FF0000"
+  },
+  {
+    "name": "1 LIVE",
+    "src": "https://wdr-1live-live.icecastssl.wdr.de/wdr/1live/live/mp3/128/stream.mp3",
+    "logo": "1_live.png",
+    "color": "#FF009A"
+  },
+  {
+    "name": "Radio Bollerwagen",
+      "src": "https://player.ffn.de/radiobollerwagen.mp3",
+    "logo": "radio_bollerwagen.png",
+    "color": "#00928B"
+  },
+  {
+    "name": "Absolut Hot",
+      "src": "https://absolut-hot.live-sm.absolutradio.de/absolut-hot",
+    "logo": "absolut_hot.png",
+    "color": "#CC1033"
+  },
+  {
+    "name": "Schwarzwaldradio",
+      "src": "https://frontend.streamonkey.net/fho-schwarzwaldradiohifi",
+    "logo": "schwarzwaldradio.png",
+    "color": "#7A949E"
   }
 ]
