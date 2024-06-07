@@ -1,0 +1,5 @@
+[Desktop Entry]
+Name=Retro.I
+Type=Application
+Exec=sh /home/pi/Desktop/start.sh
+Terminal=false

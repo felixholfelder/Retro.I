@@ -4,7 +4,7 @@ import neopixel
 import math
 import time
 from adafruit_led_animation.animation.pulse import Pulse
-from adafruit_led_animation.color import BLACK, GREEN
+from adafruit_led_animation.color import BLACK, GREEN, RED
 from colors import ColorHelper
 from WaiterProcess import WaiterProcess
 
@@ -15,7 +15,7 @@ class Strip:
 	color_helper = ColorHelper()
 
 	pixel_pin = board.D10
-	pixel_num = 7
+	pixel_num = 50
 	
 	pixels = neopixel.NeoPixel(pixel_pin, pixel_num, brightness=1, auto_write=True)
 	animation = Pulse(pixels, min_intensity=0.1, speed=0.1, period=5, color=BLACK)
@@ -34,8 +34,8 @@ class Strip:
 		self.wait_proc = WaiterProcess(self.callback)
 	
 	def update_sound_strip(self, value):
+		print(value)
 		self.animation.freeze()
-		#self.pixels.show()
 		
 		self.wait_proc.set_variable(value)
 
@@ -52,7 +52,7 @@ class Strip:
 	def toggle_mute(self, is_mute):
 		if is_mute:
 			self.animation.freeze()
-			self.pixels.fill(BLACK)
+			self.pixels.fill(RED)
 			self.pixels.show()
 		else:
 			self.animation.resume()

@@ -10,8 +10,8 @@ from multiprocessing import Process
 from Strip import Strip
 
 CLK_PIN = 26
-DT_PIN = 4
-SW_PIN = 21
+DT_PIN = 17 #4
+SW_PIN = 16 #21
 
 MIN_VOLUME = 0
 MAX_VOLUME = 100
@@ -100,12 +100,14 @@ def main(page: ft.Page):
     #page.window_maximized = True
     page.theme = ft.Theme(color_scheme_seed='green')
     page.overlay.append(audio_helper.init())
+    page.scroll=ft.ScrollMode.ALWAYS
     page.update()
 
     def change_tab(e):
         index = e.control.selected_index
         radio_tab.visible = True if index == 0 else False
-        settings_tab.visible = True if index == 1 else False
+        spotify_tab.visible = True if index == 1 else False
+        settings_tab.visible = True if index == 2 else False
         page.update()
 
     nav = ft.NavigationBar(
@@ -115,6 +117,11 @@ def main(page: ft.Page):
         destinations=[
             ft.NavigationDestination(
                 label="Radiosender",
+                icon=ft.icons.RADIO_OUTLINED,
+                selected_icon=ft.icons.RADIO
+            ),
+            ft.NavigationDestination(
+                label="Spotify",
                 icon=ft.icons.RADIO_OUTLINED,
                 selected_icon=ft.icons.RADIO
             ),
@@ -139,7 +146,6 @@ def main(page: ft.Page):
 
     radio_stations = ft.Column(
         [grid],
-        scroll=ft.ScrollMode.ALWAYS, # TODO - fix infinite scroll
     )
 
     radio_tab = ft.Container(
@@ -190,15 +196,28 @@ def main(page: ft.Page):
                 ]
             )
         )
+    
+    spotify_tab = ft.Container(
+        content=ft.Column(
+            controls=[
+                ft.WebView(
+                    "https://flet.dev",
+                    #expand=True,
+                    on_page_started=lambda _: print("Page started"),
+                    on_page_ended=lambda _: print("Page ended"),
+                    on_web_resource_error=lambda e: print("Page error:", e.data),
+                )
+            ]
+        ),
+        visible=False,
+    )
 
     page.add(
         ft.Column(
-            [radio_tab, settings_tab],
+            [radio_tab, spotify_tab, settings_tab],
             expand=True,
         )
     )
     page.update()
 
-#main_proc = Process(target=ft.app(main))
-#main_proc.start()
 ft.app(main)
