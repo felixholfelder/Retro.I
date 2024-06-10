@@ -1,7 +1,8 @@
 import RPi.GPIO as GPIO
 import json
 import flet as ft
-import threading
+import multiprocessing
+from bluetooth import *
 from Audio import Audio
 from Stations import Stations
 from pyky040 import pyky040
@@ -24,6 +25,30 @@ system_helper = System()
 stations_helper = Stations()
 strip = Strip()
 strip.start()
+
+
+def get_devices(_):
+    print("Find devices...")
+    nearby_devices=discover_devices(lookup_names=True)
+    print("found %d devices" % len(nearby_devices))
+    for name, addr in nearby_devices:
+        print(" %s - %s" % (addr, name))
+    return nearby_devices
+
+
+def connect(self, address):
+	try:
+		s = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+		s.connect((address, 1))
+	except bluetooth.btcommon.BluetoothError as err:
+		# Error handler
+		pass
+
+
+def load_bluetooth_devices(_):
+    bluetooth_process = Process(target=get_devices)
+    bluetooth_process.start()
+    bluetooth_process.join()
 
 
 def get_path(img_src):
@@ -90,14 +115,14 @@ def start_rotary(page: ft.Page):
     rotary.setup(scale_min=MIN_VOLUME, scale_max=MAX_VOLUME, step=VOLUME_STEP,
                  inc_callback=lambda e: inc_sound(e, page), dec_callback=lambda e: dec_sound(e, page),
                  sw_callback=lambda: toggle_mute(page))
-    rotary_thread = threading.Thread(target=rotary.watch)
-    rotary_thread.start()
+    rotary_process = Process(target=rotary.watch)
+    rotary_process.start()
 
 
 def main(page: ft.Page):
     start_rotary(page)
-    page.window_full_screen = True
-    #page.window_maximized = True
+    #page.window_full_screen = True
+    page.window_maximized = True
     page.theme = ft.Theme(color_scheme_seed='green')
     page.overlay.append(audio_helper.init())
     page.scroll=ft.ScrollMode.ALWAYS
@@ -106,7 +131,7 @@ def main(page: ft.Page):
     def change_tab(e):
         index = e.control.selected_index
         radio_tab.visible = True if index == 0 else False
-        spotify_tab.visible = True if index == 1 else False
+        bluetooth_tab.visible = True if index == 1 else False
         settings_tab.visible = True if index == 2 else False
         page.update()
 
@@ -121,9 +146,9 @@ def main(page: ft.Page):
                 selected_icon=ft.icons.RADIO
             ),
             ft.NavigationDestination(
-                label="Spotify",
-                icon=ft.icons.RADIO_OUTLINED,
-                selected_icon=ft.icons.RADIO
+                label="Bluetooth",
+                icon=ft.icons.BLUETOOTH,
+                selected_icon=ft.icons.BLUETOOTH
             ),
             ft.NavigationDestination(
                 label="Einstellungen",
@@ -197,16 +222,15 @@ def main(page: ft.Page):
             )
         )
     
-    spotify_tab = ft.Container(
+    bluetooth_tab = ft.Container(
         content=ft.Column(
             controls=[
-                ft.WebView(
-                    "https://flet.dev",
-                    #expand=True,
-                    on_page_started=lambda _: print("Page started"),
-                    on_page_ended=lambda _: print("Page ended"),
-                    on_web_resource_error=lambda e: print("Page error:", e.data),
-                )
+                 ft.IconButton(
+                    icon=ft.icons.REFRESH,
+                    icon_size=40,
+                    tooltip="Bluetooth Geräte suchen",
+                    on_click=load_bluetooth_devices,
+                ),
             ]
         ),
         visible=False,
@@ -214,7 +238,7 @@ def main(page: ft.Page):
 
     page.add(
         ft.Column(
-            [radio_tab, spotify_tab, settings_tab],
+            [radio_tab, bluetooth_tab, settings_tab],
             expand=True,
         )
     )

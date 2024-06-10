@@ -15,9 +15,9 @@ class Strip:
 	color_helper = ColorHelper()
 
 	pixel_pin = board.D10
-	pixel_num = 50
+	pixel_num = 5
 	
-	pixels = neopixel.NeoPixel(pixel_pin, pixel_num, brightness=1, auto_write=True)
+	pixels = neopixel.NeoPixel(pixel_pin, pixel_num, brightness=0.5, auto_write=True)
 	animation = Pulse(pixels, min_intensity=0.1, speed=0.1, period=5, color=BLACK)
 	
 	def __init__(self):
@@ -25,6 +25,7 @@ class Strip:
 		self.pixels.show()
 	
 	def callback(self):
+		self.animation.color = self.curr_color
 		self.animation.resume()
 		self.pixels.show()
 
@@ -36,6 +37,8 @@ class Strip:
 	def update_sound_strip(self, value):
 		print(value)
 		self.animation.freeze()
+		self.animation.show()
+		
 		
 		self.wait_proc.set_variable(value)
 

@@ -30,7 +30,7 @@ class WaiterProcess:
 			self._change_event.clear()
 
 			while True:
-				time.sleep(1)
+				time.sleep(3)
 				with self._lock:
 					if self._change_event.is_set():
 						self._change_event.clear()
