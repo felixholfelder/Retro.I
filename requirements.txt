@@ -4,3 +4,4 @@ RPi.GPIO
 pyky040
 adafruit-circuitpython-neopixel
 adafruit-circuitpython-led-animation
+pybluez
