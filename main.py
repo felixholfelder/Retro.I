@@ -76,7 +76,7 @@ def toggle_mute(page: ft.Page):
 
 def get_station_by_image(src):
     for i, obj in enumerate(stations_helper.load_radio_stations()):
-        if get_path(obj["logo"]) == src:
+        if system_helper.get_img_path(obj["logo"]) == src:
             return [i, obj]
     return -1
 
@@ -127,9 +127,18 @@ def main(page: ft.Page):
 
     def change_tab(e):
         index = e.control.selected_index
-        switch_radio_tab() if index == 0 else False
-        switch_bluetooth_tab() if index == 1 else False
-        settings_tab.visible = True if index == 2 else False
+        if index == 0:
+            switch_radio_tab()
+        else: radio_tab.visible = False
+
+        if index == 1:
+            switch_bluetooth_tab()
+        else: bluetooth_tab.visible = False
+
+        if index == 2:
+            settings_tab.visible = True
+        else: settings_tab.visible = False
+
         page.update()
 
     def switch_radio_tab():
@@ -223,7 +232,7 @@ def main(page: ft.Page):
                         bgcolor=ft.colors.GREEN_50,
                         on_click=lambda e: change_radio_station(e, page),
                         border_radius=10,
-                        image_src=get_path(i["logo"]),
+                        image_src=system_helper.get_img_path(i["logo"]),
                     ),
                     ft.Image(ref=indicator_refs[index], src=f"{system_helper.pwd()}/assets/party.gif", opacity=0.7,
                              visible=False)
