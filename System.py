@@ -14,3 +14,7 @@ class System:
     
     def pwd(self):
         return "/home/pi/Desktop/Retro.I"
+
+
+    def get_img_path(self, img_src):
+        return f"{self.pwd()}/assets/stations/{img_src}"

@@ -1,11 +1,11 @@
-import bluetooth
 import flet as ft
-
 from bluetooth import *
+from pybtooth import BluetoothManager
+
+from BluetoothHelper import BluetoothHelper
 from Stations import Stations
-#from pyky040 import pyky040
+# from pyky040 import pyky040
 from System import System
-from multiprocessing import Process
 
 CLK_PIN = 26
 DT_PIN = 17
@@ -19,50 +19,25 @@ last_turn = 1
 
 system_helper = System()
 stations_helper = Stations()
+bluetooth_helper = BluetoothHelper()
 
-bluetooth_devices = []
+btn_discovery_status = None
 
 
-def get_devices(list, page):
-    global bluetooth_devices
-    print("Find devices...")
-    nearby_devices = discover_devices(lookup_names=True)
-    for addr, name in nearby_devices:
-        list.controls.append(get_device_card(name, addr))
-    bluetooth_devices = nearby_devices
+def toggle_bluetooth_discovery(_, page: ft.Page):
+    discovery_on = bluetooth_helper.toggle_bluetooth_discovery(page)
+    if discovery_on:
+        btn_discovery_status.text = "Bluetooth sichtbar"
+        btn_discovery_status.icon = ft.icons.BLUETOOTH
+        btn_discovery_status.style.bgcolor = ft.colors.GREEN
+    else:
+        btn_discovery_status.text = "Bluetooth nicht sichtbar"
+        btn_discovery_status.icon = ft.icons.BLUETOOTH_DISABLED
+        btn_discovery_status.style.bgcolor = ft.colors.RED
     page.update()
-
-
-def get_device_card(name, address):
-    return ft.Container(
-        ft.Column(
-            controls=[
-                ft.Text(name),
-                ft.Text(address)
-            ]
-        ),
-        on_click=lambda e: print(address),
-    )
-
-
-def connect(address):
-    try:
-        port = 1  # Standard port for RFCOMM
-        sock = BluetoothSocket(RFCOMM)
-        sock.connect((address, port))
-    except:
-        # Error handler
-        pass
-
-
-def load_bluetooth_devices(_, list, page):
-    bluetooth_process = Process(target=get_devices(list, page))
-    bluetooth_process.start()
-    bluetooth_process.join()
-
-
-def get_path(img_src):
-    return f"{system_helper.pwd()}/assets/stations/{img_src}"
+    bm = BluetoothManager()
+    connected = bm.getConnectedDevices()
+    print(connected)
 
 
 def update_sound(value, page: ft.Page):
@@ -112,10 +87,10 @@ def change_radio_station(event: ft.ContainerTapEvent, page):
     toggle_indicator(station)
     page.theme = ft.Theme(color_scheme_seed=color)
     page.navigation_bar.bgcolor = color
-    #audio_helper.play(station[1]["src"])
+    # audio_helper.play(station[1]["src"])
     page.update()
 
-    #strip.run(color)
+    # strip.run(color)
 
 
 def start_rotary(page: ft.Page):
@@ -123,11 +98,12 @@ def start_rotary(page: ft.Page):
 
 
 def main(page: ft.Page):
+    global btn_discovery_status
     start_rotary(page)
-    #page.window_full_screen = True
+    # page.window_full_screen = True
     page.window_maximized = True
     page.theme = ft.Theme(color_scheme_seed='green')
-    #page.overlay.append(audio_helper.init())
+    # page.overlay.append(audio_helper.init())
     page.scroll = ft.ScrollMode.ALWAYS
     page.update()
 
@@ -226,18 +202,20 @@ def main(page: ft.Page):
             )
         )
 
-    lv = ft.ListView(expand=1, spacing=10, padding=20, auto_scroll=True)
+    btn_discovery_status = ft.FilledButton(
+        "Bluetooth nicht sichtbar",
+        icon=ft.icons.BLUETOOTH_DISABLED,
+        style=ft.ButtonStyle(
+            bgcolor=ft.colors.RED,
+        ),
+        on_click=lambda e: toggle_bluetooth_discovery(e, page),
+    )
 
     bluetooth_tab = ft.Container(
+        alignment=ft.alignment.center,
         content=ft.Column(
             controls=[
-                ft.IconButton(
-                    icon=ft.icons.REFRESH,
-                    icon_size=40,
-                    tooltip="Bluetooth Geräte suchen",
-                    on_click=lambda e: load_bluetooth_devices(e, lv, page),
-                ),
-                lv
+                btn_discovery_status
             ]
         ),
         visible=False,
@@ -250,6 +228,5 @@ def main(page: ft.Page):
         )
     )
     page.update()
-
 
 ft.app(main)
