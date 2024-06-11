@@ -16,11 +16,11 @@ class BluetoothHelper:
 		return self.discovery_on
 
 	def bluetooth_discovery_on(self):
-		#os.system('bluetoothctl discoverable on')
+		os.system('bluetoothctl discoverable on')
 		self.discovery_on = True
 
 	def bluetooth_discovery_off(self):
-		#os.system('bluetoothctl discoverable off')
+		os.system('bluetoothctl discoverable off')
 		self.discovery_on = False
 
 	def disconnect(self):

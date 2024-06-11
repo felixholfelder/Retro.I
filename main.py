@@ -31,7 +31,7 @@ bluetooth_helper.bluetooth_discovery_off()
 btn_discovery_status = None
 
 
-def toggle_bluetooth_discovery(_, page: ft.Page):
+def toggle_bluetooth_discovery(page: ft.Page):
     discovery_on = bluetooth_helper.toggle_bluetooth_discovery(page)
     if discovery_on:
         btn_discovery_status.text = "Bluetooth sichtbar"
@@ -42,9 +42,9 @@ def toggle_bluetooth_discovery(_, page: ft.Page):
         btn_discovery_status.icon = ft.icons.BLUETOOTH_DISABLED
         btn_discovery_status.style.bgcolor = ft.colors.RED
     page.update()
-    bm = BluetoothManager()
-    connected = bm.getConnectedDevices()
-    print(connected)
+    #bm = BluetoothManager()
+    #connected = bm.getConnectedDevices()
+    #print(connected)
 
 
 def update_sound(value, page: ft.Page):
@@ -134,7 +134,7 @@ def main(page: ft.Page):
         if index == 1:
             switch_bluetooth_tab()
         else: bluetooth_tab.visible = False
-
+    
         if index == 2:
             settings_tab.visible = True
         else: settings_tab.visible = False
@@ -143,14 +143,14 @@ def main(page: ft.Page):
 
     def switch_radio_tab():
         if bluetooth_helper.is_discovery_on():
-            toggle_bluetooth_discovery()
+            toggle_bluetooth_discovery(page)
         bluetooth_helper.disconnect()
-        strip.run(ft.colors.GREEN)
+        #strip.run(ft.colors.GREEN)
         radio_tab.visible = True
 
     def switch_bluetooth_tab():
         audio_helper.pause()
-        strip.run(ft.colors.BLUE)
+        #strip.run(ft.colors.BLUE)
         bluetooth_tab.visible = True
 
     nav = ft.NavigationBar(
@@ -247,14 +247,26 @@ def main(page: ft.Page):
         style=ft.ButtonStyle(
             bgcolor=ft.colors.RED,
         ),
-        on_click=lambda e: toggle_bluetooth_discovery(e, page),
+        width=300,
+        on_click=lambda e: toggle_bluetooth_discovery(page),
+    )
+    
+    btn_device_connected = ft.FilledButton(
+        "Kein Gerät verbunden",
+        icon=ft.icons.PHONELINK_OFF,
+        style=ft.ButtonStyle(
+            bgcolor=ft.colors.GREY,
+        ),
+        width=300,
+        height=300
     )
 
     bluetooth_tab = ft.Container(
         alignment=ft.alignment.center,
         content=ft.Column(
             controls=[
-                btn_discovery_status
+                btn_discovery_status,
+                btn_device_connected
             ]
         ),
         visible=False,
