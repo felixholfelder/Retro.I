@@ -8,8 +8,8 @@ from System import System
 from multiprocessing import Process
 
 CLK_PIN = 26
-DT_PIN = 17  #4
-SW_PIN = 16  #21
+DT_PIN = 17
+SW_PIN = 16
 
 MIN_VOLUME = 0
 MAX_VOLUME = 100

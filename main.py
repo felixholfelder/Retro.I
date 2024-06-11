@@ -2,17 +2,17 @@ import RPi.GPIO as GPIO
 import json
 import flet as ft
 import threading
-from bluetooth import *
 from Audio import Audio
 from Stations import Stations
 from pyky040 import pyky040
 from System import System
 from multiprocessing import Process
+from BluetoothHelper import BluetoothHelper
 from Strip import Strip
 
 CLK_PIN = 26
-DT_PIN = 17 #4
-SW_PIN = 16 #21
+DT_PIN = 17
+SW_PIN = 16
 
 MIN_VOLUME = 0
 MAX_VOLUME = 100
@@ -20,35 +20,14 @@ VOLUME_STEP = 3
 
 last_turn = 1
 
+bluetooth_helper = BluetoothHelper()
 audio_helper = Audio()
 system_helper = System()
 stations_helper = Stations()
 strip = Strip()
 strip.start()
 
-def get_devices():
-    print("Find devices...")
-    nearby_devices=discover_devices(lookup_names=True)
-    print("found %d devices" % len(nearby_devices))
-    for name, addr in nearby_devices:
-        print(" %s - %s" % (addr, name))
-    print("Bluetooth devices found.")
-    return nearby_devices
-
-
-def connect(address):
-	try:
-		s = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-		s.connect((address, 1))
-	except bluetooth.btcommon.BluetoothError as err:
-		# Error handler
-		pass
-
-
-def load_bluetooth_devices(_):
-    bluetooth_process = Process(target=get_devices)
-    bluetooth_process.start()
-    bluetooth_process.join()
+bluetooth_helper.bluetooth_discovery_off()
 
 def get_path(img_src):
     return f"{system_helper.pwd()}/assets/stations/{img_src}"
@@ -220,16 +199,11 @@ def main(page: ft.Page):
                 ]
             )
         )
-    
+
     bluetooth_tab = ft.Container(
         content=ft.Column(
             controls=[
-                 ft.IconButton(
-                    icon=ft.icons.REFRESH,
-                    icon_size=40,
-                    tooltip="Bluetooth Geräte suchen",
-                    on_click=load_bluetooth_devices,
-                ),
+                ft.FilledButton("Bluetooth sichbar", icon=ft.icons.ADD, on_click=bluetooth_helper.toggle_bluetooth_discovery()),
             ]
         ),
         visible=False,
