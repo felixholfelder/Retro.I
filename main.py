@@ -142,7 +142,8 @@ def main(page: ft.Page):
         page.update()
 
     def switch_radio_tab():
-        bluetooth_helper.bluetooth_discovery_off()
+        if bluetooth_helper.is_discovery_on():
+            toggle_bluetooth_discovery()
         bluetooth_helper.disconnect()
         strip.run(ft.colors.GREEN)
         radio_tab.visible = True

@@ -13,7 +13,7 @@ class System:
         os.system('sudo reboot')
     
     def pwd(self):
-        return "/home/pi/Desktop/Retro.I"
+        return "D:/SWE/Python/Retro.I"
 
 
     def get_img_path(self, img_src):
