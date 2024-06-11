@@ -109,10 +109,21 @@ def main(page: ft.Page):
 
     def change_tab(e):
         index = e.control.selected_index
-        radio_tab.visible = True if index == 0 else False
-        bluetooth_tab.visible = True if index == 1 else False
+        switch_radio_tab() if index == 0 else False
+        switch_bluetooth_tab() if index == 1 else False
         settings_tab.visible = True if index == 2 else False
         page.update()
+
+    def switch_radio_tab():
+        bluetooth_helper.bluetooth_discovery_off()
+        bluetooth_helper.disconnect()
+        #strip.run(ft.colors.GREEN)
+        radio_tab.visible = True
+
+    def switch_bluetooth_tab():
+        #audio_helper.pause()
+        #strip.run(ft.colors.BLUE)
+        bluetooth_tab.visible = True
 
     nav = ft.NavigationBar(
         bgcolor="green",

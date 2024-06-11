@@ -32,12 +32,14 @@ class Audio:
 		return self.mixer().getmute()[0] == 1
 
 	def play(self, src):
-		print(src)
-		audio.pause()
+		self.pause()
 		audio.src = src
 		audio.autoplay = True
 		audio.play()
 		audio.update()
+
+	def pause(self):
+		audio.pause()
 
 	def init(self):
 		return audio

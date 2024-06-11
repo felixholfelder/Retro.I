@@ -28,6 +28,23 @@ strip = Strip()
 strip.start()
 
 bluetooth_helper.bluetooth_discovery_off()
+btn_discovery_status = None
+
+
+def toggle_bluetooth_discovery(_, page: ft.Page):
+    discovery_on = bluetooth_helper.toggle_bluetooth_discovery(page)
+    if discovery_on:
+        btn_discovery_status.text = "Bluetooth sichtbar"
+        btn_discovery_status.icon = ft.icons.BLUETOOTH
+        btn_discovery_status.style.bgcolor = ft.colors.GREEN
+    else:
+        btn_discovery_status.text = "Bluetooth nicht sichtbar"
+        btn_discovery_status.icon = ft.icons.BLUETOOTH_DISABLED
+        btn_discovery_status.style.bgcolor = ft.colors.RED
+    page.update()
+    bm = BluetoothManager()
+    connected = bm.getConnectedDevices()
+    print(connected)
 
 
 def update_sound(value, page: ft.Page):
@@ -43,11 +60,13 @@ def inc_sound(value, page: ft.Page):
         update_sound(value, page)
     last_turn = 1
 
+
 def dec_sound(value, page: ft.Page):
     global last_turn
     if last_turn == 0:
         update_sound(value, page)
     last_turn = 0
+
 
 def toggle_mute(page: ft.Page):
     is_mute = audio_helper.toggle_mute()
@@ -57,12 +76,13 @@ def toggle_mute(page: ft.Page):
 
 def get_station_by_image(src):
     for i, obj in enumerate(stations_helper.load_radio_stations()):
-        if system_helper.get_img_path(obj["logo"]) == src:
+        if get_path(obj["logo"]) == src:
             return [i, obj]
     return -1
 
 
 indicator_refs = []
+
 
 def toggle_indicator(station):
     for ref in indicator_refs:
@@ -70,7 +90,8 @@ def toggle_indicator(station):
 
     indicator_refs[station[0]].current.visible = True
 
-def change_radio_station(event: ft.ContainerTapEvent, page):    
+
+def change_radio_station(event: ft.ContainerTapEvent, page):
     global strip_color
     station = get_station_by_image(event.control.image_src)
     color = station[1]["color"]
@@ -80,7 +101,7 @@ def change_radio_station(event: ft.ContainerTapEvent, page):
     page.navigation_bar.bgcolor = color
     audio_helper.play(station[1]["src"])
     page.update()
-    
+
     strip.run(color)
 
 
@@ -95,20 +116,32 @@ def start_rotary(page: ft.Page):
 
 
 def main(page: ft.Page):
+    global btn_discovery_status
     start_rotary(page)
-    #page.window_full_screen = True
+    # page.window_full_screen = True
     page.window_maximized = True
     page.theme = ft.Theme(color_scheme_seed='green')
     page.overlay.append(audio_helper.init())
-    page.scroll=ft.ScrollMode.ALWAYS
+    page.scroll = ft.ScrollMode.ALWAYS
     page.update()
 
     def change_tab(e):
         index = e.control.selected_index
-        radio_tab.visible = True if index == 0 else False
-        bluetooth_tab.visible = True if index == 1 else False
+        switch_radio_tab() if index == 0 else False
+        switch_bluetooth_tab() if index == 1 else False
         settings_tab.visible = True if index == 2 else False
         page.update()
+
+    def switch_radio_tab():
+        bluetooth_helper.bluetooth_discovery_off()
+        bluetooth_helper.disconnect()
+        strip.run(ft.colors.GREEN)
+        radio_tab.visible = True
+
+    def switch_bluetooth_tab():
+        audio_helper.pause()
+        strip.run(ft.colors.BLUE)
+        bluetooth_tab.visible = True
 
     nav = ft.NavigationBar(
         bgcolor="green",
@@ -190,17 +223,28 @@ def main(page: ft.Page):
                         bgcolor=ft.colors.GREEN_50,
                         on_click=lambda e: change_radio_station(e, page),
                         border_radius=10,
-                        image_src=system_helper.get_img_path(i["logo"]),
+                        image_src=get_path(i["logo"]),
                     ),
-                    ft.Image(ref=indicator_refs[index], src=f"{system_helper.pwd()}/assets/party.gif", opacity=0.7, visible=False)
+                    ft.Image(ref=indicator_refs[index], src=f"{system_helper.pwd()}/assets/party.gif", opacity=0.7,
+                             visible=False)
                 ]
             )
         )
 
+    btn_discovery_status = ft.FilledButton(
+        "Bluetooth nicht sichtbar",
+        icon=ft.icons.BLUETOOTH_DISABLED,
+        style=ft.ButtonStyle(
+            bgcolor=ft.colors.RED,
+        ),
+        on_click=lambda e: toggle_bluetooth_discovery(e, page),
+    )
+
     bluetooth_tab = ft.Container(
+        alignment=ft.alignment.center,
         content=ft.Column(
             controls=[
-                ft.FilledButton("Bluetooth sichbar", icon=ft.icons.ADD, on_click=bluetooth_helper.toggle_bluetooth_discovery()),
+                btn_discovery_status
             ]
         ),
         visible=False,

@@ -22,3 +22,7 @@ class BluetoothHelper:
 	def bluetooth_discovery_off(self):
 		os.system('bluetoothctl discoverable off')
 		self.discovery_on = False
+
+	def disconnect(self):
+		pass
+		# TODO - disconnect all devices
