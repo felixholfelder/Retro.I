@@ -2,6 +2,8 @@ import RPi.GPIO as GPIO
 import json
 import flet as ft
 import threading
+import subprocess
+import time
 from Audio import Audio
 from Stations import Stations
 from pyky040 import pyky040
@@ -29,6 +31,7 @@ strip.start()
 
 bluetooth_helper.bluetooth_discovery_off()
 btn_discovery_status = None
+btn_device_connected = None
 
 
 def toggle_bluetooth_discovery(page: ft.Page):
@@ -46,6 +49,20 @@ def toggle_bluetooth_discovery(page: ft.Page):
     #connected = bm.getConnectedDevices()
     #print(connected)
 
+
+def get_connected_devices(page):
+    result = subprocess.run(['bluetoothctl', 'devices', 'Connected'], stdout=subprocess.PIPE).stdout.decode('utf-8')
+    if result != "":
+        name = result[25:]
+        mac = result[7:24]
+        btn_device_connected.text = f"Verbunden mit: {name}"
+        btn_device_connected.icon = ft.icons.PHONELINK
+    else:
+        btn_device_connected.text = "Kein Gerät verbunden"
+        btn_device_connected.icon = ft.icons.PHONELINK_OFF
+
+    page.update()
+    
 
 def update_sound(value, page: ft.Page):
     if not audio_helper.is_mute():
@@ -116,7 +133,7 @@ def start_rotary(page: ft.Page):
 
 
 def main(page: ft.Page):
-    global btn_discovery_status
+    global btn_discovery_status, btn_device_connected
     start_rotary(page)
     # page.window_full_screen = True
     page.window_maximized = True
@@ -145,6 +162,7 @@ def main(page: ft.Page):
         if bluetooth_helper.is_discovery_on():
             toggle_bluetooth_discovery(page)
         bluetooth_helper.disconnect()
+        # TODO - hide all dancing birds
         #strip.run(ft.colors.GREEN)
         radio_tab.visible = True
 
@@ -257,6 +275,7 @@ def main(page: ft.Page):
         style=ft.ButtonStyle(
             bgcolor=ft.colors.GREY,
         ),
+        on_click=lambda e: get_connected_devices(page),
         width=300,
         height=300
     )
