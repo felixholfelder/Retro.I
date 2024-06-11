@@ -1,5 +1,6 @@
 import bluetooth
 import flet as ft
+
 from bluetooth import *
 from Stations import Stations
 #from pyky040 import pyky040
@@ -7,8 +8,8 @@ from System import System
 from multiprocessing import Process
 
 CLK_PIN = 26
-DT_PIN = 17 #4
-SW_PIN = 16 #21
+DT_PIN = 17  #4
+SW_PIN = 16  #21
 
 MIN_VOLUME = 0
 MAX_VOLUME = 100
@@ -21,30 +22,44 @@ stations_helper = Stations()
 
 bluetooth_devices = []
 
-def get_devices():
-    print("Find devices...")
-    nearby_devices=discover_devices(lookup_names=True)
-    print("found %d devices" % len(nearby_devices))
-    for name, addr in nearby_devices:
-        print(" %s - %s" % (addr, name))
-    print("Bluetooth devices found.")
 
-    return nearby_devices
+def get_devices(list, page):
+    global bluetooth_devices
+    print("Find devices...")
+    nearby_devices = discover_devices(lookup_names=True)
+    for addr, name in nearby_devices:
+        list.controls.append(get_device_card(name, addr))
+    bluetooth_devices = nearby_devices
+    page.update()
+
+
+def get_device_card(name, address):
+    return ft.Container(
+        ft.Column(
+            controls=[
+                ft.Text(name),
+                ft.Text(address)
+            ]
+        ),
+        on_click=lambda e: print(address),
+    )
 
 
 def connect(address):
     try:
-        s = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-        s.connect((address, 1))
-    except bluetooth.btcommon.BluetoothError as err:
+        port = 1  # Standard port for RFCOMM
+        sock = BluetoothSocket(RFCOMM)
+        sock.connect((address, port))
+    except:
         # Error handler
         pass
 
 
-def load_bluetooth_devices(_):
-    bluetooth_process = Process(target=get_devices)
+def load_bluetooth_devices(_, list, page):
+    bluetooth_process = Process(target=get_devices(list, page))
     bluetooth_process.start()
     bluetooth_process.join()
+
 
 def get_path(img_src):
     return f"{system_helper.pwd()}/assets/stations/{img_src}"
@@ -53,17 +68,20 @@ def get_path(img_src):
 def update_sound(value, page: ft.Page):
     pass
 
+
 def inc_sound(value, page: ft.Page):
     global last_turn
     if last_turn == 1:
         update_sound(value, page)
     last_turn = 1
 
+
 def dec_sound(value, page: ft.Page):
     global last_turn
     if last_turn == 0:
         update_sound(value, page)
     last_turn = 0
+
 
 def toggle_mute(page: ft.Page):
     pass
@@ -78,11 +96,13 @@ def get_station_by_image(src):
 
 indicator_refs = []
 
+
 def toggle_indicator(station):
     for ref in indicator_refs:
         ref.current.visible = False
 
     indicator_refs[station[0]].current.visible = True
+
 
 def change_radio_station(event: ft.ContainerTapEvent, page):
     global strip_color
@@ -108,7 +128,7 @@ def main(page: ft.Page):
     page.window_maximized = True
     page.theme = ft.Theme(color_scheme_seed='green')
     #page.overlay.append(audio_helper.init())
-    page.scroll=ft.ScrollMode.ALWAYS
+    page.scroll = ft.ScrollMode.ALWAYS
     page.update()
 
     def change_tab(e):
@@ -200,10 +220,13 @@ def main(page: ft.Page):
                         border_radius=10,
                         image_src=get_path(i["logo"]),
                     ),
-                    ft.Image(ref=indicator_refs[index], src=f"{system_helper.pwd()}/assets/party.gif", opacity=0.7, visible=False)
+                    ft.Image(ref=indicator_refs[index], src=f"{system_helper.pwd()}/assets/party.gif", opacity=0.7,
+                             visible=False)
                 ]
             )
         )
+
+    lv = ft.ListView(expand=1, spacing=10, padding=20, auto_scroll=True)
 
     bluetooth_tab = ft.Container(
         content=ft.Column(
@@ -212,8 +235,9 @@ def main(page: ft.Page):
                     icon=ft.icons.REFRESH,
                     icon_size=40,
                     tooltip="Bluetooth Geräte suchen",
-                    on_click=load_bluetooth_devices,
+                    on_click=lambda e: load_bluetooth_devices(e, lv, page),
                 ),
+                lv
             ]
         ),
         visible=False,
@@ -226,5 +250,6 @@ def main(page: ft.Page):
         )
     )
     page.update()
+
 
 ft.app(main)
