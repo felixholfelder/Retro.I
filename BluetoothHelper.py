@@ -1,4 +1,6 @@
 import os
+import subprocess
+from multiprocessing import Process
 
 class BluetoothHelper:
 	discovery_on = False
@@ -24,5 +26,18 @@ class BluetoothHelper:
 		self.discovery_on = False
 
 	def disconnect(self):
-		pass
-		# TODO - disconnect all devices
+		address = self.get_device_mac()
+		process = Process(target=lambda: os.system(f'bluetoothctl disconnect {address}'))
+		process.start()
+		
+	def get_device(self):
+		return subprocess.run(['bluetoothctl', 'devices', 'Connected'], stdout=subprocess.PIPE).stdout.decode('utf-8')
+	
+	def get_device_name(self):
+		result = self.get_device()
+		return result[25:]
+	
+	def get_device_mac(self):
+		result = self.get_device()
+		return result[7:24]
+		

@@ -2,7 +2,6 @@ import RPi.GPIO as GPIO
 import json
 import flet as ft
 import threading
-import subprocess
 import time
 from Audio import Audio
 from Stations import Stations
@@ -57,11 +56,9 @@ def toggle_bluetooth_discovery(page: ft.Page):
     page.update()
 
 
-def get_connected_devices(page):
-    result = subprocess.run(['bluetoothctl', 'devices', 'Connected'], stdout=subprocess.PIPE).stdout.decode('utf-8')
-    if result != "":
-        name = result[25:]
-        mac = result[7:24]
+def update_connected_device(page):
+    name = bluetooth_helper.get_device_name()
+    if name != "":
         btn_device_connected.text = f"Verbunden mit: {name}"
         btn_device_connected.icon = ft.icons.PHONELINK
         disable_discovery()
@@ -74,14 +71,13 @@ def get_connected_devices(page):
 
 def bluetooth_listener(page):
     while True:
-        get_connected_devices(page)
+        update_connected_device(page)
         time.sleep(30)
 
 
 def update_sound(value, page: ft.Page):
     if not audio_helper.is_mute():
         audio_helper.update_sound(value)
-        # TODO - change slider for volume
         strip.update_sound_strip(value)
         page.update()
 
@@ -179,11 +175,13 @@ def main(page: ft.Page):
         bluetooth_helper.disconnect()
         disable_indicator()
         strip.fill(GREEN)
+        update_connected_device(page)
         radio_tab.visible = True
 
     def switch_bluetooth_tab():
         audio_helper.pause()
         strip.fill(BLUE)
+        update_connected_device(page)
         bluetooth_tab.visible = True
 
     nav = ft.NavigationBar(
@@ -288,7 +286,7 @@ def main(page: ft.Page):
         "Verbunden mit: A34 von Felix",
         icon=ft.icons.PHONELINK_OFF,
         width=300,
-        on_click=lambda e: get_connected_devices(page),
+        on_click=lambda e: update_connected_device(page),
     )
 
     bluetooth_tab = ft.Container(
