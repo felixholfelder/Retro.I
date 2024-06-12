@@ -69,6 +69,9 @@ class Strip:
 				pass
 
 		self.kill_proc()
+		
+	def fill(self, color):
+		self.pixels.fill(color)
 
 	def run(self, color):
 		proc = threading.Thread(target=self.update_strip(color))

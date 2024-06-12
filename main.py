@@ -11,6 +11,7 @@ from System import System
 from multiprocessing import Process
 from BluetoothHelper import BluetoothHelper
 from Strip import Strip
+from adafruit_led_animation.color import BLUE, GREEN
 
 CLK_PIN = 26
 DT_PIN = 17
@@ -33,21 +34,27 @@ bluetooth_helper.bluetooth_discovery_off()
 btn_discovery_status = None
 btn_device_connected = None
 
+def enable_discovery():
+    bluetooth_helper.bluetooth_discovery_on()
+    btn_discovery_status.text = "Bluetooth sichtbar"
+    btn_discovery_status.icon = ft.icons.BLUETOOTH
+    btn_discovery_status.style.bgcolor = ft.colors.GREEN
+
+
+def disable_discovery():
+    bluetooth_helper.bluetooth_discovery_off()
+    btn_discovery_status.text = "Bluetooth nicht sichtbar"
+    btn_discovery_status.icon = ft.icons.BLUETOOTH_DISABLED
+    btn_discovery_status.style.bgcolor = ft.colors.RED
+
 
 def toggle_bluetooth_discovery(page: ft.Page):
-    discovery_on = bluetooth_helper.toggle_bluetooth_discovery(page)
+    discovery_on = bluetooth_helper.is_discovery_on()
     if discovery_on:
-        btn_discovery_status.text = "Bluetooth sichtbar"
-        btn_discovery_status.icon = ft.icons.BLUETOOTH
-        btn_discovery_status.style.bgcolor = ft.colors.GREEN
+        disable_discovery()
     else:
-        btn_discovery_status.text = "Bluetooth nicht sichtbar"
-        btn_discovery_status.icon = ft.icons.BLUETOOTH_DISABLED
-        btn_discovery_status.style.bgcolor = ft.colors.RED
+        enable_discovery()
     page.update()
-    #bm = BluetoothManager()
-    #connected = bm.getConnectedDevices()
-    #print(connected)
 
 
 def get_connected_devices(page):
@@ -57,12 +64,19 @@ def get_connected_devices(page):
         mac = result[7:24]
         btn_device_connected.text = f"Verbunden mit: {name}"
         btn_device_connected.icon = ft.icons.PHONELINK
+        disable_discovery()
     else:
         btn_device_connected.text = "Kein Gerät verbunden"
         btn_device_connected.icon = ft.icons.PHONELINK_OFF
 
     page.update()
-    
+
+
+def bluetooth_listener(page):
+    while True:
+        get_connected_devices(page)
+        time.sleep(30)
+
 
 def update_sound(value, page: ft.Page):
     if not audio_helper.is_mute():
@@ -100,11 +114,12 @@ def get_station_by_image(src):
 
 indicator_refs = []
 
-
-def toggle_indicator(station):
+def disable_indicator():
     for ref in indicator_refs:
         ref.current.visible = False
 
+def toggle_indicator(station):
+    disable_indicator()
     indicator_refs[station[0]].current.visible = True
 
 
@@ -162,13 +177,13 @@ def main(page: ft.Page):
         if bluetooth_helper.is_discovery_on():
             toggle_bluetooth_discovery(page)
         bluetooth_helper.disconnect()
-        # TODO - hide all dancing birds
-        #strip.run(ft.colors.GREEN)
+        disable_indicator()
+        strip.fill(GREEN)
         radio_tab.visible = True
 
     def switch_bluetooth_tab():
         audio_helper.pause()
-        #strip.run(ft.colors.BLUE)
+        strip.fill(BLUE)
         bluetooth_tab.visible = True
 
     nav = ft.NavigationBar(
@@ -269,15 +284,11 @@ def main(page: ft.Page):
         on_click=lambda e: toggle_bluetooth_discovery(page),
     )
     
-    btn_device_connected = ft.FilledButton(
-        "Kein Gerät verbunden",
+    btn_device_connected = ft.TextButton(
+        "Verbunden mit: A34 von Felix",
         icon=ft.icons.PHONELINK_OFF,
-        style=ft.ButtonStyle(
-            bgcolor=ft.colors.GREY,
-        ),
-        on_click=lambda e: get_connected_devices(page),
         width=300,
-        height=300
+        on_click=lambda e: get_connected_devices(page),
     )
 
     bluetooth_tab = ft.Container(
@@ -298,5 +309,8 @@ def main(page: ft.Page):
         )
     )
     page.update()
+    
+    bluetooth_process = Process(target=bluetooth_listener(page))
+    bluetooth_process.start()
 
 ft.app(main)
