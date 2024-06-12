@@ -1,3 +1,4 @@
+# sudo apt-get install python3-dbus
 import dbus
 import dbus.mainloop.glib
 from gi.repository import GLib
