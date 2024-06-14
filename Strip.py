@@ -9,6 +9,8 @@ from colors import ColorHelper
 from WaiterProcess import WaiterProcess
 
 class Strip:
+	is_active = True
+
 	counter = 0
 	curr_color = GREEN
 
@@ -69,6 +71,20 @@ class Strip:
 				pass
 
 		self.kill_proc()
+		
+	def is_strip_active(self):
+		return self.is_active
+	
+	def toggle_strip(self, value):
+		if self.is_active:
+			self.is_active = False
+			self.animation.fill(BLACK)
+			self.animation.freeze()
+		else:
+			self.is_active = True
+			self.animation.fill(self.curr_color)
+			self.animation.resume()
+		self.pixels.show()
 		
 	def fill(self, color):
 		self.pixels.fill(color)

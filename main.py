@@ -161,6 +161,7 @@ def main(page: ft.Page):
 
         if index == 1:
             switch_bluetooth_tab()
+            disable_indicator()
         else: bluetooth_tab.visible = False
     
         if index == 2:
@@ -173,7 +174,6 @@ def main(page: ft.Page):
         if bluetooth_helper.is_discovery_on():
             toggle_bluetooth_discovery(page)
         bluetooth_helper.disconnect()
-        disable_indicator()
         strip.fill(GREEN)
         update_connected_device(page)
         radio_tab.visible = True
@@ -236,13 +236,29 @@ def main(page: ft.Page):
         )
     )
     page.add(dlg)
+    
+    
+    dlg_led = ft.AlertDialog(
+        content=ft.Column(
+            controls=[
+                ft.Switch("LED-Streifen ausschalten", on_change=strip.toggle_strip, value=strip.is_strip_active())
+            ]
+        )
+    )
+    page.add(dlg_led)
+
 
     def show_dialog(_):
         dlg.open = True
         page.update()
+    
+    def show_led_dialog(_):
+        dlg_led.open = True
+        page.update()
 
     lv = ft.ListView(expand=1, spacing=10, padding=20)
     lv.controls.append(ft.TextButton("Radio ausschalten", on_click=show_dialog, icon=ft.icons.LOGOUT))
+    lv.controls.append(ft.TextButton("LED-Streifen", on_click=show_led_dialog, icon=ft.icons.COLOR_LENS))
     settings_tab = ft.Container(
         content=ft.Column(
             controls=[
