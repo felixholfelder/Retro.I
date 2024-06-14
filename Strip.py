@@ -27,7 +27,10 @@ class Strip:
 		self.pixels.show()
 	
 	def callback(self):
-		self.animation.resume()
+		if not self.is_strip_active():
+			self.animation.fill(BLACK)
+		else:
+			self.animation.resume()
 		self.pixels.show()
 
 	wait_proc = WaiterProcess(callback)
@@ -52,13 +55,14 @@ class Strip:
 		self.pixels.show()
 	
 	def toggle_mute(self, is_mute):
-		if is_mute:
-			self.animation.freeze()
-			self.pixels.fill(RED)
-			self.pixels.show()
-		else:
-			self.animation.resume()
-			self.pixels.show()
+		if self.is_strip_active():
+			if is_mute:
+				self.animation.freeze()
+				self.pixels.fill(RED)
+				self.pixels.show()
+			else:
+				self.animation.resume()
+				self.pixels.show()
 
 	def update_strip(self, color):
 		strip_color = self.color_helper.toRgb(color)

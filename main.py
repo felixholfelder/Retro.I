@@ -146,8 +146,8 @@ def start_rotary(page: ft.Page):
 def main(page: ft.Page):
     global btn_discovery_status, btn_device_connected
     start_rotary(page)
-    # page.window_full_screen = True
-    page.window_maximized = True
+    page.window_full_screen = True
+    #page.window_maximized = True
     page.theme = ft.Theme(color_scheme_seed='green')
     page.overlay.append(audio_helper.init())
     page.scroll = ft.ScrollMode.ALWAYS
@@ -299,7 +299,7 @@ def main(page: ft.Page):
     )
     
     btn_device_connected = ft.TextButton(
-        "Verbunden mit: A34 von Felix",
+        "Kein Gerät verbunden",
         icon=ft.icons.PHONELINK_OFF,
         width=300,
         on_click=lambda e: update_connected_device(page),
