@@ -10,6 +10,8 @@ from System import System
 from multiprocessing import Process
 from BluetoothHelper import BluetoothHelper
 from Strip import Strip
+from Constants import Constants
+from Sounds import Sounds
 from adafruit_led_animation.color import BLUE, GREEN
 
 CLK_PIN = 26
@@ -18,7 +20,7 @@ SW_PIN = 16
 
 MIN_VOLUME = 0
 MAX_VOLUME = 100
-VOLUME_STEP = 3
+VOLUME_STEP = 2
 
 last_turn = 1
 
@@ -26,6 +28,8 @@ bluetooth_helper = BluetoothHelper()
 audio_helper = Audio()
 system_helper = System()
 stations_helper = Stations()
+c = Constants()
+sounds = Sounds()
 strip = Strip()
 strip.start()
 
@@ -81,16 +85,18 @@ def update_sound(value, page: ft.Page):
         strip.update_sound_strip(value)
         page.update()
 
-def inc_sound(value, page: ft.Page):
+def inc_sound(page: ft.Page):
     global last_turn
     if last_turn == 1:
+        value = audio_helper.get_volume() + VOLUME_STEP
         update_sound(value, page)
     last_turn = 1
 
 
-def dec_sound(value, page: ft.Page):
+def dec_sound(page: ft.Page):
     global last_turn
     if last_turn == 0:
+        value = audio_helper.get_volume() - VOLUME_STEP
         update_sound(value, page)
     last_turn = 0
 
@@ -134,10 +140,9 @@ def change_radio_station(event: ft.ContainerTapEvent, page):
 
 
 def start_rotary(page: ft.Page):
-    # TODO - start rotary at current volume
     rotary = pyky040.Encoder(CLK=CLK_PIN, DT=DT_PIN, SW=SW_PIN)
     rotary.setup(scale_min=MIN_VOLUME, scale_max=MAX_VOLUME, step=VOLUME_STEP,
-                 inc_callback=lambda e: inc_sound(e, page), dec_callback=lambda e: dec_sound(e, page),
+                 inc_callback=lambda e: inc_sound(page), dec_callback=lambda e: dec_sound(page),
                  sw_callback=lambda: toggle_mute(page))
     rotary_thread = threading.Thread(target=rotary.watch)
     rotary_thread.start()
@@ -146,12 +151,13 @@ def start_rotary(page: ft.Page):
 def main(page: ft.Page):
     global btn_discovery_status, btn_device_connected
     start_rotary(page)
-    page.window_full_screen = True
-    #page.window_maximized = True
+    #page.window_full_screen = True
+    page.window_maximized = True
     page.theme = ft.Theme(color_scheme_seed='green')
     page.overlay.append(audio_helper.init())
     page.scroll = ft.ScrollMode.ALWAYS
     page.update()
+    
 
     def change_tab(e):
         index = e.control.selected_index
@@ -165,6 +171,11 @@ def main(page: ft.Page):
         else: bluetooth_tab.visible = False
     
         if index == 2:
+            switch_soundboard_tab()
+            disable_indicator()
+        else: soundboard_tab.visible = False
+        
+        if index == 3:
             settings_tab.visible = True
         else: settings_tab.visible = False
 
@@ -183,6 +194,10 @@ def main(page: ft.Page):
         strip.fill(BLUE)
         update_connected_device(page)
         bluetooth_tab.visible = True
+    
+    def switch_soundboard_tab():
+        audio_helper.pause()
+        soundboard_tab.visible = True
 
     nav = ft.NavigationBar(
         bgcolor="green",
@@ -200,6 +215,11 @@ def main(page: ft.Page):
                 selected_icon=ft.icons.BLUETOOTH
             ),
             ft.NavigationDestination(
+                label="Soundboard",
+                icon=ft.icons.SPACE_DASHBOARD_OUTLINED,
+                selected_icon=ft.icons.SPACE_DASHBOARD
+            ),
+            ft.NavigationDestination(
                 label="Einstellungen",
                 icon=ft.icons.SETTINGS_OUTLINED,
                 selected_icon=ft.icons.SETTINGS
@@ -214,8 +234,16 @@ def main(page: ft.Page):
         max_extent=150,
         child_aspect_ratio=1.0,
         spacing=20,
-        run_spacing=50,
-        visible=True,
+        run_spacing=50
+    )
+    
+    soundboard_grid = ft.GridView(
+        expand=1,
+        runs_count=5,
+        max_extent=150,
+        child_aspect_ratio=1.0,
+        spacing=20,
+        run_spacing=50
     )
 
     radio_stations = ft.Column(
@@ -282,11 +310,23 @@ def main(page: ft.Page):
                         border_radius=10,
                         image_src=system_helper.get_img_path(i["logo"]),
                     ),
-                    ft.Image(ref=indicator_refs[index], src=f"{system_helper.pwd()}/assets/party.gif", opacity=0.7,
+                    ft.Image(ref=indicator_refs[index], src=f"{c.pwd()}/assets/party.gif", opacity=0.7,
                              visible=False)
                 ]
             )
         )
+    
+    for index, i in enumerate(sounds.load_sounds()):
+        soundboard_grid.controls.append(
+            ft.Container(
+                alignment=ft.alignment.center,
+                bgcolor=ft.colors.GREEN_50,
+                on_click=lambda e: audio_helper.play_sound(i["src"]),
+                border_radius=10,
+                content=ft.Text(i["name"]),
+            )
+        )
+
 
     btn_discovery_status = ft.FilledButton(
         "Bluetooth nicht sichtbar",
@@ -315,10 +355,20 @@ def main(page: ft.Page):
         ),
         visible=False,
     )
+    
+    soundboard_tab = ft.Container(
+        alignment=ft.alignment.center,
+        content=ft.Column(
+            controls=[
+                soundboard_grid
+            ]
+        ),
+        visible=False,
+    )
 
     page.add(
         ft.Column(
-            [radio_tab, bluetooth_tab, settings_tab],
+            [radio_tab, bluetooth_tab, soundboard_tab, settings_tab],
             expand=True,
         )
     )
