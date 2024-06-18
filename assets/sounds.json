@@ -1,6 +1,18 @@
 [
   {
     "name": "Fart",
-    "src": "dry-fart.png"
+    "src": "dry-fart.mp3"
+  },
+  {
+    "name": "Fahr weiter ahhh",
+    "src": "fahr-weiter-ahhh.mp3"
+  },
+  {
+    "name": "Biele Biele Biele",
+    "src": "biele-biele-biele.mp3"
+  },
+  {
+    "name": "Ich hab ganis gemacht",
+    "src": "ich_hab_ganis_gemacht.mp3"
   }
 ]

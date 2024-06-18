@@ -320,10 +320,11 @@ def main(page: ft.Page):
         soundboard_grid.controls.append(
             ft.Container(
                 alignment=ft.alignment.center,
+                padding=10,
                 bgcolor=ft.colors.GREEN_50,
                 on_click=lambda e: audio_helper.play_sound(i["src"]),
                 border_radius=10,
-                content=ft.Text(i["name"]),
+                content=ft.Text(i["name"], size=18),
             )
         )
 
