@@ -76,7 +76,7 @@ def update_connected_device(page):
 def bluetooth_listener(page):
     while True:
         update_connected_device(page)
-        time.sleep(30)
+        time.sleep(10)
 
 
 def update_sound(value, page: ft.Page):
