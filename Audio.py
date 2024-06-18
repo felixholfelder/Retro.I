@@ -2,7 +2,7 @@ import alsaaudio as a
 import flet as ft
 from Stations import Stations
 from Constants import Constants
-import pyglet
+from playsound import playsound
 
 stations_helper = Stations()
 c = Constants()
@@ -54,5 +54,4 @@ class Audio:
 		self.play_sound("shutdown.mp3")
 	
 	def play_sound(self, src):
-		sound = pyglet.media.load(f"{c.sound_path()}/{src}")
-		sound.play()
+		playsound(f"{c.sound_path()}/{src}")
