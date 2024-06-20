@@ -262,7 +262,7 @@ def main(page: ft.Page):
         content=ft.Column(
             controls=[
                 ft.Switch("LED-Streifen ausschalten", on_change=strip.toggle_strip, value=strip.is_strip_active()),
-                ft.Slider("Helligkeit", on_change=strip.change_brightness, value=strip.get_curr_brightness())
+                ft.Slider("Helligkeit", on_change=strip.change_brightness, min=0, max=100, value=strip.get_curr_brightness())
             ]
         )
     )
