@@ -1,20 +1,23 @@
 import os
 from Strip import Strip
+from Audio import Audio
+from Constants import Constants
+
+audio_helper = Audio()
+c = Constants()
 
 class System:
     strip = Strip()
 
     def shutdown_system(self, _):
         self.strip.disable()
+        audio_helper.shutdown_sound()
         os.system('sudo shutdown now')
 
     def restart_system(self, _):
         self.strip.disable()
+        audio_helper.shutdown_sound()
         os.system('sudo reboot')
-    
-    def pwd(self):
-        return "/home/pi/Desktop/Retro.I"
-
 
     def get_img_path(self, img_src):
-        return f"{self.pwd()}/assets/stations/{img_src}"
+        return f"{c.pwd()}/assets/stations/{img_src}"

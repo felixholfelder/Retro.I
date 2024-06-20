@@ -9,6 +9,8 @@ from colors import ColorHelper
 from WaiterProcess import WaiterProcess
 
 class Strip:
+	is_active = True
+
 	counter = 0
 	curr_color = GREEN
 
@@ -25,7 +27,10 @@ class Strip:
 		self.pixels.show()
 	
 	def callback(self):
-		self.animation.resume()
+		if not self.is_strip_active():
+			self.animation.fill(BLACK)
+		else:
+			self.animation.resume()
 		self.pixels.show()
 
 	wait_proc = WaiterProcess(callback)
@@ -50,13 +55,14 @@ class Strip:
 		self.pixels.show()
 	
 	def toggle_mute(self, is_mute):
-		if is_mute:
-			self.animation.freeze()
-			self.pixels.fill(RED)
-			self.pixels.show()
-		else:
-			self.animation.resume()
-			self.pixels.show()
+		if self.is_strip_active():
+			if is_mute:
+				self.animation.freeze()
+				self.pixels.fill(RED)
+				self.pixels.show()
+			else:
+				self.animation.resume()
+				self.pixels.show()
 
 	def update_strip(self, color):
 		strip_color = self.color_helper.toRgb(color)
@@ -69,6 +75,20 @@ class Strip:
 				pass
 
 		self.kill_proc()
+		
+	def is_strip_active(self):
+		return self.is_active
+	
+	def toggle_strip(self, value):
+		if self.is_active:
+			self.is_active = False
+			self.animation.fill(BLACK)
+			self.animation.freeze()
+		else:
+			self.is_active = True
+			self.animation.fill(self.curr_color)
+			self.animation.resume()
+		self.pixels.show()
 		
 	def fill(self, color):
 		self.pixels.fill(color)
