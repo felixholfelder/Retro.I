@@ -243,8 +243,7 @@ def main(page: ft.Page):
         expand=1,
         runs_count=5,
         max_extent=150,
-        child_aspect_ratio=1.0,
-        spacing=20,
+        spacing=60, # CHANGE FOR TOUCH-DISPLAY
         run_spacing=50
     )
 
@@ -313,16 +312,23 @@ def main(page: ft.Page):
     for i in range(len(sounds.load_sounds())):
         sound = sounds.load_sounds()[i]
         soundboard_grid.controls.append(
-            ft.Container(
-                alignment=ft.alignment.center,
-                padding=10,
-                bgcolor=ft.colors.GREEN_50,
-                on_click=lambda e, index=i, src=sound["src"]: audio_helper.play_sound(index, src),
-                border_radius=10,
-                content=ft.Text(sound["name"], size=18),
+            ft.Column(
+                [
+                    ft.Container(
+                        alignment=ft.alignment.bottom_center,
+                        padding=10,
+                        on_click=lambda e, index=i, src=sound["src"]: audio_helper.play_sound(index, src),
+                        height=150, # CHANGE FOR TOUCH-DISPLAY
+                        image_src=c.get_button_img(),
+                    ),
+                    ft.Container(
+                        ft.Text(sound["name"], size=18, text_align=ft.TextAlign.CENTER),
+                        width=300,
+                    )
+                ],
+                width=300,
             )
         )
-
 
     btn_discovery_status = ft.FilledButton(
         "Bluetooth nicht sichtbar",

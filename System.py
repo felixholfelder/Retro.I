@@ -21,3 +21,6 @@ class System:
 
     def get_img_path(self, img_src):
         return f"{c.pwd()}/assets/stations/{img_src}"
+    
+    def get_button_img_path(self):
+        return f"{c.pwd()}/assets/buttons/SB_Green.png"
