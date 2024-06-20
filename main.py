@@ -243,8 +243,7 @@ def main(page: ft.Page):
         expand=1,
         runs_count=5,
         max_extent=150,
-        child_aspect_ratio=1.0,
-        spacing=20,
+        spacing=60, # CHANGE FOR TOUCH-DISPLAY
         run_spacing=50
     )
 
@@ -267,6 +266,26 @@ def main(page: ft.Page):
         )
     )
     page.add(dlg_led)
+    
+    dlg_credits = ft.AlertDialog(
+        content=ft.Column(
+            controls=[
+                ft.Text("Retro.i", weight=ft.FontWeight.BOLD, size=24),
+                ft.Divider(),
+                ft.Text("Klasse: FWI1 2023/2024", weight=ft.FontWeight.BOLD),
+                ft.Text("Felix Holfelder"),
+                ft.Text("Dominik Schelter"),
+                ft.Text("Johannes Lehner"),
+                ft.Text("Yannick Grübl"),
+                ft.Divider(),
+                ft.Text("Besonderen Dank an:", weight=ft.FontWeight.BOLD),
+                ft.Text("Goldschmiede und Uhren Gruhle"),
+                ft.Text("Klaus Schelter"),
+                
+            ]
+        )
+    )
+    page.add(dlg_credits)
 
 
     def show_dialog(_):
@@ -276,19 +295,15 @@ def main(page: ft.Page):
     def show_led_dialog(_):
         dlg_led.open = True
         page.update()
+    
+    def show_credits_dialog(_):
+        dlg_credits.open = True
+        page.update()
 
-    lv = ft.ListView(expand=1, spacing=10, padding=20)
+    lv = ft.ListView(spacing=10, padding=20)
     lv.controls.append(ft.TextButton("Radio ausschalten", on_click=show_dialog, icon=ft.icons.LOGOUT))
     lv.controls.append(ft.TextButton("LED-Streifen", on_click=show_led_dialog, icon=ft.icons.COLOR_LENS))
-    settings_tab = ft.Container(
-        content=ft.Column(
-            controls=[
-                ft.Text("Einstellungen", size=24),
-                lv
-            ]
-        ),
-        visible=False,
-    )
+    lv.controls.append(ft.TextButton("Credits", on_click=show_credits_dialog, icon=ft.icons.COLOR_LENS))
 
     for i in range(len(stations_helper.load_radio_stations())):
         indicator_refs.append(ft.Ref[ft.Image]())
@@ -313,16 +328,23 @@ def main(page: ft.Page):
     for i in range(len(sounds.load_sounds())):
         sound = sounds.load_sounds()[i]
         soundboard_grid.controls.append(
-            ft.Container(
-                alignment=ft.alignment.center,
-                padding=10,
-                bgcolor=ft.colors.GREEN_50,
-                on_click=lambda e, index=i, src=sound["src"]: audio_helper.play_sound(index, src),
-                border_radius=10,
-                content=ft.Text(sound["name"], size=18),
+            ft.Column(
+                [
+                    ft.Container(
+                        alignment=ft.alignment.bottom_center,
+                        padding=10,
+                        on_click=lambda e, index=i, src=sound["src"]: audio_helper.play_sound(index, src),
+                        height=150, # CHANGE FOR TOUCH-DISPLAY
+                        image_src=c.get_button_img(),
+                    ),
+                    ft.Container(
+                        ft.Text(sound["name"], size=18, text_align=ft.TextAlign.CENTER),
+                        width=300,
+                    )
+                ],
+                width=300,
             )
         )
-
 
     btn_discovery_status = ft.FilledButton(
         "Bluetooth nicht sichtbar",
@@ -363,11 +385,20 @@ def main(page: ft.Page):
         expand=True,
         visible=False,
     )
+    
+    settings_tab = ft.Container(
+        content=ft.Column(
+            controls=[
+                ft.Text("Einstellungen", size=24),
+                lv
+            ]
+        ),
+        visible=False,
+    )
 
     page.add(
         ft.Column(
-            [radio_tab, bluetooth_tab, soundboard_tab, settings_tab],
-            expand=True,
+            [radio_tab, bluetooth_tab, soundboard_tab, settings_tab]
         )
     )
     page.update()
