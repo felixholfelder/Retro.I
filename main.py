@@ -266,6 +266,26 @@ def main(page: ft.Page):
         )
     )
     page.add(dlg_led)
+    
+    dlg_credits = ft.AlertDialog(
+        content=ft.Column(
+            controls=[
+                ft.Text("Retro.i", weight=ft.FontWeight.BOLD, size=24),
+                ft.Divider(),
+                ft.Text("Klasse: FWI1 2023/2024", weight=ft.FontWeight.BOLD),
+                ft.Text("Felix Holfelder"),
+                ft.Text("Dominik Schelter"),
+                ft.Text("Johannes Lehner"),
+                ft.Text("Yannick Grübl"),
+                ft.Divider(),
+                ft.Text("Besonderen Dank an:", weight=ft.FontWeight.BOLD),
+                ft.Text("Goldschmiede und Uhren Gruhle"),
+                ft.Text("Klaus Schelter"),
+                
+            ]
+        )
+    )
+    page.add(dlg_credits)
 
 
     def show_dialog(_):
@@ -275,19 +295,15 @@ def main(page: ft.Page):
     def show_led_dialog(_):
         dlg_led.open = True
         page.update()
+    
+    def show_credits_dialog(_):
+        dlg_credits.open = True
+        page.update()
 
-    lv = ft.ListView(expand=1, spacing=10, padding=20)
+    lv = ft.ListView(spacing=10, padding=20)
     lv.controls.append(ft.TextButton("Radio ausschalten", on_click=show_dialog, icon=ft.icons.LOGOUT))
     lv.controls.append(ft.TextButton("LED-Streifen", on_click=show_led_dialog, icon=ft.icons.COLOR_LENS))
-    settings_tab = ft.Container(
-        content=ft.Column(
-            controls=[
-                ft.Text("Einstellungen", size=24),
-                lv
-            ]
-        ),
-        visible=False,
-    )
+    lv.controls.append(ft.TextButton("Credits", on_click=show_credits_dialog, icon=ft.icons.COLOR_LENS))
 
     for i in range(len(stations_helper.load_radio_stations())):
         indicator_refs.append(ft.Ref[ft.Image]())
@@ -369,11 +385,20 @@ def main(page: ft.Page):
         expand=True,
         visible=False,
     )
+    
+    settings_tab = ft.Container(
+        content=ft.Column(
+            controls=[
+                ft.Text("Einstellungen", size=24),
+                lv
+            ]
+        ),
+        visible=False,
+    )
 
     page.add(
         ft.Column(
-            [radio_tab, bluetooth_tab, soundboard_tab, settings_tab],
-            expand=True,
+            [radio_tab, bluetooth_tab, soundboard_tab, settings_tab]
         )
     )
     page.update()
