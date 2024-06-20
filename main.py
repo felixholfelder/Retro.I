@@ -120,20 +120,21 @@ def disable_indicator():
     for ref in indicator_refs:
         ref.current.visible = False
 
-def toggle_indicator(station):
+def toggle_indicator(index):
     disable_indicator()
-    indicator_refs[station[0]].current.visible = True
+    indicator_refs[index].current.visible = True
 
 
-def change_radio_station(event: ft.ContainerTapEvent, page):
+def change_radio_station(station, index, page):
     global strip_color
-    station = get_station_by_image(event.control.image_src)
-    color = station[1]["color"]
+    color = station["color"]
+    
+    print(index)
 
-    toggle_indicator(station)
+    toggle_indicator(index)
     page.theme = ft.Theme(color_scheme_seed=color)
     page.navigation_bar.bgcolor = color
-    audio_helper.play(station[1]["src"])
+    audio_helper.play(station["src"])
     page.update()
 
     strip.run(color)
@@ -247,15 +248,6 @@ def main(page: ft.Page):
         run_spacing=50
     )
 
-    radio_stations = ft.Column(
-        [grid],
-    )
-
-    radio_tab = ft.Container(
-        radio_stations,
-        expand=True,
-    )
-
     dlg = ft.AlertDialog(
         content=ft.Column(
             controls=[
@@ -298,8 +290,9 @@ def main(page: ft.Page):
         visible=False,
     )
 
-    for index, i in enumerate(stations_helper.load_radio_stations()):
+    for i in range(len(stations_helper.load_radio_stations())):
         indicator_refs.append(ft.Ref[ft.Image]())
+        station = stations_helper.load_radio_stations()[i]
         grid.controls.append(
             ft.Stack(
                 alignment=ft.MainAxisAlignment.END,
@@ -307,25 +300,26 @@ def main(page: ft.Page):
                 controls=[
                     ft.Container(
                         bgcolor=ft.colors.GREEN_50,
-                        on_click=lambda e: change_radio_station(e, page),
+                        on_click=lambda e, index=i, src=station: change_radio_station(src, index, page),
                         border_radius=10,
-                        image_src=system_helper.get_img_path(i["logo"]),
+                        image_src=system_helper.get_img_path(station["logo"]),
                     ),
-                    ft.Image(ref=indicator_refs[index], src=f"{c.pwd()}/assets/party.gif", opacity=0.7,
+                    ft.Image(ref=indicator_refs[i], src=f"{c.pwd()}/assets/party.gif", opacity=0.7,
                              visible=False)
                 ]
             )
         )
     
-    for index, i in enumerate(sounds.load_sounds()):
+    for i in range(len(sounds.load_sounds())):
+        sound = sounds.load_sounds()[i]
         soundboard_grid.controls.append(
             ft.Container(
                 alignment=ft.alignment.center,
                 padding=10,
                 bgcolor=ft.colors.GREEN_50,
-                on_click=lambda e: audio_helper.play_sound(i["src"]),
+                on_click=lambda e, index=i, src=sound["src"]: audio_helper.play_sound(index, src),
                 border_radius=10,
-                content=ft.Text(i["name"], size=18),
+                content=ft.Text(sound["name"], size=18),
             )
         )
 
@@ -347,6 +341,12 @@ def main(page: ft.Page):
         on_click=lambda e: update_connected_device(page),
     )
 
+    # Tabs
+    radio_tab = ft.Container(
+        content = ft.Column([grid]),
+        expand=True,
+    )
+
     bluetooth_tab = ft.Container(
         alignment=ft.alignment.center,
         content=ft.Column(
@@ -359,12 +359,8 @@ def main(page: ft.Page):
     )
     
     soundboard_tab = ft.Container(
-        alignment=ft.alignment.center,
-        content=ft.Column(
-            controls=[
-                soundboard_grid
-            ]
-        ),
+        content = ft.Column([soundboard_grid]),
+        expand=True,
         visible=False,
     )
 
