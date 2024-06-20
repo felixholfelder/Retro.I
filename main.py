@@ -261,15 +261,15 @@ def main(page: ft.Page):
     dlg_led = ft.AlertDialog(
         content=ft.Column(
             controls=[
-                ft.Switch("LED-Streifen ausschalten", on_change=strip.toggle_strip, value=strip.is_strip_active())
+                ft.Switch("LED-Streifen ausschalten", on_change=strip.toggle_strip, value=strip.is_strip_active()),
+                ft.Slider("Helligkeit", on_change=strip.change_brightness, value=strip.get_curr_brightness())
             ]
         )
     )
     page.add(dlg_led)
     
     dlg_credits = ft.AlertDialog(
-        content=ft.Column(
-            controls=[
+        content=ft.Row([
                 ft.Text("Retro.i", weight=ft.FontWeight.BOLD, size=24),
                 ft.Divider(),
                 ft.Text("Klasse: FWI1 2023/2024", weight=ft.FontWeight.BOLD),
@@ -281,9 +281,7 @@ def main(page: ft.Page):
                 ft.Text("Besonderen Dank an:", weight=ft.FontWeight.BOLD),
                 ft.Text("Goldschmiede und Uhren Gruhle"),
                 ft.Text("Klaus Schelter"),
-                
-            ]
-        )
+        ])
     )
     page.add(dlg_credits)
 

@@ -7,10 +7,11 @@ from adafruit_led_animation.animation.pulse import Pulse
 from adafruit_led_animation.color import BLACK, GREEN, RED
 from colors import ColorHelper
 from WaiterProcess import WaiterProcess
+from Constants import Constants
+
+c = Constants()
 
 class Strip:
-	is_active = True
-
 	counter = 0
 	curr_color = GREEN
 
@@ -77,7 +78,8 @@ class Strip:
 		self.kill_proc()
 		
 	def is_strip_active(self):
-		return self.is_active
+		lines = self.get_strip_settings()
+    	return bool(lines[0])
 	
 	def toggle_strip(self, value):
 		if self.is_active:
@@ -88,6 +90,15 @@ class Strip:
 			self.is_active = True
 			self.animation.fill(self.curr_color)
 			self.animation.resume()
+		self.pixels.show()
+	
+	def get_curr_brightness(self):
+		lines = self.get_strip_settings()
+    	return lines[1]
+    	
+	
+	def change_brightness(self, value):
+		self.pixels.brightness = value / 100
 		self.pixels.show()
 		
 	def fill(self, color):
@@ -103,3 +114,14 @@ class Strip:
 	def disable(self):
 		self.animation.color=BLACK
 		self.animation.reset()
+	
+	def get_strip_settings(self):
+		lines = []
+		with open(f"{c.pwd()}/settings/led-settings.csv", 'r') as file:
+    		lines = file.readlines()[0]
+    	
+    	return lines
+    
+    def update_settings(self, is_active, brightness):
+		with open(f"{c.pwd()}/settings/led-settings.csv", 'w') as file:
+			file.write(f"{int(is_active)};{brightness}")
