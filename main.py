@@ -249,27 +249,40 @@ def main(page: ft.Page):
 
     dlg = ft.AlertDialog(
         content=ft.Column(
+            alignment=ft.MainAxisAlignment.CENTER,
+            width=500,
+            tight=True,
             controls=[
                 ft.TextButton("Radio ausschalten", on_click=system_helper.shutdown_system, icon=ft.icons.POWER_OFF),
                 ft.TextButton("Radio neustarten", on_click=system_helper.restart_system, icon=ft.icons.REPLAY)
             ]
         )
     )
-    page.add(dlg)
-    
+    page.add(dlg)    
     
     dlg_led = ft.AlertDialog(
         content=ft.Column(
+            alignment=ft.MainAxisAlignment.CENTER,
+            width=500,
+            tight=True,
             controls=[
-                ft.Switch("LED-Streifen ausschalten", on_change=strip.toggle_strip, value=strip.is_strip_active()),
-                ft.Slider("Helligkeit", on_change=strip.change_brightness, min=0, max=100, value=strip.get_curr_brightness())
+                ft.Switch("LED-Streifen ausschalten", on_change=lambda e: strip.toggle_strip(), value=strip.is_strip_active()),
+                ft.Divider(),
+                ft.Row([
+                    ft.Text("Helligkeit"),
+                    ft.Slider(label="Helligkeit", on_change=strip.change_brightness, min=0, max=100, value=strip.get_curr_brightness(), width=440)
+                ])
             ]
         )
     )
     page.add(dlg_led)
     
     dlg_credits = ft.AlertDialog(
-        content=ft.Row([
+        content=ft.Column(
+            width=500,
+            tight=True,
+            alignment=ft.MainAxisAlignment.CENTER,
+            controls=[
                 ft.Text("Retro.i", weight=ft.FontWeight.BOLD, size=24),
                 ft.Divider(),
                 ft.Text("Klasse: FWI1 2023/2024", weight=ft.FontWeight.BOLD),
@@ -281,7 +294,8 @@ def main(page: ft.Page):
                 ft.Text("Besonderen Dank an:", weight=ft.FontWeight.BOLD),
                 ft.Text("Goldschmiede und Uhren Gruhle"),
                 ft.Text("Klaus Schelter"),
-        ])
+            ]
+        )
     )
     page.add(dlg_credits)
 
@@ -301,7 +315,7 @@ def main(page: ft.Page):
     lv = ft.ListView(spacing=10, padding=20)
     lv.controls.append(ft.TextButton("Radio ausschalten", on_click=show_dialog, icon=ft.icons.LOGOUT))
     lv.controls.append(ft.TextButton("LED-Streifen", on_click=show_led_dialog, icon=ft.icons.COLOR_LENS))
-    lv.controls.append(ft.TextButton("Credits", on_click=show_credits_dialog, icon=ft.icons.COLOR_LENS))
+    lv.controls.append(ft.TextButton("Credits", on_click=show_credits_dialog, icon=ft.icons.STAR))
 
     for i in range(len(stations_helper.load_radio_stations())):
         indicator_refs.append(ft.Ref[ft.Image]())

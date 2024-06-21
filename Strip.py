@@ -2,6 +2,7 @@ import threading
 import board
 import neopixel
 import math
+import decimal
 from adafruit_led_animation.animation.pulse import Pulse
 from adafruit_led_animation.color import BLACK, GREEN, RED
 from colors import ColorHelper
@@ -78,7 +79,7 @@ class Strip:
 
 	def is_strip_active(self):
 		lines = self.get_strip_settings()
-		return bool(lines[0])
+		return bool(int(lines[0]))
 
 	def toggle_strip(self):
 		if self.is_strip_active():
@@ -93,14 +94,17 @@ class Strip:
 
 	def get_curr_brightness(self):
 		lines = self.get_strip_settings()
-		return int(lines[1]) * 100
+		return float(lines[1])
 
-	def change_brightness(self, value):
+	def change_brightness(self, e):
+		value = e.control.value
 		self.pixels.brightness = value / 100
 		self.pixels.show()
+		self.update_settings(self.is_strip_active(), float(round(value, 2)))
 
 	def fill(self, color):
-		self.pixels.fill(color)
+		if not self.is_strip_active():
+			self.pixels.fill(color)
 
 	def run(self, color):
 		proc = threading.Thread(target=self.update_strip(color))
@@ -114,12 +118,12 @@ class Strip:
 		self.animation.reset()
 
 	def get_strip_settings(self):
-		lines = []
-		with open(f"{c.pwd()}/settings/led-settings.csv", 'r') as file:
+		lines = ""
+		with open(f"{c.pwd()}/settings/strip-settings.csv", 'r') as file:
 			lines = file.readlines()[0]
 
-		return lines
+		return lines.split(";")
 
 	def update_settings(self, is_active, brightness):
-		with open(f"{c.pwd()}/settings/led-settings.csv", 'w') as file:
+		with open(f"{c.pwd()}/settings/strip-settings.csv", 'w') as file:
 			file.write(f"{int(is_active)};{brightness}")
