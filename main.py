@@ -14,12 +14,10 @@ from Constants import Constants
 from Sounds import Sounds
 from adafruit_led_animation.color import BLUE, GREEN
 
-CLK_PIN = 26
-DT_PIN = 17
-SW_PIN = 16
+CLK_PIN = 5
+DT_PIN = 6
+SW_PIN = 13
 
-MIN_VOLUME = 0
-MAX_VOLUME = 100
 VOLUME_STEP = 2
 
 last_turn = 1
@@ -128,8 +126,6 @@ def toggle_indicator(index):
 def change_radio_station(station, index, page):
     global strip_color
     color = station["color"]
-    
-    print(index)
 
     toggle_indicator(index)
     page.theme = ft.Theme(color_scheme_seed=color)
@@ -142,7 +138,7 @@ def change_radio_station(station, index, page):
 
 def start_rotary(page: ft.Page):
     rotary = pyky040.Encoder(CLK=CLK_PIN, DT=DT_PIN, SW=SW_PIN)
-    rotary.setup(scale_min=MIN_VOLUME, scale_max=MAX_VOLUME, step=VOLUME_STEP,
+    rotary.setup(step=VOLUME_STEP,
                  inc_callback=lambda e: inc_sound(page), dec_callback=lambda e: dec_sound(page),
                  sw_callback=lambda: toggle_mute(page))
     rotary_thread = threading.Thread(target=rotary.watch)
@@ -243,7 +239,7 @@ def main(page: ft.Page):
         expand=1,
         runs_count=5,
         max_extent=150,
-        spacing=60, # CHANGE FOR TOUCH-DISPLAY
+        spacing=80,
         run_spacing=50
     )
 
@@ -344,9 +340,8 @@ def main(page: ft.Page):
                 [
                     ft.Container(
                         alignment=ft.alignment.bottom_center,
-                        padding=10,
                         on_click=lambda e, index=i, src=sound["src"]: audio_helper.play_sound(index, src),
-                        height=150, # CHANGE FOR TOUCH-DISPLAY
+                        height=130,
                         image_src=c.get_button_img(),
                     ),
                     ft.Container(

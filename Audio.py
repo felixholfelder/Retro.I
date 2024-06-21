@@ -13,7 +13,8 @@ class Audio:
 		return a.Mixer()
 
 	def update_sound(self, value):
-		self.mixer().setvolume(value)
+		if value >= 0 and value <= 100:
+			self.mixer().setvolume(value)
 
 	def mute(self):
 		self.mixer().setmute(1)
