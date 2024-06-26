@@ -54,5 +54,5 @@ class Audio:
 	def shutdown_sound(self):
 		self.play_sound("shutdown.mp3")
 	
-	def play_sound(self, i, src):
+	def play_sound(self, src):
 		playsound(f"{c.sound_path()}/{src}")

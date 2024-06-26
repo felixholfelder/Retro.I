@@ -155,7 +155,6 @@ def main(page: ft.Page):
     page.scroll = ft.ScrollMode.ALWAYS
     page.title = "Retro.I"
     page.update()
-    
 
     def change_tab(e):
         index = e.control.selected_index
@@ -294,6 +293,22 @@ def main(page: ft.Page):
         )
     )
     page.add(dlg_credits)
+    
+    cpu_text = ft.Text(f"CPU-Temperatur: {system_helper.get_cpu_temp()}")
+    
+    dlg_info = ft.AlertDialog(
+        content=ft.Column(
+            alignment=ft.MainAxisAlignment.CENTER,
+            width=500,
+            tight=True,
+            controls=[
+                cpu_text,
+                ft.Divider(),
+                ft.Text(f"Datum: {system_helper.get_curr_date()}"),
+            ]
+        )
+    )
+    page.add(dlg_info)
 
 
     def show_dialog(_):
@@ -307,11 +322,17 @@ def main(page: ft.Page):
     def show_credits_dialog(_):
         dlg_credits.open = True
         page.update()
+    
+    def show_info_dialog(_):
+        dlg_info.open = True
+        cpu_text.value = f"CPU-Temperatur: {system_helper.get_cpu_temp()}"
+        page.update()
 
     lv = ft.ListView(spacing=10, padding=20)
     lv.controls.append(ft.TextButton("Radio ausschalten", on_click=show_dialog, icon=ft.icons.LOGOUT))
     lv.controls.append(ft.TextButton("LED-Streifen", on_click=show_led_dialog, icon=ft.icons.COLOR_LENS))
     lv.controls.append(ft.TextButton("Credits", on_click=show_credits_dialog, icon=ft.icons.STAR))
+    lv.controls.append(ft.TextButton("Info", on_click=show_info_dialog, icon=ft.icons.INFO))
 
     for i in range(len(stations_helper.load_radio_stations())):
         indicator_refs.append(ft.Ref[ft.Image]())
@@ -410,7 +431,11 @@ def main(page: ft.Page):
     )
     page.update()
     
+    audio_helper.startup_sound()
+    
     bluetooth_process = Process(target=bluetooth_listener(page))
     bluetooth_process.start()
+    
+
 
 ft.app(main)
