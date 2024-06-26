@@ -35,7 +35,7 @@ class BluetoothHelper:
 	
 	def get_device_name(self):
 		result = self.get_device()
-		return result[25:]
+		return result[25:].strip()
 	
 	def get_device_mac(self):
 		result = self.get_device()

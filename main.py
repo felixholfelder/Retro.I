@@ -32,20 +32,25 @@ strip = Strip()
 strip.start()
 
 bluetooth_helper.bluetooth_discovery_off()
+txt_discovery_status = None
+ico_discovery_status = None
 btn_discovery_status = None
+
+txt_device_connected = None
+ico_device_connected = None
 btn_device_connected = None
 
 def enable_discovery():
     bluetooth_helper.bluetooth_discovery_on()
-    btn_discovery_status.text = "Bluetooth sichtbar"
-    btn_discovery_status.icon = ft.icons.BLUETOOTH
+    txt_discovery_status.value = "Bluetooth sichtbar"
+    ico_discovery_status.name = ft.icons.BLUETOOTH
     btn_discovery_status.style.bgcolor = ft.colors.GREEN
 
 
 def disable_discovery():
     bluetooth_helper.bluetooth_discovery_off()
-    btn_discovery_status.text = "Bluetooth nicht sichtbar"
-    btn_discovery_status.icon = ft.icons.BLUETOOTH_DISABLED
+    txt_discovery_status.value = "Bluetooth nicht sichtbar"
+    ico_discovery_status.name = ft.icons.BLUETOOTH_DISABLED
     btn_discovery_status.style.bgcolor = ft.colors.RED
 
 
@@ -61,12 +66,12 @@ def toggle_bluetooth_discovery(page: ft.Page):
 def update_connected_device(page):
     name = bluetooth_helper.get_device_name()
     if name != "":
-        btn_device_connected.text = f"Verbunden mit: {name}"
-        btn_device_connected.icon = ft.icons.PHONELINK
+        txt_device_connected.value = f"Verbunden mit: {name}"
+        ico_device_connected.name = ft.icons.PHONELINK
         disable_discovery()
     else:
-        btn_device_connected.text = "Kein Gerät verbunden"
-        btn_device_connected.icon = ft.icons.PHONELINK_OFF
+        txt_device_connected.value = "Kein Gerät verbunden"
+        ico_device_connected.name = ft.icons.PHONELINK_OFF
 
     page.update()
 
@@ -146,13 +151,28 @@ def start_rotary(page: ft.Page):
 
 
 def main(page: ft.Page):
-    global btn_discovery_status, btn_device_connected
+    global txt_discovery_status, ico_discovery_status, btn_discovery_status, txt_device_connected, ico_device_connected, btn_device_connected
     start_rotary(page)
     #page.window_full_screen = True
     page.window_maximized = True
-    page.theme = ft.Theme(color_scheme_seed='green')
+    page.theme = ft.Theme(
+        color_scheme_seed='green',
+        scrollbar_theme=ft.ScrollbarTheme(
+        track_color={
+            ft.MaterialState.DEFAULT: ft.colors.TRANSPARENT,
+        },
+        thumb_visibility=True,
+        thumb_color={
+            ft.MaterialState.HOVERED: ft.colors.GREY_500,
+            ft.MaterialState.DEFAULT: ft.colors.GREY_400,
+        },
+        thickness=40,
+        radius=20,
+        cross_axis_margin=15,
+        )
+    )
     page.overlay.append(audio_helper.init())
-    page.scroll = ft.ScrollMode.ALWAYS
+    page.scroll = ft.ScrollMode.ADAPTIVE
     page.title = "Retro.I"
     page.update()
 
@@ -331,8 +351,8 @@ def main(page: ft.Page):
     lv = ft.ListView(spacing=10, padding=20)
     lv.controls.append(ft.TextButton("Radio ausschalten", on_click=show_dialog, icon=ft.icons.LOGOUT))
     lv.controls.append(ft.TextButton("LED-Streifen", on_click=show_led_dialog, icon=ft.icons.COLOR_LENS))
-    lv.controls.append(ft.TextButton("Credits", on_click=show_credits_dialog, icon=ft.icons.STAR))
     lv.controls.append(ft.TextButton("Info", on_click=show_info_dialog, icon=ft.icons.INFO))
+    lv.controls.append(ft.TextButton("Credits", on_click=show_credits_dialog, icon=ft.icons.STAR))
 
     for i in range(len(stations_helper.load_radio_stations())):
         indicator_refs.append(ft.Ref[ft.Image]())
@@ -373,28 +393,42 @@ def main(page: ft.Page):
                 width=300,
             )
         )
+    
+    ico_discovery_status = ft.Icon(ft.icons.BLUETOOTH_DISABLED)
+    txt_discovery_status = ft.Text("Bluetooth nicht sichtbar", style=ft.TextStyle(size=18))
 
     btn_discovery_status = ft.FilledButton(
-        "Bluetooth nicht sichtbar",
-        icon=ft.icons.BLUETOOTH_DISABLED,
+        content=ft.Row([
+            ico_discovery_status,
+            txt_discovery_status
+        ]),
         style=ft.ButtonStyle(
             bgcolor=ft.colors.RED,
         ),
-        width=300,
+        width=500,
+        height=80,
         on_click=lambda e: toggle_bluetooth_discovery(page),
     )
     
+    ico_device_connected = ft.Icon(ft.icons.PHONELINK_OFF)
+    txt_device_connected = ft.Text("Kein Gerät verbunden", style=ft.TextStyle(size=18))
+    
     btn_device_connected = ft.TextButton(
-        "Kein Gerät verbunden",
-        icon=ft.icons.PHONELINK_OFF,
-        width=300,
+        content=ft.Row([
+            ico_device_connected,
+            txt_device_connected
+        ]),
+        width=500,
+        height=80,
         on_click=lambda e: update_connected_device(page),
     )
 
     # Tabs
     radio_tab = ft.Container(
-        content = ft.Column([grid]),
-        expand=True,
+        content=ft.Column([
+            ft.Row([grid]),
+        ]),
+        margin=ft.margin.only(right=75),
     )
 
     bluetooth_tab = ft.Container(
@@ -409,9 +443,9 @@ def main(page: ft.Page):
     )
     
     soundboard_tab = ft.Container(
-        content = ft.Column([soundboard_grid]),
-        expand=True,
+        content = ft.Column([ft.Row([soundboard_grid])]),
         visible=False,
+        margin=ft.margin.only(right=75, bottom=50),
     )
     
     settings_tab = ft.Container(
