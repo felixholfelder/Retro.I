@@ -25,7 +25,7 @@ class System:
     
     def get_cpu_temp(self):
         line = subprocess.run(['vcgencmd', 'measure_temp'], stdout=subprocess.PIPE).stdout.decode('utf-8')
-        temp = line[5:]
+        temp = line[5:].strip()
         return temp
         
     def get_curr_date(self):

@@ -14,6 +14,12 @@ from Constants import Constants
 from Sounds import Sounds
 from adafruit_led_animation.color import BLUE, GREEN
 
+#CLK=ORANGE
+#DT=GELB
+#SW=GRÜN
+#+=BLAU
+#-=SChwarz
+
 CLK_PIN = 5
 DT_PIN = 6
 SW_PIN = 13
@@ -127,7 +133,6 @@ def toggle_indicator(index):
     disable_indicator()
     indicator_refs[index].current.visible = True
 
-
 def change_radio_station(station, index, page):
     global strip_color
     color = station["color"]
@@ -136,9 +141,8 @@ def change_radio_station(station, index, page):
     page.theme = ft.Theme(color_scheme_seed=color)
     page.navigation_bar.bgcolor = color
     audio_helper.play(station["src"])
+    strip.update_strip(color)
     page.update()
-
-    strip.run(color)
 
 
 def start_rotary(page: ft.Page):
@@ -171,7 +175,7 @@ def main(page: ft.Page):
         cross_axis_margin=15,
         )
     )
-    page.overlay.append(audio_helper.init())
+    page.add(audio_helper.init())
     page.scroll = ft.ScrollMode.ADAPTIVE
     page.title = "Retro.I"
     page.update()
@@ -268,8 +272,14 @@ def main(page: ft.Page):
             width=500,
             tight=True,
             controls=[
-                ft.TextButton("Radio ausschalten", on_click=system_helper.shutdown_system, icon=ft.icons.POWER_OFF),
-                ft.TextButton("Radio neustarten", on_click=system_helper.restart_system, icon=ft.icons.REPLAY)
+                ft.Row(
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    spacing=75,
+                    controls=[
+                        ft.Column([ft.IconButton(ft.icons.POWER_OFF, icon_size=75, on_click=system_helper.shutdown_system), ft.Text("Ausschalten", text_align=ft.TextAlign.CENTER, style=ft.TextStyle(size=16))], alignment=ft.MainAxisAlignment.CENTER),
+                        ft.Column([ft.IconButton(ft.icons.REPLAY, icon_size=75, on_click=system_helper.restart_system), ft.Text("Neustarten", text_align=ft.TextAlign.CENTER, style=ft.TextStyle(size=16))], alignment=ft.MainAxisAlignment.CENTER),
+                    ]
+                )
             ]
         )
     )
@@ -281,11 +291,11 @@ def main(page: ft.Page):
             width=500,
             tight=True,
             controls=[
-                ft.Switch("LED-Streifen ausschalten", on_change=lambda e: strip.toggle_strip(), value=strip.is_strip_active()),
+                ft.Switch("LED-Streifen ausschalten", label_style=ft.TextStyle(size=20), on_change=lambda e: strip.toggle_strip(), value=strip.is_strip_active()),
                 ft.Divider(),
                 ft.Row([
-                    ft.Text("Helligkeit"),
-                    ft.Slider(label="Helligkeit", on_change=strip.change_brightness, min=0, max=100, value=strip.get_curr_brightness(), width=440)
+                    ft.Text("Helligkeit", style=ft.TextStyle(size=20)),
+                    ft.Slider(on_change=strip.change_brightness, min=0, max=100, value=strip.get_curr_brightness(), width=440)
                 ])
             ]
         )
@@ -298,23 +308,23 @@ def main(page: ft.Page):
             tight=True,
             alignment=ft.MainAxisAlignment.CENTER,
             controls=[
-                ft.Text("Retro.i", weight=ft.FontWeight.BOLD, size=24),
+                ft.Text("Retro.i", weight=ft.FontWeight.BOLD, size=28),
                 ft.Divider(),
-                ft.Text("Klasse: FWI1 2023/2024", weight=ft.FontWeight.BOLD),
-                ft.Text("Felix Holfelder"),
-                ft.Text("Dominik Schelter"),
-                ft.Text("Johannes Lehner"),
-                ft.Text("Yannick Grübl"),
+                ft.Text("Klasse: FWI1 2023/2024", weight=ft.FontWeight.BOLD, size=20),
+                ft.Text("Felix Holfelder", size=20),
+                ft.Text("Dominik Schelter", size=20),
+                ft.Text("Johannes Lehner", size=20),
+                ft.Text("Yannick Grübl", size=20),
                 ft.Divider(),
-                ft.Text("Besonderen Dank an:", weight=ft.FontWeight.BOLD),
-                ft.Text("Goldschmiede und Uhren Gruhle"),
-                ft.Text("Klaus Schelter"),
+                ft.Text("Besonderen Dank an:", weight=ft.FontWeight.BOLD, size=22),
+                ft.Text("Goldschmiede und Uhren Gruhle", size=20),
+                ft.Text("Klaus Schelter", size=20),
             ]
         )
     )
     page.add(dlg_credits)
     
-    cpu_text = ft.Text(f"CPU-Temperatur: {system_helper.get_cpu_temp()}")
+    cpu_text = ft.TextSpan(system_helper.get_cpu_temp(), style=ft.TextStyle(weight=ft.FontWeight.BOLD))
     
     dlg_info = ft.AlertDialog(
         content=ft.Column(
@@ -322,9 +332,9 @@ def main(page: ft.Page):
             width=500,
             tight=True,
             controls=[
-                cpu_text,
+                ft.Text(spans=[ft.TextSpan("CPU-Temperatur: "), cpu_text], size=20),
                 ft.Divider(),
-                ft.Text(f"Datum: {system_helper.get_curr_date()}"),
+                ft.Text(f"Datum: {system_helper.get_curr_date()}", size=20),
             ]
         )
     )
@@ -349,10 +359,10 @@ def main(page: ft.Page):
         page.update()
 
     lv = ft.ListView(spacing=10, padding=20)
-    lv.controls.append(ft.TextButton("Radio ausschalten", on_click=show_dialog, icon=ft.icons.LOGOUT))
-    lv.controls.append(ft.TextButton("LED-Streifen", on_click=show_led_dialog, icon=ft.icons.COLOR_LENS))
-    lv.controls.append(ft.TextButton("Info", on_click=show_info_dialog, icon=ft.icons.INFO))
-    lv.controls.append(ft.TextButton("Credits", on_click=show_credits_dialog, icon=ft.icons.STAR))
+    lv.controls.append(ft.TextButton(height=100, content=ft.Row(alignment=ft.MainAxisAlignment.CENTER, controls=[ft.Icon(ft.icons.LOGOUT), ft.Text("Radio ausschalten", style=ft.TextStyle(size=20))]), on_click=show_dialog))
+    lv.controls.append(ft.TextButton(height=100, content=ft.Row(alignment=ft.MainAxisAlignment.CENTER, controls=[ft.Icon(ft.icons.COLOR_LENS), ft.Text("LED-Streifen", style=ft.TextStyle(size=20))]), on_click=show_led_dialog))
+    lv.controls.append(ft.TextButton(height=100, content=ft.Row(alignment=ft.MainAxisAlignment.CENTER, controls=[ft.Icon(ft.icons.INFO), ft.Text("Info", style=ft.TextStyle(size=20))]), on_click=show_info_dialog))
+    lv.controls.append(ft.TextButton(height=100, content=ft.Row(alignment=ft.MainAxisAlignment.CENTER, controls=[ft.Icon(ft.icons.STAR), ft.Text("Credits", style=ft.TextStyle(size=20))]), on_click=show_credits_dialog))
 
     for i in range(len(stations_helper.load_radio_stations())):
         indicator_refs.append(ft.Ref[ft.Image]())
@@ -386,7 +396,7 @@ def main(page: ft.Page):
                         image_src=c.get_button_img(),
                     ),
                     ft.Container(
-                        ft.Text(sound["name"], size=18, text_align=ft.TextAlign.CENTER),
+                        ft.Text(sound["name"], size=20, text_align=ft.TextAlign.CENTER),
                         width=300,
                     )
                 ],
@@ -395,13 +405,16 @@ def main(page: ft.Page):
         )
     
     ico_discovery_status = ft.Icon(ft.icons.BLUETOOTH_DISABLED)
-    txt_discovery_status = ft.Text("Bluetooth nicht sichtbar", style=ft.TextStyle(size=18))
+    txt_discovery_status = ft.Text("Bluetooth nicht sichtbar", style=ft.TextStyle(size=20))
 
     btn_discovery_status = ft.FilledButton(
-        content=ft.Row([
-            ico_discovery_status,
-            txt_discovery_status
-        ]),
+        content=ft.Row(
+            alignment=ft.MainAxisAlignment.CENTER,
+            controls=[
+                ico_discovery_status,
+                txt_discovery_status
+            ],
+        ),
         style=ft.ButtonStyle(
             bgcolor=ft.colors.RED,
         ),
@@ -411,13 +424,16 @@ def main(page: ft.Page):
     )
     
     ico_device_connected = ft.Icon(ft.icons.PHONELINK_OFF)
-    txt_device_connected = ft.Text("Kein Gerät verbunden", style=ft.TextStyle(size=18))
+    txt_device_connected = ft.Text("Kein Gerät verbunden", style=ft.TextStyle(size=20))
     
     btn_device_connected = ft.TextButton(
-        content=ft.Row([
-            ico_device_connected,
-            txt_device_connected
-        ]),
+        content=ft.Row(
+            alignment=ft.MainAxisAlignment.CENTER,
+            controls=[
+                ico_device_connected,
+                txt_device_connected
+            ],
+        ),
         width=500,
         height=80,
         on_click=lambda e: update_connected_device(page),
@@ -434,6 +450,7 @@ def main(page: ft.Page):
     bluetooth_tab = ft.Container(
         alignment=ft.alignment.center,
         content=ft.Column(
+            spacing=50,
             controls=[
                 btn_discovery_status,
                 btn_device_connected
@@ -445,7 +462,7 @@ def main(page: ft.Page):
     soundboard_tab = ft.Container(
         content = ft.Column([ft.Row([soundboard_grid])]),
         visible=False,
-        margin=ft.margin.only(right=75, bottom=50),
+        margin=ft.margin.only(right=75, bottom=75),
     )
     
     settings_tab = ft.Container(

@@ -3,6 +3,7 @@ import board
 import neopixel
 import math
 import decimal
+import csv
 from adafruit_led_animation.animation.pulse import Pulse
 from adafruit_led_animation.color import BLACK, GREEN, RED
 from colors import ColorHelper
@@ -66,14 +67,19 @@ class Strip:
 				self.pixels.show()
 
 	def update_strip(self, color):
+		self.counter = self.counter + 1
+
 		strip_color = self.color_helper.toRgb(color)
 		self.curr_color = strip_color
 		self.animation.color = strip_color
+		self.pixels.show()
+		print(self.counter)
 		while (self.counter <= 1):
 			try:
 				self.animation.animate()
 			except:
 				pass
+		print("Thread ended")
 
 		self.kill_proc()
 
@@ -118,12 +124,18 @@ class Strip:
 		self.animation.reset()
 
 	def get_strip_settings(self):
-		lines = ""
-		with open(f"{c.pwd()}/settings/strip-settings.csv", 'r') as file:
-			lines = file.readlines()[0]
-
-		return lines.split(";")
+		line = ""
+		with open(f"{c.pwd()}/settings/strip-settings.csv", newline='') as csvfile:
+			spamreader = csv.reader(csvfile, delimiter=';', quotechar=' ')
+			for row in spamreader:
+				line = row
+				break
+		return line
 
 	def update_settings(self, is_active, brightness):
+		with open(f"{c.pwd()}/settings/strip-settings.csv", 'w', newline='') as csvfile:
+			writer = csv.writer(csvfile, delimiter=';', quotechar=' ', quoting=csv.QUOTE_MINIMAL)
+			writer.writerow([int(is_active), brightness])
+
 		with open(f"{c.pwd()}/settings/strip-settings.csv", 'w') as file:
 			file.write(f"{int(is_active)};{brightness}")
