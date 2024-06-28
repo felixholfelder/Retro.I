@@ -40,6 +40,7 @@ class Strip:
 
 	def start(self):
 		self.wait_proc = WaiterProcess(self.callback)
+		self.animation.color = self.curr_color
 
 	def update_sound_strip(self, value):
 		self.animation.freeze()

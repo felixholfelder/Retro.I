@@ -157,8 +157,8 @@ def start_rotary(page: ft.Page):
 def main(page: ft.Page):
     global txt_discovery_status, ico_discovery_status, btn_discovery_status, txt_device_connected, ico_device_connected, btn_device_connected
     start_rotary(page)
-    #page.window_full_screen = True
-    page.window_maximized = True
+    page.window_full_screen = True
+    #page.window_maximized = True
     page.theme = ft.Theme(
         color_scheme_seed='green',
         scrollbar_theme=ft.ScrollbarTheme(
@@ -486,7 +486,6 @@ def main(page: ft.Page):
     
     bluetooth_process = Process(target=bluetooth_listener(page))
     bluetooth_process.start()
-    
 
 
 ft.app(main)
