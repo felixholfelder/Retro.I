@@ -126,11 +126,9 @@ class Strip:
 	def get_strip_settings(self):
 		line = ""
 		with open(f"{c.pwd()}/settings/strip-settings.csv", newline='') as csvfile:
-			spamreader = csv.reader(csvfile, delimiter=';', quotechar=' ')
-			for row in spamreader:
-				line = row
-				break
-		return line
+			reader = csv.reader(csvfile, delimiter=';', quotechar=' ')
+			for row in reader:
+				return row
 
 	def update_settings(self, is_active, brightness):
 		with open(f"{c.pwd()}/settings/strip-settings.csv", 'w', newline='') as csvfile:
