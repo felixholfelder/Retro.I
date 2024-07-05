@@ -43,7 +43,7 @@
   },
   {
     "name": "Radio Dumba",
-    "src": "https://stream.laut.fm/radio-dumba",
+    "src": "https://radio-dumba.stream.laut.fm/radio-dumba?t302=2024-06-27_10-12-50&uuid=2a979984-6bf8-4d02-b9b8-f20ed42504f6",
     "logo": "radio_dumba.png",
     "color": "#CC0000"
   },
@@ -73,13 +73,13 @@
   },
   {
     "name": "Absolut Hot",
-      "src": "https://absolut-hot.live-sm.absolutradio.de/absolut-hot",
+      "src": "https://edge67.live-sm.absolutradio.de/absolut-hot",
     "logo": "absolut_hot.png",
     "color": "#CC1033"
   },
   {
     "name": "Schwarzwaldradio",
-      "src": "https://frontend.streamonkey.net/fho-schwarzwaldradiohifi",
+      "src": "https://edge59.streamonkey.net/fho-schwarzwaldradiohifi",
     "logo": "schwarzwaldradio.png",
     "color": "#7A949E"
   }
