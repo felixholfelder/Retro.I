@@ -17,7 +17,7 @@
   },
   {
     "name": "Na hör mal",
-    "src": "na_hor_mal.mp3"
+    "src": "na-hor-mal.mp3"
   },
   {
     "name": "Emotional damage",
@@ -46,5 +46,45 @@
   {
     "name": "Kleine Spende bitte",
     "src": "kleine-spende-bitte.mp3"
+  },
+  {
+    "name": "Was ist denn hier los?",
+    "src": "was-ist-denn-hier-los.mp3"
+  },
+  {
+    "name": "Was machst du hier?",
+    "src": "marianne.mp3"
+  },
+  {
+    "name": "Hog Rider",
+    "src": "clash-royale-hog-rider.mp3"
+  },
+  {
+    "name": "Meine Chicken Nuggets verbrennen",
+    "src": "meine-chicken-nuggets-verbrennen.mp3"
+  },
+  {
+    "name": "Mein RTL",
+    "src": "mein-rlt-knossi.mp3"
+  },
+  {
+    "name": "Zerrro",
+    "src": "zero.mp3"
+  },
+  {
+    "name": "Knossi kotzt",
+    "src": "knossi-kotzt.mp3"
+  },
+  {
+    "name": "Aha",
+    "src": "aha.mp3"
+  },
+  {
+    "name": "So ein feini",
+    "src": "so-ein-feini.mp3"
+  },
+  {
+    "name": "Montanablack Aua",
+    "src": "montanablack-aua.mp3"
   }
 ]
