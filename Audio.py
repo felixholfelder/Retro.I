@@ -1,4 +1,3 @@
-import vlc
 import alsaaudio as a
 import flet as ft
 from Stations import Stations
@@ -37,17 +36,11 @@ class Audio:
 		return self.mixer().getmute()[0] == 1
 
 	def play(self, src):
-		#media=instance.media_new(src)
-		#player.pause()
-		#player.release()
-		#player.set_media(media)
-		#player.play()
 		self.pause()
 		audio.release()
 		audio.src = src
 		audio.autoplay = True
 		audio.play()
-		#audio.update()
 
 	def pause(self):
 		audio.pause()

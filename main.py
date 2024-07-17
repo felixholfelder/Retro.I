@@ -18,11 +18,11 @@ from adafruit_led_animation.color import BLUE, GREEN
 #DT=GELB
 #SW=GRÜN
 #+=BLAU
-#-=SChwarz
+#-=LILA
 
-CLK_PIN = 5
+CLK_PIN = 13
 DT_PIN = 6
-SW_PIN = 13
+SW_PIN = 5
 
 VOLUME_STEP = 2
 
@@ -157,8 +157,8 @@ def start_rotary(page: ft.Page):
 def main(page: ft.Page):
     global txt_discovery_status, ico_discovery_status, btn_discovery_status, txt_device_connected, ico_device_connected, btn_device_connected
     start_rotary(page)
-    page.window_full_screen = True
-    #page.window_maximized = True
+    #page.window_full_screen = True
+    page.window_maximized = True
     page.theme = ft.Theme(
         color_scheme_seed='green',
         scrollbar_theme=ft.ScrollbarTheme(
@@ -226,7 +226,7 @@ def main(page: ft.Page):
         selected_index=0,
         destinations=[
             ft.NavigationDestination(
-                label="Radiosender",
+                label=ft.Text("Radiosender", size=64).value,
                 icon=ft.icons.RADIO_OUTLINED,
                 selected_icon=ft.icons.RADIO
             ),
@@ -295,7 +295,7 @@ def main(page: ft.Page):
                 ft.Divider(),
                 ft.Row([
                     ft.Text("Helligkeit", style=ft.TextStyle(size=20)),
-                    ft.Slider(on_change=strip.change_brightness, min=0, max=100, value=strip.get_curr_brightness(), width=440)
+                    ft.Slider(on_change=strip.change_brightness, min=0, max=100, value=strip.get_curr_brightness(), width=420)
                 ])
             ]
         )
@@ -391,7 +391,7 @@ def main(page: ft.Page):
                 [
                     ft.Container(
                         alignment=ft.alignment.bottom_center,
-                        on_click=lambda e, index=i, src=sound["src"]: audio_helper.play_sound(index, src),
+                        on_click=lambda e, index=i, src=sound["src"]: audio_helper.play_sound(src),
                         height=130,
                         image_src=c.get_button_img(),
                     ),
@@ -474,6 +474,15 @@ def main(page: ft.Page):
         ),
         visible=False,
     )
+    
+    tabs = []
+    tabs.append(radio_tab)
+    tabs.append(bluetooth_tab)
+
+    if system_helper.is_safe_mode():
+        tabs.append(soundboard_tab)
+
+    tabs.append(settings_tab)
 
     page.add(
         ft.Column(

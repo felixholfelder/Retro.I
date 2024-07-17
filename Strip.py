@@ -74,13 +74,11 @@ class Strip:
 		self.curr_color = strip_color
 		self.animation.color = strip_color
 		self.pixels.show()
-		print(self.counter)
 		while (self.counter <= 1):
 			try:
 				self.animation.animate()
 			except:
 				pass
-		print("Thread ended")
 
 		self.kill_proc()
 

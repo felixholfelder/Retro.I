@@ -36,3 +36,7 @@ class System:
     
     def get_button_img_path(self):
         return f"{c.pwd()}/assets/buttons/SB_Green.png"
+    
+    def is_safe_mode(self):
+        print(os.getenv("SAFE_MODE"))
+        return os.getenv("SAFE_MODE") is not None
