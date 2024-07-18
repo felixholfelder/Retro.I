@@ -12,6 +12,12 @@
     "color": "#80CC28"
   },
   {
+    "name": "BR Heimat",
+    "src": "https://dispatcher.rndfnk.com/br/brheimat/live/aac/low",
+    "logo": "br_heimat.png",
+    "color": "#003B82"
+  },
+  {
     "name": "Antenne Bayern",
     "src": "https://stream.antenne.de/antenne/stream/aacp",
     "logo": "antenne_bayern.png",
@@ -54,6 +60,18 @@
     "color": "#700040"
   },
   {
+    "name": "Radio Paloma",
+    "src": "http://pool.radiopaloma.de/RADIOPALOMA.mp3",
+    "logo": "radio_paloma.png",
+    "color": "#FF6612"
+  },
+  {
+    "name": "Sunshine live Hardstyle",
+    "src": "https://stream.sunshine-live.de/hardstyle/mp3-192/stream.sunshine-live.de/",
+    "logo": "sunshine_live_hardstyle.jpg",
+    "color": "#AD0A4F"
+  },
+  {
     "name": "Radio Energy",
     "src": "https://edge61.streamonkey.net/energy-nuernberg?aggregator=shorty",
     "logo": "radio_energy.png",
@@ -82,5 +100,11 @@
       "src": "https://edge59.streamonkey.net/fho-schwarzwaldradiohifi",
     "logo": "schwarzwaldradio.png",
     "color": "#7A949E"
+  },
+  {
+    "name": "Chari Vari",
+    "src": "https://live.stream.charivari.de/955charivari-webradio?aggregator=charivari_de_link",
+    "logo": "chari_vari.png",
+    "color": "#FFDD00"
   }
 ]

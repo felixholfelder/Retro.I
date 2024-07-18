@@ -21,6 +21,8 @@ from adafruit_led_animation.color import BLUE, GREEN
 #+=BLAU
 #-=LILA
 
+ICON_SIZE = 28
+
 CLK_PIN = 13
 DT_PIN = 6
 SW_PIN = 5
@@ -230,17 +232,17 @@ def main(page: ft.Page):
     destinations = []
     destinations.append(
         ft.NavigationDestination(
-            label=ft.Text("Radiosender", size=64).value,
-            icon=ft.icons.RADIO_OUTLINED,
-            selected_icon=ft.icons.RADIO
+            label="Radiosender",
+            icon_content=ft.Icon(ft.icons.RADIO_OUTLINED, size=ICON_SIZE),
+            selected_icon_content=ft.Icon(ft.icons.RADIO, size=ICON_SIZE)
         )
     )
     
     destinations.append(
         ft.NavigationDestination(
             label="Bluetooth",
-            icon=ft.icons.BLUETOOTH,
-            selected_icon=ft.icons.BLUETOOTH
+            icon_content=ft.Icon(ft.icons.BLUETOOTH_OUTLINED, size=ICON_SIZE),
+            selected_icon_content=ft.Icon(ft.icons.BLUETOOTH, size=ICON_SIZE)
         )
     )
 
@@ -248,21 +250,22 @@ def main(page: ft.Page):
         destinations.append(
             ft.NavigationDestination(
                 label="Soundboard",
-                icon=ft.icons.SPACE_DASHBOARD_OUTLINED,
-                selected_icon=ft.icons.SPACE_DASHBOARD
+                icon_content=ft.Icon(ft.icons.SPACE_DASHBOARD_OUTLINED, size=ICON_SIZE),
+                selected_icon_content=ft.Icon(ft.icons.SPACE_DASHBOARD, size=ICON_SIZE)
             ),
         )
     
     destinations.append(
         ft.NavigationDestination(
             label="Einstellungen",
-            icon=ft.icons.SETTINGS_OUTLINED,
-            selected_icon=ft.icons.SETTINGS
+            icon_content=ft.Icon(ft.icons.SETTINGS_OUTLINED, size=ICON_SIZE),
+            selected_icon_content=ft.Icon(ft.icons.SETTINGS, size=ICON_SIZE),
         )
     )
 
     nav = ft.NavigationBar(
         bgcolor="green",
+        elevation=5,
         on_change=change_tab,
         selected_index=0,
         destinations=destinations

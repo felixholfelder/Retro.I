@@ -16,7 +16,7 @@ class System:
         self.strip.disable()
         audio_helper.pause()
         audio_helper.shutdown_sound()
-        os.system('sudo shutdown now')
+        os.system('sudo shutdown -h 0')
 
     def restart_system(self, _):
         self.strip.disable()
