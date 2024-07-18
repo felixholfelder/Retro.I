@@ -140,7 +140,7 @@ def change_radio_station(station, index, page):
     color = station["color"]
 
     toggle_indicator(index)
-    page.theme = ft.Theme(color_scheme_seed=color)
+    page.theme.color_scheme_seed=color
     page.navigation_bar.bgcolor = color
     audio_helper.play(station["src"])
     strip.update_strip(color)
