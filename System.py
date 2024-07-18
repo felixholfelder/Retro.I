@@ -10,6 +10,7 @@ c = Constants()
 
 class System:
     strip = Strip()
+    is_party = "0"
 
     def shutdown_system(self, _):
         self.strip.disable()
@@ -37,6 +38,8 @@ class System:
     def get_button_img_path(self):
         return f"{c.pwd()}/assets/buttons/SB_Green.png"
     
-    def is_safe_mode(self):
-        print(os.getenv("SAFE_MODE"))
-        return os.getenv("SAFE_MODE") is not None
+    def init_party_mode(self):
+        self.is_party = os.environ.get("PARTY_MODE", "0")
+    
+    def is_party_mode(self):
+        return self.is_party == "1"

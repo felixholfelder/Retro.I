@@ -3,6 +3,7 @@ import json
 import flet as ft
 import threading
 import time
+import button
 from Audio import Audio
 from Stations import Stations
 from pyky040 import pyky040
@@ -31,6 +32,7 @@ last_turn = 1
 bluetooth_helper = BluetoothHelper()
 audio_helper = Audio()
 system_helper = System()
+system_helper.init_party_mode()
 stations_helper = Stations()
 c = Constants()
 sounds = Sounds()
@@ -191,14 +193,19 @@ def main(page: ft.Page):
             disable_indicator()
         else: bluetooth_tab.visible = False
     
-        if index == 2:
-            switch_soundboard_tab()
-            disable_indicator()
-        else: soundboard_tab.visible = False
-        
-        if index == 3:
-            settings_tab.visible = True
-        else: settings_tab.visible = False
+        if system_helper.is_party_mode():
+            if index == 2:
+                switch_soundboard_tab()
+                disable_indicator()
+            else: soundboard_tab.visible = False
+            
+            if index == 3:
+                settings_tab.visible = True
+            else: settings_tab.visible = False
+        else:
+            if index == 2:
+                settings_tab.visible = True
+            else: settings_tab.visible = False
 
         page.update()
 
@@ -219,33 +226,46 @@ def main(page: ft.Page):
     def switch_soundboard_tab():
         audio_helper.pause()
         soundboard_tab.visible = True
+    
+    destinations = []
+    destinations.append(
+        ft.NavigationDestination(
+            label=ft.Text("Radiosender", size=64).value,
+            icon=ft.icons.RADIO_OUTLINED,
+            selected_icon=ft.icons.RADIO
+        )
+    )
+    
+    destinations.append(
+        ft.NavigationDestination(
+            label="Bluetooth",
+            icon=ft.icons.BLUETOOTH,
+            selected_icon=ft.icons.BLUETOOTH
+        )
+    )
 
-    nav = ft.NavigationBar(
-        bgcolor="green",
-        on_change=change_tab,
-        selected_index=0,
-        destinations=[
-            ft.NavigationDestination(
-                label=ft.Text("Radiosender", size=64).value,
-                icon=ft.icons.RADIO_OUTLINED,
-                selected_icon=ft.icons.RADIO
-            ),
-            ft.NavigationDestination(
-                label="Bluetooth",
-                icon=ft.icons.BLUETOOTH,
-                selected_icon=ft.icons.BLUETOOTH
-            ),
+    if system_helper.is_party_mode():
+        destinations.append(
             ft.NavigationDestination(
                 label="Soundboard",
                 icon=ft.icons.SPACE_DASHBOARD_OUTLINED,
                 selected_icon=ft.icons.SPACE_DASHBOARD
             ),
-            ft.NavigationDestination(
-                label="Einstellungen",
-                icon=ft.icons.SETTINGS_OUTLINED,
-                selected_icon=ft.icons.SETTINGS
-            )
-        ]
+        )
+    
+    destinations.append(
+        ft.NavigationDestination(
+            label="Einstellungen",
+            icon=ft.icons.SETTINGS_OUTLINED,
+            selected_icon=ft.icons.SETTINGS
+        )
+    )
+
+    nav = ft.NavigationBar(
+        bgcolor="green",
+        on_change=change_tab,
+        selected_index=0,
+        destinations=destinations
     )
     page.navigation_bar = nav
 
@@ -478,16 +498,13 @@ def main(page: ft.Page):
     tabs = []
     tabs.append(radio_tab)
     tabs.append(bluetooth_tab)
-
-    if system_helper.is_safe_mode():
-        tabs.append(soundboard_tab)
-
     tabs.append(settings_tab)
 
+    if system_helper.is_party_mode():
+        tabs.append(soundboard_tab)
+
     page.add(
-        ft.Column(
-            [radio_tab, bluetooth_tab, soundboard_tab, settings_tab]
-        )
+        ft.Column(tabs)
     )
     page.update()
     
