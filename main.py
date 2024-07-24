@@ -282,7 +282,6 @@ def main(page: ft.Page):
         bluetooth_tab.visible = True
 
     def switch_soundboard_tab():
-        audio_helper.pause()
         soundboard_tab.visible = True
 
     destinations = []
