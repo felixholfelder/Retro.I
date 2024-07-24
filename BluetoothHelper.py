@@ -17,6 +17,16 @@ class BluetoothHelper:
 		page.update()
 		return self.discovery_on
 
+	def turn_on(self):
+		os.system('bluetoothctl power on')
+
+	def turn_off(self):
+		os.system('bluetoothctl power off')
+
+	def is_bluetooth_on(self):
+		status = subprocess.run(['bluetoothctl', '-v'], stdout=subprocess.PIPE).stdout.decode('utf-8')
+		return status is not None
+
 	def bluetooth_discovery_on(self):
 		os.system('bluetoothctl discoverable on')
 		self.discovery_on = True
@@ -40,4 +50,8 @@ class BluetoothHelper:
 	def get_device_mac(self):
 		result = self.get_device()
 		return result[7:24]
+
+	def is_device_connected(self):
+		result = self.get_device()
+		return result is not None
 		

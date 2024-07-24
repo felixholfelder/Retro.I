@@ -1,25 +1,25 @@
-import RPi.GPIO as GPIO
-import json
-import flet as ft
 import threading
 import time
-import button
-from Audio import Audio
-from Stations import Stations
-from pyky040 import pyky040
-from System import System
 from multiprocessing import Process
+
+import flet as ft
+from adafruit_led_animation.color import BLUE, GREEN
+from pyky040 import pyky040
+
+from Audio import Audio
 from BluetoothHelper import BluetoothHelper
-from Strip import Strip
 from Constants import Constants
 from Sounds import Sounds
-from adafruit_led_animation.color import BLUE, GREEN
+from Stations import Stations
+from Strip import Strip
+from System import System
+from WifiHelper import WifiHelper
 
-#CLK=ORANGE
-#DT=GELB
-#SW=GRÜN
-#+=BLAU
-#-=LILA
+# CLK=ORANGE
+# DT=GELB
+# SW=GRÜN
+# +=BLAU
+# -=LILA
 
 ICON_SIZE = 28
 
@@ -31,6 +31,7 @@ VOLUME_STEP = 2
 
 last_turn = 1
 
+wifi_helper = WifiHelper()
 bluetooth_helper = BluetoothHelper()
 audio_helper = Audio()
 system_helper = System()
@@ -49,6 +50,39 @@ btn_discovery_status = None
 txt_device_connected = None
 ico_device_connected = None
 btn_device_connected = None
+
+ic_wifi = None
+ic_bluetooth = None
+
+def update_taskbar_process(page: ft.Page):
+    while True:
+        update_taskbar(page)
+        time.sleep(5)
+
+def update_taskbar(page: ft.Page):
+    ic_wifi.icon_color = ft.colors.BLACK
+    ic_bluetooth.icon_color = ft.colors.BLACK
+
+    if wifi_helper.is_connected():
+        ic_wifi.icon = ft.icons.WIFI_ROUNDED
+    else:
+        ic_wifi.icon = ft.icons.WIFI_OFF_ROUNDED
+
+    if bluetooth_helper.is_bluetooth_on():
+        ic_bluetooth.icon = ft.icons.BLUETOOTH_ROUNDED
+        if bluetooth_helper.is_discovery_on():
+            ic_bluetooth.icon_color = ft.colors.GREEN
+        else:
+            ic_bluetooth.icon_color = ft.colors.BLACK
+
+    else:
+        ic_bluetooth.icon = ft.icons.BLUETOOTH_DISABLED_ROUNDED
+
+    if bluetooth_helper.get_device_name():
+        ic_bluetooth.icon = ft.icons.BLUETOOTH_CONNECTED_ROUNDED
+
+    page.update()
+
 
 def enable_discovery():
     bluetooth_helper.bluetooth_discovery_on()
@@ -98,6 +132,7 @@ def update_sound(value, page: ft.Page):
         strip.update_sound_strip(value)
         page.update()
 
+
 def inc_sound(page: ft.Page):
     global last_turn
     if last_turn == 1:
@@ -129,20 +164,23 @@ def get_station_by_image(src):
 
 indicator_refs = []
 
+
 def disable_indicator():
     for ref in indicator_refs:
         ref.current.visible = False
 
+
 def toggle_indicator(index):
     disable_indicator()
     indicator_refs[index].current.visible = True
+
 
 def change_radio_station(station, index, page):
     global strip_color
     color = station["color"]
 
     toggle_indicator(index)
-    page.theme.color_scheme_seed=color
+    page.theme.color_scheme_seed = color
     page.navigation_bar.bgcolor = color
     audio_helper.play(station["src"])
     strip.update_strip(color)
@@ -159,55 +197,73 @@ def start_rotary(page: ft.Page):
 
 
 def main(page: ft.Page):
-    global txt_discovery_status, ico_discovery_status, btn_discovery_status, txt_device_connected, ico_device_connected, btn_device_connected
+    global txt_discovery_status, ico_discovery_status, btn_discovery_status, txt_device_connected, ico_device_connected, btn_device_connected, ic_wifi, ic_bluetooth
     start_rotary(page)
     page.window_full_screen = True
-    #page.window_maximized = True
+    # page.window_maximized = True
     page.theme = ft.Theme(
         color_scheme_seed='green',
         scrollbar_theme=ft.ScrollbarTheme(
-        track_color={
-            ft.MaterialState.DEFAULT: ft.colors.TRANSPARENT,
-        },
-        thumb_visibility=True,
-        thumb_color={
-            ft.MaterialState.HOVERED: ft.colors.GREY_500,
-            ft.MaterialState.DEFAULT: ft.colors.GREY_400,
-        },
-        thickness=40,
-        radius=20,
-        cross_axis_margin=15,
+            track_color={
+                ft.MaterialState.DEFAULT: ft.colors.TRANSPARENT,
+            },
+            thumb_visibility=True,
+            thumb_color={
+                ft.MaterialState.HOVERED: ft.colors.GREY_500,
+                ft.MaterialState.DEFAULT: ft.colors.GREY_400,
+            },
+            thickness=40,
+            radius=20,
+            cross_axis_margin=15,
         )
     )
     page.add(audio_helper.init())
     page.scroll = ft.ScrollMode.ADAPTIVE
     page.title = "Retro.I"
+
+    ic_wifi = ft.IconButton(ft.icons.WIFI),
+    ic_bluetooth = ft.IconButton(ft.icons.BLUETOOTH)
+    page.appbar = ft.AppBar(
+        bgcolor=ft.colors.SURFACE_VARIANT,
+        toolbar_height=32,
+        actions=[ic_wifi, ic_bluetooth],
+    )
+
     page.update()
 
     def change_tab(e):
         index = e.control.selected_index
         if index == 0:
             switch_radio_tab()
-        else: radio_tab.visible = False
+            bluetooth_helper.turn_off()
+            update_taskbar(page)
+        else:
+            radio_tab.visible = False
 
         if index == 1:
             switch_bluetooth_tab()
             disable_indicator()
-        else: bluetooth_tab.visible = False
-    
+            bluetooth_helper.turn_on()
+            update_taskbar(page)
+        else:
+            bluetooth_tab.visible = False
+
         if system_helper.is_party_mode():
             if index == 2:
                 switch_soundboard_tab()
                 disable_indicator()
-            else: soundboard_tab.visible = False
-            
+            else:
+                soundboard_tab.visible = False
+
             if index == 3:
                 settings_tab.visible = True
-            else: settings_tab.visible = False
+            else:
+                settings_tab.visible = False
         else:
             if index == 2:
                 settings_tab.visible = True
-            else: settings_tab.visible = False
+            else:
+                settings_tab.visible = False
 
         page.update()
 
@@ -224,11 +280,11 @@ def main(page: ft.Page):
         strip.fill(BLUE)
         update_connected_device(page)
         bluetooth_tab.visible = True
-    
+
     def switch_soundboard_tab():
         audio_helper.pause()
         soundboard_tab.visible = True
-    
+
     destinations = []
     destinations.append(
         ft.NavigationDestination(
@@ -237,7 +293,7 @@ def main(page: ft.Page):
             selected_icon_content=ft.Icon(ft.icons.RADIO, size=ICON_SIZE)
         )
     )
-    
+
     destinations.append(
         ft.NavigationDestination(
             label="Bluetooth",
@@ -254,7 +310,7 @@ def main(page: ft.Page):
                 selected_icon_content=ft.Icon(ft.icons.SPACE_DASHBOARD, size=ICON_SIZE)
             ),
         )
-    
+
     destinations.append(
         ft.NavigationDestination(
             label="Einstellungen",
@@ -280,7 +336,7 @@ def main(page: ft.Page):
         spacing=20,
         run_spacing=50
     )
-    
+
     soundboard_grid = ft.GridView(
         expand=1,
         runs_count=5,
@@ -299,32 +355,39 @@ def main(page: ft.Page):
                     alignment=ft.MainAxisAlignment.CENTER,
                     spacing=75,
                     controls=[
-                        ft.Column([ft.IconButton(ft.icons.POWER_OFF, icon_size=75, on_click=system_helper.shutdown_system), ft.Text("Ausschalten", text_align=ft.TextAlign.CENTER, style=ft.TextStyle(size=16))], alignment=ft.MainAxisAlignment.CENTER),
-                        ft.Column([ft.IconButton(ft.icons.REPLAY, icon_size=75, on_click=system_helper.restart_system), ft.Text("Neustarten", text_align=ft.TextAlign.CENTER, style=ft.TextStyle(size=16))], alignment=ft.MainAxisAlignment.CENTER),
+                        ft.Column(
+                            [ft.IconButton(ft.icons.POWER_OFF, icon_size=75, on_click=system_helper.shutdown_system),
+                             ft.Text("Ausschalten", text_align=ft.TextAlign.CENTER, style=ft.TextStyle(size=16))],
+                            alignment=ft.MainAxisAlignment.CENTER),
+                        ft.Column([ft.IconButton(ft.icons.REPLAY, icon_size=75, on_click=system_helper.restart_system),
+                                   ft.Text("Neustarten", text_align=ft.TextAlign.CENTER, style=ft.TextStyle(size=16))],
+                                  alignment=ft.MainAxisAlignment.CENTER),
                     ]
                 )
             ]
         )
     )
-    page.add(dlg)    
-    
+    page.add(dlg)
+
     dlg_led = ft.AlertDialog(
         content=ft.Column(
             alignment=ft.MainAxisAlignment.CENTER,
             width=500,
             tight=True,
             controls=[
-                ft.Switch("LED-Streifen ausschalten", label_style=ft.TextStyle(size=20), on_change=lambda e: strip.toggle_strip(), value=strip.is_strip_active()),
+                ft.Switch("LED-Streifen ausschalten", label_style=ft.TextStyle(size=20),
+                          on_change=lambda e: strip.toggle_strip(), value=strip.is_strip_active()),
                 ft.Divider(),
                 ft.Row([
                     ft.Text("Helligkeit", style=ft.TextStyle(size=20)),
-                    ft.Slider(on_change=strip.change_brightness, min=0, max=100, value=strip.get_curr_brightness(), width=420)
+                    ft.Slider(on_change=strip.change_brightness, min=0, max=100, value=strip.get_curr_brightness(),
+                              width=420)
                 ])
             ]
         )
     )
     page.add(dlg_led)
-    
+
     dlg_credits = ft.AlertDialog(
         content=ft.Column(
             width=500,
@@ -346,9 +409,9 @@ def main(page: ft.Page):
         )
     )
     page.add(dlg_credits)
-    
+
     cpu_text = ft.TextSpan(system_helper.get_cpu_temp(), style=ft.TextStyle(weight=ft.FontWeight.BOLD))
-    
+
     dlg_info = ft.AlertDialog(
         content=ft.Column(
             alignment=ft.MainAxisAlignment.CENTER,
@@ -363,29 +426,44 @@ def main(page: ft.Page):
     )
     page.add(dlg_info)
 
-
     def show_dialog(_):
         dlg.open = True
         page.update()
-    
+
     def show_led_dialog(_):
         dlg_led.open = True
         page.update()
-    
+
     def show_credits_dialog(_):
         dlg_credits.open = True
         page.update()
-    
+
     def show_info_dialog(_):
         dlg_info.open = True
         cpu_text.value = f"CPU-Temperatur: {system_helper.get_cpu_temp()}"
         page.update()
 
     lv = ft.ListView(spacing=10, padding=20)
-    lv.controls.append(ft.TextButton(height=100, content=ft.Row(alignment=ft.MainAxisAlignment.CENTER, controls=[ft.Icon(ft.icons.LOGOUT), ft.Text("Radio ausschalten", style=ft.TextStyle(size=20))]), on_click=show_dialog))
-    lv.controls.append(ft.TextButton(height=100, content=ft.Row(alignment=ft.MainAxisAlignment.CENTER, controls=[ft.Icon(ft.icons.COLOR_LENS), ft.Text("LED-Streifen", style=ft.TextStyle(size=20))]), on_click=show_led_dialog))
-    lv.controls.append(ft.TextButton(height=100, content=ft.Row(alignment=ft.MainAxisAlignment.CENTER, controls=[ft.Icon(ft.icons.INFO), ft.Text("Info", style=ft.TextStyle(size=20))]), on_click=show_info_dialog))
-    lv.controls.append(ft.TextButton(height=100, content=ft.Row(alignment=ft.MainAxisAlignment.CENTER, controls=[ft.Icon(ft.icons.STAR), ft.Text("Credits", style=ft.TextStyle(size=20))]), on_click=show_credits_dialog))
+    lv.controls.append(ft.TextButton(height=100, content=ft.Row(alignment=ft.MainAxisAlignment.CENTER,
+                                                                controls=[ft.Icon(ft.icons.LOGOUT),
+                                                                          ft.Text("Radio ausschalten",
+                                                                                  style=ft.TextStyle(size=20))]),
+                                     on_click=show_dialog))
+    lv.controls.append(ft.TextButton(height=100, content=ft.Row(alignment=ft.MainAxisAlignment.CENTER,
+                                                                controls=[ft.Icon(ft.icons.COLOR_LENS),
+                                                                          ft.Text("LED-Streifen",
+                                                                                  style=ft.TextStyle(size=20))]),
+                                     on_click=show_led_dialog))
+    lv.controls.append(ft.TextButton(height=100, content=ft.Row(alignment=ft.MainAxisAlignment.CENTER,
+                                                                controls=[ft.Icon(ft.icons.INFO), ft.Text("Info",
+                                                                                                          style=ft.TextStyle(
+                                                                                                              size=20))]),
+                                     on_click=show_info_dialog))
+    lv.controls.append(ft.TextButton(height=100, content=ft.Row(alignment=ft.MainAxisAlignment.CENTER,
+                                                                controls=[ft.Icon(ft.icons.STAR), ft.Text("Credits",
+                                                                                                          style=ft.TextStyle(
+                                                                                                              size=20))]),
+                                     on_click=show_credits_dialog))
 
     for i in range(len(stations_helper.load_radio_stations())):
         indicator_refs.append(ft.Ref[ft.Image]())
@@ -406,7 +484,7 @@ def main(page: ft.Page):
                 ]
             )
         )
-    
+
     for i in range(len(sounds.load_sounds())):
         sound = sounds.load_sounds()[i]
         soundboard_grid.controls.append(
@@ -426,7 +504,7 @@ def main(page: ft.Page):
                 width=300,
             )
         )
-    
+
     ico_discovery_status = ft.Icon(ft.icons.BLUETOOTH_DISABLED)
     txt_discovery_status = ft.Text("Bluetooth nicht sichtbar", style=ft.TextStyle(size=20))
 
@@ -445,10 +523,10 @@ def main(page: ft.Page):
         height=80,
         on_click=lambda e: toggle_bluetooth_discovery(page),
     )
-    
+
     ico_device_connected = ft.Icon(ft.icons.PHONELINK_OFF)
     txt_device_connected = ft.Text("Kein Gerät verbunden", style=ft.TextStyle(size=20))
-    
+
     btn_device_connected = ft.TextButton(
         content=ft.Row(
             alignment=ft.MainAxisAlignment.CENTER,
@@ -481,13 +559,13 @@ def main(page: ft.Page):
         ),
         visible=False,
     )
-    
+
     soundboard_tab = ft.Container(
-        content = ft.Column([ft.Row([soundboard_grid])]),
+        content=ft.Column([ft.Row([soundboard_grid])]),
         visible=False,
         margin=ft.margin.only(right=75, bottom=75),
     )
-    
+
     settings_tab = ft.Container(
         content=ft.Column(
             controls=[
@@ -497,7 +575,7 @@ def main(page: ft.Page):
         ),
         visible=False,
     )
-    
+
     tabs = []
     tabs.append(radio_tab)
     tabs.append(bluetooth_tab)
@@ -510,11 +588,14 @@ def main(page: ft.Page):
         ft.Column(tabs)
     )
     page.update()
-    
+
     audio_helper.startup_sound()
-    
+
     bluetooth_process = Process(target=bluetooth_listener(page))
     bluetooth_process.start()
+
+    taskbar_process = Process(target=update_taskbar_process(page))
+    taskbar_process.start()
 
 
 ft.app(main)
