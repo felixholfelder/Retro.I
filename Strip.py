@@ -64,6 +64,7 @@ class Strip:
 				self.pixels.fill(RED)
 				self.pixels.show()
 			else:
+				self.pixels.fill(self.curr_color)
 				self.animation.resume()
 				self.pixels.show()
 
@@ -119,8 +120,10 @@ class Strip:
 		self.counter -= 1
 
 	def disable(self):
+		self.pixels.fill(BLACK)
 		self.animation.color=BLACK
 		self.animation.reset()
+		self.pixels.show()
 
 	def get_strip_settings(self):
 		line = ""

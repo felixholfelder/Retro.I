@@ -43,6 +43,9 @@ sounds = Sounds()
 strip = Strip()
 strip.start()
 
+#Initialize sound
+audio_helper.update_sound(40)
+
 bluetooth_helper.bluetooth_discovery_off()
 txt_discovery_status = None
 ico_discovery_status = None
@@ -60,6 +63,8 @@ def update_taskbar(page: ft.Page):
 
     ico_wifi.icon_color = ft.colors.GREEN
     ico_bluetooth.icon_color = ft.colors.BLACK
+    
+    print(wifi_helper.is_connected())
 
     if wifi_helper.is_connected():
         ico_wifi.icon = ft.icons.WIFI_ROUNDED
@@ -82,6 +87,7 @@ def update_taskbar(page: ft.Page):
     page.update()
 
 def update_taskbar_process(page: ft.Page):
+    print("hello")
     while True:
         update_taskbar(page)
         time.sleep(5)
@@ -478,7 +484,7 @@ def main(page: ft.Page):
                 fit=ft.StackFit.EXPAND,
                 controls=[
                     ft.Container(
-                        bgcolor=ft.colors.GREEN_50,
+                        bgcolor=ft.colors.GREY_200,
                         on_click=lambda e, index=i, src=station: change_radio_station(src, index, page),
                         border_radius=10,
                         image_src=system_helper.get_img_path(station["logo"]),
