@@ -33,6 +33,7 @@ last_turn = 1
 
 wifi_helper = WifiHelper()
 bluetooth_helper = BluetoothHelper()
+bluetooth_helper.turn_off()
 audio_helper = Audio()
 system_helper = System()
 system_helper.init_party_mode()
@@ -51,38 +52,39 @@ txt_device_connected = None
 ico_device_connected = None
 btn_device_connected = None
 
-ic_wifi = None
-ic_bluetooth = None
+ico_wifi = None
+ico_bluetooth = None
+
+def update_taskbar(page: ft.Page):
+    global ico_wifi, ico_bluetooth
+
+    ico_wifi.icon_color = ft.colors.GREEN
+    ico_bluetooth.icon_color = ft.colors.BLACK
+
+    if wifi_helper.is_connected():
+        ico_wifi.icon = ft.icons.WIFI_ROUNDED
+    else:
+        ico_wifi.icon = ft.icons.WIFI_OFF_ROUNDED
+
+    if bluetooth_helper.is_bluetooth_on():
+        ico_bluetooth.icon = ft.icons.BLUETOOTH_ROUNDED
+        if bluetooth_helper.is_discovery_on():
+            ico_bluetooth.icon_color = ft.colors.GREEN
+        else:
+            ico_bluetooth.icon_color = ft.colors.BLACK
+
+    else:
+        ico_bluetooth.icon = ft.icons.BLUETOOTH_DISABLED_ROUNDED
+
+    if bluetooth_helper.get_device_name():
+        ico_bluetooth.icon = ft.icons.BLUETOOTH_CONNECTED_ROUNDED
+
+    page.update()
 
 def update_taskbar_process(page: ft.Page):
     while True:
         update_taskbar(page)
         time.sleep(5)
-
-def update_taskbar(page: ft.Page):
-    ic_wifi.icon_color = ft.colors.BLACK
-    ic_bluetooth.icon_color = ft.colors.BLACK
-
-    if wifi_helper.is_connected():
-        ic_wifi.icon = ft.icons.WIFI_ROUNDED
-    else:
-        ic_wifi.icon = ft.icons.WIFI_OFF_ROUNDED
-
-    if bluetooth_helper.is_bluetooth_on():
-        ic_bluetooth.icon = ft.icons.BLUETOOTH_ROUNDED
-        if bluetooth_helper.is_discovery_on():
-            ic_bluetooth.icon_color = ft.colors.GREEN
-        else:
-            ic_bluetooth.icon_color = ft.colors.BLACK
-
-    else:
-        ic_bluetooth.icon = ft.icons.BLUETOOTH_DISABLED_ROUNDED
-
-    if bluetooth_helper.get_device_name():
-        ic_bluetooth.icon = ft.icons.BLUETOOTH_CONNECTED_ROUNDED
-
-    page.update()
-
 
 def enable_discovery():
     bluetooth_helper.bluetooth_discovery_on()
@@ -137,7 +139,8 @@ def inc_sound(page: ft.Page):
     global last_turn
     if last_turn == 1:
         value = audio_helper.get_volume() + VOLUME_STEP
-        update_sound(value, page)
+        if value >= 0 and value <= 100:
+            update_sound(value, page)
     last_turn = 1
 
 
@@ -145,7 +148,8 @@ def dec_sound(page: ft.Page):
     global last_turn
     if last_turn == 0:
         value = audio_helper.get_volume() - VOLUME_STEP
-        update_sound(value, page)
+        if value >= 0 and value <= 100:
+            update_sound(value, page)
     last_turn = 0
 
 
@@ -197,10 +201,10 @@ def start_rotary(page: ft.Page):
 
 
 def main(page: ft.Page):
-    global txt_discovery_status, ico_discovery_status, btn_discovery_status, txt_device_connected, ico_device_connected, btn_device_connected, ic_wifi, ic_bluetooth
+    global txt_discovery_status, ico_discovery_status, btn_discovery_status, txt_device_connected, ico_device_connected, btn_device_connected, ico_wifi, ico_bluetooth
     start_rotary(page)
-    page.window_full_screen = True
-    # page.window_maximized = True
+    #page.window_full_screen = True
+    page.window_maximized = True
     page.theme = ft.Theme(
         color_scheme_seed='green',
         scrollbar_theme=ft.ScrollbarTheme(
@@ -221,12 +225,13 @@ def main(page: ft.Page):
     page.scroll = ft.ScrollMode.ADAPTIVE
     page.title = "Retro.I"
 
-    ic_wifi = ft.IconButton(ft.icons.WIFI),
-    ic_bluetooth = ft.IconButton(ft.icons.BLUETOOTH)
+    ico_wifi = ft.Icon(ft.icons.WIFI)
+    ico_bluetooth = ft.Icon(ft.icons.BLUETOOTH)
+
     page.appbar = ft.AppBar(
         bgcolor=ft.colors.SURFACE_VARIANT,
         toolbar_height=32,
-        actions=[ic_wifi, ic_bluetooth],
+        actions=[ico_wifi, ico_bluetooth],
     )
 
     page.update()

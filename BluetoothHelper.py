@@ -18,14 +18,14 @@ class BluetoothHelper:
 		return self.discovery_on
 
 	def turn_on(self):
-		os.system('bluetoothctl power on')
+		os.system("rfkill unblock 0")
 
 	def turn_off(self):
-		os.system('bluetoothctl power off')
+		os.system("rfkill block 0")
 
 	def is_bluetooth_on(self):
-		status = subprocess.run(['bluetoothctl', '-v'], stdout=subprocess.PIPE).stdout.decode('utf-8')
-		return status is not None
+		status = subprocess.run(['hciconfig'], stdout=subprocess.PIPE).stdout.decode('utf-8')
+		return "RUNNING" in status
 
 	def bluetooth_discovery_on(self):
 		os.system('bluetoothctl discoverable on')
