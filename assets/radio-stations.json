@@ -1,19 +1,19 @@
 [
   {
     "name": "Bayern 1",
-    "src": "https://dispatcher.rndfnk.com/br/br1/nbopf/aac/low",
+    "src": "https://dispatcher.rndfnk.com/br/br1/nbopf/mp3/mid",
     "logo": "bayern_1.png",
     "color": "#00A1D6"
   },
   {
     "name": "Bayern 3",
-    "src": "https://dispatcher.rndfnk.com/br/br3/live/aac/low",
+    "src": "https://dispatcher.rndfnk.com/br/br3/live/mp3/mid",
     "logo": "bayern_3.png",
     "color": "#80CC28"
   },
   {
     "name": "BR Heimat",
-    "src": "https://dispatcher.rndfnk.com/br/brheimat/live/aac/low",
+    "src": "https://dispatcher.rndfnk.com/br/brheimat/live/mp3/mid",
     "logo": "br_heimat.png",
     "color": "#003B82"
   },

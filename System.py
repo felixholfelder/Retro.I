@@ -13,12 +13,14 @@ class System:
     is_party = "0"
 
     def shutdown_system(self, _):
+        audio_helper.init_sound()
         self.strip.disable()
         audio_helper.pause()
         audio_helper.shutdown_sound()
         os.system('sudo shutdown -h 0')
 
     def restart_system(self, _):
+        audio_helper.init_sound()
         self.strip.disable()
         audio_helper.pause()
         audio_helper.shutdown_sound()

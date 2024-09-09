@@ -1,5 +1,6 @@
 import threading
 import time
+import button
 from multiprocessing import Process
 
 import flet as ft
@@ -14,6 +15,8 @@ from Stations import Stations
 from Strip import Strip
 from System import System
 from WifiHelper import WifiHelper
+from SoundCard import SoundCard
+from ToastCard import ToastCard
 
 # CLK=ORANGE
 # DT=GELB
@@ -27,7 +30,7 @@ CLK_PIN = 13
 DT_PIN = 6
 SW_PIN = 5
 
-VOLUME_STEP = 2
+VOLUME_STEP = 4
 
 last_turn = 1
 
@@ -43,9 +46,6 @@ sounds = Sounds()
 strip = Strip()
 strip.start()
 
-#Initialize sound
-audio_helper.update_sound(40)
-
 bluetooth_helper.bluetooth_discovery_off()
 txt_discovery_status = None
 ico_discovery_status = None
@@ -55,39 +55,45 @@ txt_device_connected = None
 ico_device_connected = None
 btn_device_connected = None
 
-ico_wifi = None
-ico_bluetooth = None
+ico_wifi = ft.Icon(name=ft.icons.WIFI)
+ico_bluetooth = ft.Icon(name=ft.icons.BLUETOOTH)
+
+volume_icon = ft.Icon(name=ft.icons.VOLUME_UP_ROUNDED, color=ft.colors.BLACK)
+volume_text = ft.Text(f"{audio_helper.get_volume()}%", size=18)
 
 def update_taskbar(page: ft.Page):
     global ico_wifi, ico_bluetooth
 
-    ico_wifi.icon_color = ft.colors.GREEN
-    ico_bluetooth.icon_color = ft.colors.BLACK
-    
-    print(wifi_helper.is_connected())
+    ico_wifi.color = ft.colors.BLACK
+    ico_bluetooth.color = ft.colors.BLACK
 
     if wifi_helper.is_connected():
-        ico_wifi.icon = ft.icons.WIFI_ROUNDED
+        ico_wifi.name = ft.icons.WIFI_ROUNDED
+        ico_wifi.color = ft.colors.GREEN
     else:
-        ico_wifi.icon = ft.icons.WIFI_OFF_ROUNDED
+        ico_wifi.name = ft.icons.WIFI_OFF_ROUNDED
+        ico_wifi.color = ft.colors.BLACK
+    
+    page.update()
 
     if bluetooth_helper.is_bluetooth_on():
-        ico_bluetooth.icon = ft.icons.BLUETOOTH_ROUNDED
+        ico_bluetooth.name = ft.icons.BLUETOOTH_ROUNDED
+        ico_bluetooth.color = ft.colors.BLACK
         if bluetooth_helper.is_discovery_on():
-            ico_bluetooth.icon_color = ft.colors.GREEN
+            ico_bluetooth.color = ft.colors.GREEN
         else:
-            ico_bluetooth.icon_color = ft.colors.BLACK
+            ico_bluetooth.color = ft.colors.BLACK
 
     else:
-        ico_bluetooth.icon = ft.icons.BLUETOOTH_DISABLED_ROUNDED
+        ico_bluetooth.name = ft.icons.BLUETOOTH_DISABLED_ROUNDED
 
     if bluetooth_helper.get_device_name():
-        ico_bluetooth.icon = ft.icons.BLUETOOTH_CONNECTED_ROUNDED
+        ico_bluetooth.name = ft.icons.BLUETOOTH_CONNECTED_ROUNDED
+        ico_bluetooth.color = ft.colors.GREEN
 
     page.update()
 
 def update_taskbar_process(page: ft.Page):
-    print("hello")
     while True:
         update_taskbar(page)
         time.sleep(5)
@@ -124,7 +130,8 @@ def update_connected_device(page):
     else:
         txt_device_connected.value = "Kein Gerät verbunden"
         ico_device_connected.name = ft.icons.PHONELINK_OFF
-
+    
+    update_taskbar(page)
     page.update()
 
 
@@ -135,9 +142,11 @@ def bluetooth_listener(page):
 
 
 def update_sound(value, page: ft.Page):
+    global volume_text
     if not audio_helper.is_mute():
         audio_helper.update_sound(value)
         strip.update_sound_strip(value)
+        volume_text.value = f"{audio_helper.get_volume()}%"
         page.update()
 
 
@@ -160,8 +169,19 @@ def dec_sound(page: ft.Page):
 
 
 def toggle_mute(page: ft.Page):
+    global volume_icon, volume_text
     is_mute = audio_helper.toggle_mute()
     strip.toggle_mute(is_mute)
+
+    if is_mute:
+        volume_icon.name=ft.icons.VOLUME_OFF_ROUNDED
+        volume_icon.color=ft.colors.RED
+        volume_text.value = ""
+    else:
+        volume_icon.name=ft.icons.VOLUME_UP_ROUNDED
+        volume_icon.color=ft.colors.BLACK
+        volume_text.value = f"{audio_helper.get_volume()}%"
+
     page.update()
 
 
@@ -207,10 +227,10 @@ def start_rotary(page: ft.Page):
 
 
 def main(page: ft.Page):
-    global txt_discovery_status, ico_discovery_status, btn_discovery_status, txt_device_connected, ico_device_connected, btn_device_connected, ico_wifi, ico_bluetooth
+    global txt_discovery_status, ico_discovery_status, btn_discovery_status, txt_device_connected, ico_device_connected, btn_device_connected, ico_wifi, ico_bluetooth, volume_icon, volume_text
     start_rotary(page)
-    #page.window_full_screen = True
-    page.window_maximized = True
+    page.window_full_screen = True
+    #page.window_maximized = True
     page.theme = ft.Theme(
         color_scheme_seed='green',
         scrollbar_theme=ft.ScrollbarTheme(
@@ -231,16 +251,19 @@ def main(page: ft.Page):
     page.scroll = ft.ScrollMode.ADAPTIVE
     page.title = "Retro.I"
 
-    ico_wifi = ft.Icon(ft.icons.WIFI)
-    ico_bluetooth = ft.Icon(ft.icons.BLUETOOTH)
-
     page.appbar = ft.AppBar(
+        title=ft.Row([
+            volume_icon,
+            volume_text
+        ]),
         bgcolor=ft.colors.SURFACE_VARIANT,
         toolbar_height=32,
         actions=[ico_wifi, ico_bluetooth],
     )
 
     page.update()
+    
+    update_taskbar(page)
 
     def change_tab(e):
         index = e.control.selected_index
@@ -495,25 +518,12 @@ def main(page: ft.Page):
             )
         )
 
+    # Card for toast (drinking)
+    soundboard_grid.controls.append(ToastCard.get(page, i))
+
     for i in range(len(sounds.load_sounds())):
         sound = sounds.load_sounds()[i]
-        soundboard_grid.controls.append(
-            ft.Column(
-                [
-                    ft.Container(
-                        alignment=ft.alignment.bottom_center,
-                        on_click=lambda e, index=i, src=sound["src"]: audio_helper.play_sound(src),
-                        height=130,
-                        image_src=c.get_button_img(),
-                    ),
-                    ft.Container(
-                        ft.Text(sound["name"], size=20, text_align=ft.TextAlign.CENTER),
-                        width=300,
-                    )
-                ],
-                width=300,
-            )
-        )
+        soundboard_grid.controls.append(SoundCard.get(page, sound["src"], sound["name"], i))
 
     ico_discovery_status = ft.Icon(ft.icons.BLUETOOTH_DISABLED)
     txt_discovery_status = ft.Text("Bluetooth nicht sichtbar", style=ft.TextStyle(size=20))
@@ -601,10 +611,10 @@ def main(page: ft.Page):
 
     audio_helper.startup_sound()
 
-    bluetooth_process = Process(target=bluetooth_listener(page))
+    bluetooth_process = threading.Thread(target=bluetooth_listener(page))
     bluetooth_process.start()
 
-    taskbar_process = Process(target=update_taskbar_process(page))
+    taskbar_process = threading.Thread(target=update_taskbar_process(page))
     taskbar_process.start()
 
 

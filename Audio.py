@@ -3,12 +3,20 @@ import flet as ft
 from Stations import Stations
 from Constants import Constants
 from playsound import playsound
+from Sounds import Sounds
 
 stations_helper = Stations()
 c = Constants()
 audio = ft.Audio(src=stations_helper.load_radio_stations()[0]["src"], autoplay=False)
+sounds = Sounds()
 
-class Audio:	
+class Audio:
+	def __init__(self):
+		self.init_sound()
+
+	def init_sound(self):
+		self.update_sound(20)
+
 	def mixer(self):
 		return a.Mixer()
 
@@ -56,3 +64,7 @@ class Audio:
 	
 	def play_sound(self, src):
 		playsound(f"{c.sound_path()}/{src}")
+	
+	def play_toast(self):
+		toast_src = sounds.get_random_toast()
+		playsound(f"{c.toast_path()}/{toast_src}")

@@ -8,6 +8,9 @@ class Constants:
 	def sound_path(self):
 		return f"{self.pwd()}/assets/sounds"
 	
+	def toast_path(self):
+		return f"{self.pwd()}/assets/toasts"
+	
 	def get_button_img(self):
 		ls = os.listdir(f"{self.pwd()}/assets/buttons")
 		return f"{self.pwd()}/assets/buttons/{random.choice(ls)}"
