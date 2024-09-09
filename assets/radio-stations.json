@@ -106,5 +106,29 @@
     "src": "https://live.stream.charivari.de/955charivari-webradio?aggregator=charivari_de_link",
     "logo": "chari_vari.png",
     "color": "#FFDD00"
+  },
+  {
+    "name": "Chillout Antenne",
+    "src": "https://s5-webradio.antenne.de/chillout/stream/mp3",
+    "logo": "chillout_antenne.png",
+    "color": "#014C6B"
+  },
+  {
+    "name": "Antenne Adria",
+    "src": "https://antenne-adria.stream.laut.fm/antenne-adria",
+    "logo": "antenne_adria.png",
+    "color": "#2C9BD3"
+  },
+  {
+    "name": "Wacken Radio",
+    "src": "https://wacken.stream.laut.fm/wacken",
+    "logo": "wacken_radio.png",
+    "color": "#104484"
+  },
+  {
+    "name": "Radio Bob Mittelalter",
+    "src": "http://streams.radiobob.de/mittelalter/mp3-192/mediaplayer",
+    "logo": "radio_bob_mittelalter.png",
+    "color": "#167EBE"
   }
 ]
