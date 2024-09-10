@@ -60,6 +60,12 @@
     "color": "#700040"
   },
   {
+    "name": "Schlagergarage",
+    "src": "https://stream.laut.fm/schlagergarage",
+    "logo": "schlagergarage.png",
+    "color": "#489729"
+  },
+  {
     "name": "Radio Paloma",
     "src": "http://pool.radiopaloma.de/RADIOPALOMA.mp3",
     "logo": "radio_paloma.png",
@@ -130,5 +136,23 @@
     "src": "http://streams.radiobob.de/mittelalter/mp3-192/mediaplayer",
     "logo": "radio_bob_mittelalter.png",
     "color": "#167EBE"
+  },
+  {
+    "name": "FluxFM",
+    "src": "http://channels.fluxfm.de/FluxFM/stream.mp3",
+    "logo": "fluxfm.png",
+    "color": "#FFE31B"
+  },
+  {
+    "name": "Blasmusik Radio",
+    "src": "https://stream.laut.fm/blasmusikradio",
+    "logo": "blasmusik_radio.png",
+    "color": "#BC941F"
+  },
+  {
+    "name": "Technobase FM",
+    "src": "http://listen.technobase.fm/tunein-mp3",
+    "logo": "technobase_fm.png",
+    "color": "#DFDF21"
   }
 ]

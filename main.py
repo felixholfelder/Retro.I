@@ -46,7 +46,10 @@ sounds = Sounds()
 strip = Strip()
 strip.start()
 
+bluetooth_helper.turn_on()
 bluetooth_helper.bluetooth_discovery_off()
+bluetooth_helper.turn_off()
+
 txt_discovery_status = None
 ico_discovery_status = None
 btn_discovery_status = None
@@ -229,8 +232,8 @@ def start_rotary(page: ft.Page):
 def main(page: ft.Page):
     global txt_discovery_status, ico_discovery_status, btn_discovery_status, txt_device_connected, ico_device_connected, btn_device_connected, ico_wifi, ico_bluetooth, volume_icon, volume_text
     start_rotary(page)
-    page.window_full_screen = True
-    #page.window_maximized = True
+    #page.window_full_screen = True
+    page.window_maximized = True
     page.theme = ft.Theme(
         color_scheme_seed='green',
         scrollbar_theme=ft.ScrollbarTheme(
@@ -510,10 +513,10 @@ def main(page: ft.Page):
                         bgcolor=ft.colors.GREY_200,
                         on_click=lambda e, index=i, src=station: change_radio_station(src, index, page),
                         border_radius=10,
-                        image_src=system_helper.get_img_path(station["logo"]),
+                        content=ft.Image(src=system_helper.get_img_path(station["logo"])),
+                        padding=10,
                     ),
-                    ft.Image(ref=indicator_refs[i], src=f"{c.pwd()}/assets/party.gif", opacity=0.7,
-                             visible=False)
+                    ft.Image(ref=indicator_refs[i], src=f"{c.pwd()}/assets/party.gif", opacity=0.7, visible=False)
                 ]
             )
         )
