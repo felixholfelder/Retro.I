@@ -2,11 +2,9 @@ import threading
 import time
 import button
 from multiprocessing import Process
-
 import flet as ft
 from adafruit_led_animation.color import BLUE, GREEN
 from pyky040 import pyky040
-
 from Audio import Audio
 from BluetoothHelper import BluetoothHelper
 from Constants import Constants
@@ -22,7 +20,9 @@ from ToastCard import ToastCard
 # DT=GELB
 # SW=GRÜN
 # +=BLAU
-# -=LILA
+# -=LILA#
+
+p = None
 
 ICON_SIZE = 28
 
@@ -58,24 +58,113 @@ txt_device_connected = None
 ico_device_connected = None
 btn_device_connected = None
 
-ico_wifi = ft.Icon(name=ft.icons.WIFI)
+ssid = ""
+
+wifi_connection_dialog_ssid = ft.Text("")
+wifi_connection_dialog_pass = ft.TextField(password=True)
+wifi_connection_dialog_btn = ft.TextButton("Verbinden", on_click=lambda e: connect())
+
+def connect():
+    global ssid, p
+    wifi_connection_dialog_btn.disabled = True
+    wifi_connection_dialog_btn.text = "Wird verbunden..."
+    wifi_not_connected(p)
+    p.update()
+
+    wifi_helper.connect_to_wifi(ssid, wifi_connection_dialog_pass.value)
+    
+    wifi_connection_dialog_pass.value = ""
+
+    close_connection_dialog()
+    wifi_connection_dialog_btn.disabled = False
+    wifi_connection_dialog_btn.text = "Verbinden"
+    update_taskbar(p)
+    p.update()
+
+wifi_connection_dialog = ft.AlertDialog(
+    content=ft.Column(
+        #width=500,
+        tight=True,
+        alignment=ft.MainAxisAlignment.CENTER,
+        controls=[
+            wifi_connection_dialog_ssid,
+            ft.Text("Passwort:"),
+            wifi_connection_dialog_pass,
+        ]
+    ),
+    actions=[wifi_connection_dialog_btn]
+)
+
+wifi_loading = ft.Text()
+wifi_list = ft.ListView(expand=1, spacing=10, padding=20, auto_scroll=True)
+wifi_dialog = ft.AlertDialog(
+    content=ft.Column(
+        width=500,
+        tight=True,
+        alignment=ft.MainAxisAlignment.CENTER,
+        controls=[wifi_loading, wifi_list]
+    )
+)
+
+def open_connection_dialog(name):
+    global ssid
+    ssid = name
+    
+    wifi_connection_dialog_ssid.value = name
+    wifi_connection_dialog.open = True
+    p.update()
+
+def close_connection_dialog():
+    wifi_connection_dialog.open = False
+
+def open_wifi_dialog():
+    wifi_loading.value = "Netzwerke werden geladen..."
+    wifi_list.controls = None
+    
+    wifi_dialog.open = True
+    p.update()
+    
+    curr_ssid = wifi_helper.get_current_ssid()
+
+    networks = wifi_helper.get_networks()
+    
+    for n in networks:
+        if (curr_ssid == n):
+            wifi_list.controls.append(ft.TextButton(n, icon="done", on_click=lambda e, name=n: open_connection_dialog(name)))
+        else:
+            wifi_list.controls.append(ft.TextButton(n, on_click=lambda e, name=n: open_connection_dialog(name)))
+
+    wifi_loading.value = ""
+    p.update()
+
+ico_wifi = ft.IconButton(icon=ft.icons.WIFI, icon_color=ft.colors.BLACK, tooltip="WLAN", on_click=lambda e: open_wifi_dialog())
 ico_bluetooth = ft.Icon(name=ft.icons.BLUETOOTH)
 
 volume_icon = ft.Icon(name=ft.icons.VOLUME_UP_ROUNDED, color=ft.colors.BLACK)
 volume_text = ft.Text(f"{audio_helper.get_volume()}%", size=18)
 
+def wifi_not_connected(page: ft.Page):
+    global ico_wifi
+    ico_wifi.icon = ft.icons.WIFI_OFF_ROUNDED
+    ico_wifi.icon_color = ft.colors.BLACK
+    page.update()
+
+def wifi_connected(page: ft.Page):
+    global ico_wifi
+    ico_wifi.icon = ft.icons.WIFI_ROUNDED
+    ico_wifi.icon_color = ft.colors.GREEN
+    page.update()
+
 def update_taskbar(page: ft.Page):
     global ico_wifi, ico_bluetooth
 
-    ico_wifi.color = ft.colors.BLACK
+    ico_wifi.icon_color = ft.colors.BLACK
     ico_bluetooth.color = ft.colors.BLACK
 
     if wifi_helper.is_connected():
-        ico_wifi.name = ft.icons.WIFI_ROUNDED
-        ico_wifi.color = ft.colors.GREEN
+        wifi_connected(page)
     else:
-        ico_wifi.name = ft.icons.WIFI_OFF_ROUNDED
-        ico_wifi.color = ft.colors.BLACK
+        wifi_not_connected(page)
     
     page.update()
 
@@ -177,8 +266,8 @@ def toggle_mute(page: ft.Page):
     strip.toggle_mute(is_mute)
 
     if is_mute:
-        volume_icon.name=ft.icons.VOLUME_OFF_ROUNDED
-        volume_icon.color=ft.colors.RED
+        volume_icon.icon=ft.icons.VOLUME_OFF_ROUNDED
+        volume_icon.icon_color=ft.colors.RED
         volume_text.value = ""
     else:
         volume_icon.name=ft.icons.VOLUME_UP_ROUNDED
@@ -230,7 +319,7 @@ def start_rotary(page: ft.Page):
 
 
 def main(page: ft.Page):
-    global txt_discovery_status, ico_discovery_status, btn_discovery_status, txt_device_connected, ico_device_connected, btn_device_connected, ico_wifi, ico_bluetooth, volume_icon, volume_text
+    global p, txt_discovery_status, ico_discovery_status, btn_discovery_status, txt_device_connected, ico_device_connected, btn_device_connected, ico_wifi, ico_bluetooth, volume_icon, volume_text, wifi_dialog, wifi_connection_dialog
     start_rotary(page)
     #page.window_full_screen = True
     page.window_maximized = True
@@ -253,6 +342,9 @@ def main(page: ft.Page):
     page.add(audio_helper.init())
     page.scroll = ft.ScrollMode.ADAPTIVE
     page.title = "Retro.I"
+    
+    page.add(wifi_dialog)
+    page.add(wifi_connection_dialog)
 
     page.appbar = ft.AppBar(
         title=ft.Row([
@@ -611,6 +703,9 @@ def main(page: ft.Page):
         ft.Column(tabs)
     )
     page.update()
+    
+    p = page
+    p.update()
 
     audio_helper.startup_sound()
 
