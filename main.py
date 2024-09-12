@@ -60,9 +60,9 @@ btn_device_connected = None
 
 ssid = ""
 
-wifi_connection_dialog_ssid = ft.Text("")
-wifi_connection_dialog_pass = ft.TextField(password=True, on_focus=lambda e: system_helper.open_keyboard(), on_blur=lambda e: system_helper.close_keyboard())
-wifi_connection_dialog_btn = ft.TextButton("Verbinden", on_click=lambda e: connect())
+wifi_connection_dialog_ssid = ft.Text("", size=24, weight=ft.FontWeight.BOLD)
+wifi_connection_dialog_pass = ft.TextField(password=True, autofocus=True, on_focus=lambda e: system_helper.open_keyboard(), on_blur=lambda e: system_helper.close_keyboard())
+wifi_connection_dialog_btn = ft.FilledButton("Verbinden", on_click=lambda e: connect())
 
 def connect():
     global ssid, p
@@ -83,13 +83,12 @@ def connect():
 
 wifi_connection_dialog = ft.AlertDialog(
     content=ft.Column(
-        #width=500,
+        width=400,
         tight=True,
         alignment=ft.MainAxisAlignment.CENTER,
         controls=[
             wifi_connection_dialog_ssid,
-            ft.Text("Passwort:"),
-            wifi_connection_dialog_pass,
+            ft.Row([ft.Text("Passwort:", size=18), wifi_connection_dialog_pass]),
         ]
     ),
     actions=[wifi_connection_dialog_btn]
@@ -132,8 +131,6 @@ def open_wifi_dialog():
             content=ft.Container(content=ft.Row(controls=[ico, ft.Text(n)])),
             on_click=lambda e, name=n: open_connection_dialog(name),
         )
-        
-        print(n)
 
         if (curr_ssid != n):
             ico.visible = False
@@ -143,7 +140,7 @@ def open_wifi_dialog():
     wifi_loading.value = ""
     p.update()
 
-ico_wifi = ft.IconButton(icon=ft.icons.WIFI, icon_color=ft.colors.BLACK, tooltip="WLAN", on_click=lambda e: open_wifi_dialog())
+ico_wifi = ft.IconButton(alignment=ft.alignment.center_left, icon=ft.icons.WIFI, icon_color=ft.colors.BLACK, on_click=lambda e: open_wifi_dialog())
 ico_bluetooth = ft.Icon(name=ft.icons.BLUETOOTH)
 
 volume_icon = ft.Icon(name=ft.icons.VOLUME_UP_ROUNDED, color=ft.colors.BLACK)
@@ -272,8 +269,8 @@ def toggle_mute(page: ft.Page):
     strip.toggle_mute(is_mute)
 
     if is_mute:
-        volume_icon.icon=ft.icons.VOLUME_OFF_ROUNDED
-        volume_icon.icon_color=ft.colors.RED
+        volume_icon.name=ft.icons.VOLUME_OFF_ROUNDED
+        volume_icon.color=ft.colors.RED
         volume_text.value = ""
     else:
         volume_icon.name=ft.icons.VOLUME_UP_ROUNDED
@@ -327,8 +324,8 @@ def start_rotary(page: ft.Page):
 def main(page: ft.Page):
     global p, txt_discovery_status, ico_discovery_status, btn_discovery_status, txt_device_connected, ico_device_connected, btn_device_connected, ico_wifi, ico_bluetooth, volume_icon, volume_text, wifi_dialog, wifi_connection_dialog
     start_rotary(page)
-    #page.window_full_screen = True
-    page.window_maximized = True
+    page.window_full_screen = True
+    #page.window_maximized = True
     page.theme = ft.Theme(
         color_scheme_seed='green',
         scrollbar_theme=ft.ScrollbarTheme(
