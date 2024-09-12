@@ -68,6 +68,15 @@ ctl.!default {
 
 <hr>
 
+## On-Screen Keyboard
+Um per Touch Eingaben zu tätigen, muss ein On-Screen Keyboard installiert werden.\
+Mit den folgenden Befehlen, kann die Tastatur installiert werden:
+```
+sudo apt install onboard
+sudo apt install at-spi2-core
+```
+
+
 ## Autostart
 ### Start der Anwendung
 Die Anwendung zur Steuerung des Radio's wird automatisch nach dem Boot des Raspberry's gestartet (`start.sh`)\

@@ -61,7 +61,7 @@ btn_device_connected = None
 ssid = ""
 
 wifi_connection_dialog_ssid = ft.Text("")
-wifi_connection_dialog_pass = ft.TextField(password=True)
+wifi_connection_dialog_pass = ft.TextField(password=True, on_focus=lambda e: system_helper.open_keyboard(), on_blur=lambda e: system_helper.close_keyboard())
 wifi_connection_dialog_btn = ft.TextButton("Verbinden", on_click=lambda e: connect())
 
 def connect():
@@ -120,19 +120,25 @@ def close_connection_dialog():
 def open_wifi_dialog():
     wifi_loading.value = "Netzwerke werden geladen..."
     wifi_list.controls = None
-    
     wifi_dialog.open = True
     p.update()
     
     curr_ssid = wifi_helper.get_current_ssid()
-
     networks = wifi_helper.get_networks()
     
     for n in networks:
-        if (curr_ssid == n):
-            wifi_list.controls.append(ft.TextButton(n, icon="done", on_click=lambda e, name=n: open_connection_dialog(name)))
-        else:
-            wifi_list.controls.append(ft.TextButton(n, on_click=lambda e, name=n: open_connection_dialog(name)))
+        ico = ft.Icon("done")
+        btn = ft.TextButton(
+            content=ft.Container(content=ft.Row(controls=[ico, ft.Text(n)])),
+            on_click=lambda e, name=n: open_connection_dialog(name),
+        )
+        
+        print(n)
+
+        if (curr_ssid != n):
+            ico.visible = False
+        
+        wifi_list.controls.append(btn)
 
     wifi_loading.value = ""
     p.update()
@@ -605,7 +611,7 @@ def main(page: ft.Page):
                         bgcolor=ft.colors.GREY_200,
                         on_click=lambda e, index=i, src=station: change_radio_station(src, index, page),
                         border_radius=10,
-                        content=ft.Image(src=system_helper.get_img_path(station["logo"])),
+                        content=ft.Image(src=system_helper.get_img_path(station["logo"]), border_radius=ft.border_radius.all(4)),
                         padding=10,
                     ),
                     ft.Image(ref=indicator_refs[i], src=f"{c.pwd()}/assets/party.gif", opacity=0.7, visible=False)

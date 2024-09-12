@@ -45,3 +45,11 @@ class System:
     
     def is_party_mode(self):
         return self.is_party == "1"
+    
+    def open_keyboard(self):
+        print("open keyboard")
+        self.close_keyboard()
+        os.system("wvkbd-mobintl")
+    
+    def close_keyboard(self):
+        os.system("pkill wvkbd-mobintl")
