@@ -324,8 +324,9 @@ def start_rotary(page: ft.Page):
 def main(page: ft.Page):
     global p, txt_discovery_status, ico_discovery_status, btn_discovery_status, txt_device_connected, ico_device_connected, btn_device_connected, ico_wifi, ico_bluetooth, volume_icon, volume_text, wifi_dialog, wifi_connection_dialog
     start_rotary(page)
-    page.window_full_screen = True
-    #page.window_maximized = True
+    #page.window_full_screen = True
+    page.window_maximized = True
+    page.window_frameless = True
     page.theme = ft.Theme(
         color_scheme_seed='green',
         scrollbar_theme=ft.ScrollbarTheme(
@@ -339,7 +340,6 @@ def main(page: ft.Page):
             },
             thickness=40,
             radius=20,
-            cross_axis_margin=15,
         )
     )
     page.add(audio_helper.init())
@@ -452,7 +452,6 @@ def main(page: ft.Page):
 
     nav = ft.NavigationBar(
         bgcolor="green",
-        elevation=5,
         on_change=change_tab,
         selected_index=0,
         destinations=destinations
