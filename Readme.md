@@ -68,13 +68,21 @@ ctl.!default {
 
 <hr>
 
+## Taskbar ausblenden
+Um die Taskbar auszublenden müssen die folgenden Zeilen in der Datei `/home/pi/config/wf-panel-pi.ini` hinzugefügt werden:\
+```
+autohide=true
+autohide_duration=500
+```
+
+
 ## On-Screen Keyboard
 Um per Touch Eingaben zu tätigen, muss ein On-Screen Keyboard installiert werden.\
 Mit den folgenden Befehlen, kann die Tastatur installiert werden:
 ```
-sudo apt install onboard
-sudo apt install at-spi2-core
+sudo apt install wvkbd
 ```
+Durch entsprechende Kommandos kann die Tastatur nun sichtbar/unsichtbar gemacht werden.
 
 
 ## Autostart
