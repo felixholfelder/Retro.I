@@ -34,6 +34,8 @@ VOLUME_STEP = 4
 
 last_turn = 1
 
+tab_index = 0
+
 wifi_helper = WifiHelper()
 bluetooth_helper = BluetoothHelper()
 bluetooth_helper.turn_off()
@@ -41,7 +43,7 @@ audio_helper = Audio()
 system_helper = System()
 system_helper.init_party_mode()
 stations_helper = Stations()
-c = Constants()
+constants = Constants()
 sounds = Sounds()
 strip = Strip()
 strip.start()
@@ -61,8 +63,11 @@ btn_device_connected = None
 ssid = ""
 
 wifi_connection_dialog_ssid = ft.Text("", size=24, weight=ft.FontWeight.BOLD)
-wifi_connection_dialog_pass = ft.TextField(password=True, autofocus=True, on_focus=lambda e: system_helper.open_keyboard(), on_blur=lambda e: system_helper.close_keyboard())
+wifi_connection_dialog_pass = ft.TextField(password=True, autofocus=True,
+                                           on_focus=lambda e: system_helper.open_keyboard(),
+                                           on_blur=lambda e: system_helper.close_keyboard())
 wifi_connection_dialog_btn = ft.FilledButton("Verbinden", on_click=lambda e: connect())
+
 
 def connect():
     global ssid, p
@@ -72,7 +77,7 @@ def connect():
     p.update()
 
     wifi_helper.connect_to_wifi(ssid, wifi_connection_dialog_pass.value)
-    
+
     wifi_connection_dialog_pass.value = ""
 
     close_connection_dialog()
@@ -80,6 +85,7 @@ def connect():
     wifi_connection_dialog_btn.text = "Verbinden"
     update_taskbar(p)
     p.update()
+
 
 wifi_connection_dialog = ft.AlertDialog(
     content=ft.Column(
@@ -105,26 +111,29 @@ wifi_dialog = ft.AlertDialog(
     )
 )
 
+
 def open_connection_dialog(name):
     global ssid
     ssid = name
-    
+
     wifi_connection_dialog_ssid.value = name
     wifi_connection_dialog.open = True
     p.update()
 
+
 def close_connection_dialog():
     wifi_connection_dialog.open = False
+
 
 def open_wifi_dialog():
     wifi_loading.value = "Netzwerke werden geladen..."
     wifi_list.controls = None
     wifi_dialog.open = True
     p.update()
-    
+
     curr_ssid = wifi_helper.get_current_ssid()
     networks = wifi_helper.get_networks()
-    
+
     for n in networks:
         ico = ft.Icon("done")
         btn = ft.TextButton(
@@ -134,17 +143,20 @@ def open_wifi_dialog():
 
         if (curr_ssid != n):
             ico.visible = False
-        
+
         wifi_list.controls.append(btn)
 
     wifi_loading.value = ""
     p.update()
 
-ico_wifi = ft.IconButton(alignment=ft.alignment.center_left, icon=ft.icons.WIFI, icon_color=ft.colors.BLACK, on_click=lambda e: open_wifi_dialog())
+
+ico_wifi = ft.IconButton(alignment=ft.alignment.center_left, icon=ft.icons.WIFI, icon_color=ft.colors.BLACK,
+                         on_click=lambda e: open_wifi_dialog())
 ico_bluetooth = ft.Icon(name=ft.icons.BLUETOOTH)
 
 volume_icon = ft.Icon(name=ft.icons.VOLUME_UP_ROUNDED, color=ft.colors.BLACK)
 volume_text = ft.Text(f"{audio_helper.get_volume()}%", size=18)
+
 
 def wifi_not_connected(page: ft.Page):
     global ico_wifi
@@ -152,11 +164,13 @@ def wifi_not_connected(page: ft.Page):
     ico_wifi.icon_color = ft.colors.BLACK
     page.update()
 
+
 def wifi_connected(page: ft.Page):
     global ico_wifi
     ico_wifi.icon = ft.icons.WIFI_ROUNDED
     ico_wifi.icon_color = ft.colors.GREEN
     page.update()
+
 
 def update_taskbar(page: ft.Page):
     global ico_wifi, ico_bluetooth
@@ -168,7 +182,7 @@ def update_taskbar(page: ft.Page):
         wifi_connected(page)
     else:
         wifi_not_connected(page)
-    
+
     page.update()
 
     if bluetooth_helper.is_bluetooth_on():
@@ -188,10 +202,50 @@ def update_taskbar(page: ft.Page):
 
     page.update()
 
+
 def update_taskbar_process(page: ft.Page):
     while True:
         update_taskbar(page)
         time.sleep(5)
+
+
+song_info_title = ft.Column(ft.Text(constants.current_song_info["title"], weight=ft.FontWeight.BOLD))
+song_info_artist = ft.Column(ft.Text(constants.current_song_info["artist"]))
+song_info_row = ft.Row([
+    ft.Row([
+        ft.Icon("music_note"),
+        ft.Row([
+            song_info_title,
+            song_info_artist,
+        ])
+    ])
+])
+
+
+def update_song_info(page: ft.Page):
+    song_info_row.visible = True
+    artist, title = sounds.get_song_info(constants.current_radio_station["src"])
+
+    if artist is not "" and title is not "":
+        constants.current_song_info["title"] = title
+        constants.current_song_info["artist"] = artist
+        song_info_artist.visible = True
+    else:
+        constants.current_song_info["title"] = constants.current_radio_station["name"]
+        constants.current_song_info["artist"] = ""
+        song_info_artist.visible = False
+
+    page.update()
+
+
+def update_song_info_process(page: ft.Page):
+    while True:
+        if tab_index is 0:
+            update_song_info(page)
+        else:
+            song_info_row.visible = False
+        time.sleep(5)
+
 
 def enable_discovery():
     bluetooth_helper.bluetooth_discovery_on()
@@ -225,7 +279,7 @@ def update_connected_device(page):
     else:
         txt_device_connected.value = "Kein Gerät verbunden"
         ico_device_connected.name = ft.icons.PHONELINK_OFF
-    
+
     update_taskbar(page)
     page.update()
 
@@ -269,12 +323,12 @@ def toggle_mute(page: ft.Page):
     strip.toggle_mute(is_mute)
 
     if is_mute:
-        volume_icon.name=ft.icons.VOLUME_OFF_ROUNDED
-        volume_icon.color=ft.colors.RED
+        volume_icon.name = ft.icons.VOLUME_OFF_ROUNDED
+        volume_icon.color = ft.colors.RED
         volume_text.value = ""
     else:
-        volume_icon.name=ft.icons.VOLUME_UP_ROUNDED
-        volume_icon.color=ft.colors.BLACK
+        volume_icon.name = ft.icons.VOLUME_UP_ROUNDED
+        volume_icon.color = ft.colors.BLACK
         volume_text.value = f"{audio_helper.get_volume()}%"
 
     page.update()
@@ -304,11 +358,16 @@ def change_radio_station(station, index, page):
     global strip_color
     color = station["color"]
 
+    constants.current_radio_station = station
+
     toggle_indicator(index)
     page.theme.color_scheme_seed = color
     page.navigation_bar.bgcolor = color
     audio_helper.play(station["src"])
     strip.update_strip(color)
+
+    update_song_info(page)
+
     page.update()
 
 
@@ -345,7 +404,7 @@ def main(page: ft.Page):
     page.add(audio_helper.init())
     page.scroll = ft.ScrollMode.ADAPTIVE
     page.title = "Retro.I"
-    
+
     page.add(wifi_dialog)
     page.add(wifi_connection_dialog)
 
@@ -360,19 +419,20 @@ def main(page: ft.Page):
     )
 
     page.update()
-    
+
     update_taskbar(page)
 
     def change_tab(e):
-        index = e.control.selected_index
-        if index == 0:
+        global tab_index
+        tab_index = e.control.selected_index
+        if tab_index == 0:
             switch_radio_tab()
             bluetooth_helper.turn_off()
             update_taskbar(page)
         else:
             radio_tab.visible = False
 
-        if index == 1:
+        if tab_index == 1:
             switch_bluetooth_tab()
             disable_indicator()
             bluetooth_helper.turn_on()
@@ -381,18 +441,18 @@ def main(page: ft.Page):
             bluetooth_tab.visible = False
 
         if system_helper.is_party_mode():
-            if index == 2:
+            if tab_index == 2:
                 switch_soundboard_tab()
                 disable_indicator()
             else:
                 soundboard_tab.visible = False
 
-            if index == 3:
+            if tab_index == 3:
                 settings_tab.visible = True
             else:
                 settings_tab.visible = False
         else:
-            if index == 2:
+            if tab_index == 2:
                 settings_tab.visible = True
             else:
                 settings_tab.visible = False
@@ -403,13 +463,11 @@ def main(page: ft.Page):
         if bluetooth_helper.is_discovery_on():
             toggle_bluetooth_discovery(page)
         bluetooth_helper.disconnect()
-        strip.fill(GREEN)
         update_connected_device(page)
         radio_tab.visible = True
 
     def switch_bluetooth_tab():
         audio_helper.pause()
-        strip.fill(BLUE)
         update_connected_device(page)
         bluetooth_tab.visible = True
 
@@ -607,10 +665,12 @@ def main(page: ft.Page):
                         bgcolor=ft.colors.GREY_200,
                         on_click=lambda e, index=i, src=station: change_radio_station(src, index, page),
                         border_radius=10,
-                        content=ft.Image(src=system_helper.get_img_path(station["logo"]), border_radius=ft.border_radius.all(4)),
+                        content=ft.Image(src=system_helper.get_img_path(station["logo"]),
+                                         border_radius=ft.border_radius.all(4)),
                         padding=10,
                     ),
-                    ft.Image(ref=indicator_refs[i], src=f"{c.pwd()}/assets/party.gif", opacity=0.7, visible=False)
+                    ft.Image(ref=indicator_refs[i], src=f"{constants.pwd()}/assets/party.gif", opacity=0.7,
+                             visible=False)
                 ]
             )
         )
@@ -660,6 +720,7 @@ def main(page: ft.Page):
     # Tabs
     radio_tab = ft.Container(
         content=ft.Column([
+            song_info_row,
             ft.Row([grid]),
         ]),
         margin=ft.margin.only(right=75),
@@ -705,7 +766,7 @@ def main(page: ft.Page):
         ft.Column(tabs)
     )
     page.update()
-    
+
     p = page
     p.update()
 
@@ -716,6 +777,9 @@ def main(page: ft.Page):
 
     taskbar_process = threading.Thread(target=update_taskbar_process(page))
     taskbar_process.start()
+
+    song_info_process = threading.Thread(target=update_song_info_process(page))
+    song_info_process.start()
 
 
 ft.app(main)
