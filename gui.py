@@ -133,7 +133,7 @@ def change_radio_station(event: ft.ContainerTapEvent, page):
     toggle_indicator(station)
     page.theme = ft.Theme(color_scheme_seed=color)
     page.navigation_bar.bgcolor = color
-    audio_helper.play(station[1]["src"])
+    audio_helper.play_src(station[1]["src"])
     page.update()
 
     strip.run(color)

@@ -5,16 +5,17 @@ from multiprocessing import Process
 import flet as ft
 from adafruit_led_animation.color import BLUE, GREEN
 from pyky040 import pyky040
-from Audio import Audio
-from BluetoothHelper import BluetoothHelper
-from Constants import Constants
-from Sounds import Sounds
-from Stations import Stations
-from Strip import Strip
-from System import System
-from WifiHelper import WifiHelper
-from SoundCard import SoundCard
-from ToastCard import ToastCard
+from helper import Audio
+from helper import BluetoothHelper
+from helper import Constants
+from helper import Sounds
+from helper import Stations
+from helper import Strip
+from helper import System
+from helper import WifiHelper
+from components import SoundCard
+from components import ToastCard
+from components import GpioButton
 
 # CLK=ORANGE
 # DT=GELB
@@ -47,6 +48,8 @@ constants = Constants()
 sounds = Sounds()
 strip = Strip()
 strip.start()
+
+toast_button = GpioButton(21, audio_helper.play_toast())
 
 bluetooth_helper.turn_on()
 bluetooth_helper.bluetooth_discovery_off()
@@ -363,7 +366,7 @@ def change_radio_station(station, index, page):
     toggle_indicator(index)
     page.theme.color_scheme_seed = color
     page.navigation_bar.bgcolor = color
-    audio_helper.play(station["src"])
+    audio_helper.play_src(station["src"])
     strip.update_strip(color)
 
     update_song_info(page)
