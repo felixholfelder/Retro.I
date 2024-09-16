@@ -49,7 +49,7 @@ class System:
     def open_keyboard(self):
         print("open keyboard")
         self.close_keyboard()
-        os.system("wvkbd-mobintl -l full")
+        os.system("wvkbd-mobintl -L 300")
     
     def close_keyboard(self):
         os.system("pkill wvkbd-mobintl")

@@ -140,8 +140,8 @@ def open_wifi_dialog():
     wifi_loading.value = ""
     p.update()
 
-ico_wifi = ft.IconButton(alignment=ft.alignment.center_left, icon=ft.icons.WIFI, icon_color=ft.colors.BLACK, on_click=lambda e: open_wifi_dialog())
-ico_bluetooth = ft.Icon(name=ft.icons.BLUETOOTH)
+ico_wifi = ft.IconButton(icon=ft.icons.WIFI, icon_size=30, icon_color=ft.colors.BLACK, on_click=lambda e: open_wifi_dialog())
+ico_bluetooth = ft.Icon(name=ft.icons.BLUETOOTH, size=30)
 
 volume_icon = ft.Icon(name=ft.icons.VOLUME_UP_ROUNDED, color=ft.colors.BLACK)
 volume_text = ft.Text(f"{audio_helper.get_volume()}%", size=18)
@@ -324,9 +324,9 @@ def start_rotary(page: ft.Page):
 def main(page: ft.Page):
     global p, txt_discovery_status, ico_discovery_status, btn_discovery_status, txt_device_connected, ico_device_connected, btn_device_connected, ico_wifi, ico_bluetooth, volume_icon, volume_text, wifi_dialog, wifi_connection_dialog
     start_rotary(page)
-    #page.window_full_screen = True
     page.window_maximized = True
     page.window_frameless = True
+    page.spacing=0
     page.theme = ft.Theme(
         color_scheme_seed='green',
         scrollbar_theme=ft.ScrollbarTheme(
@@ -350,12 +350,16 @@ def main(page: ft.Page):
     page.add(wifi_connection_dialog)
 
     page.appbar = ft.AppBar(
-        title=ft.Row([
-            volume_icon,
-            volume_text
-        ]),
+        leading=ft.Row([
+                volume_icon,
+                volume_text
+            ],
+            spacing=10
+        ),
+        title=ft.Text("Retro.I"),
+        center_title=True,
         bgcolor=ft.colors.SURFACE_VARIANT,
-        toolbar_height=32,
+        toolbar_height=40,
         actions=[ico_wifi, ico_bluetooth],
     )
 
