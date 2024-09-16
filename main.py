@@ -375,7 +375,7 @@ def start_rotary(page: ft.Page):
 def main(page: ft.Page):
     global p, txt_discovery_status, ico_discovery_status, btn_discovery_status, txt_device_connected, ico_device_connected, btn_device_connected, ico_wifi, ico_bluetooth, volume_icon, volume_text, wifi_dialog, wifi_connection_dialog, background_processes
     start_rotary(page)
-    #GpioButton(21, audio_helper.play_toast())
+    GpioButton(21, audio_helper.play_toast)
 
     page.window_maximized = True
     page.window_frameless = True
@@ -422,6 +422,7 @@ def main(page: ft.Page):
 
     def change_tab(e):
         tab_index = e.control.selected_index
+        update_song_info(page)
 
         if tab_index == 0:
             switch_radio_tab()
