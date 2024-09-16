@@ -5,14 +5,14 @@ from multiprocessing import Process
 import flet as ft
 from adafruit_led_animation.color import BLUE, GREEN
 from pyky040 import pyky040
-from helper import Audio
-from helper import BluetoothHelper
-from helper import Constants
-from helper import Sounds
-from helper import Stations
-from helper import Strip
-from helper import System
-from helper import WifiHelper
+from helper.Audio import Audio
+from helper.BluetoothHelper import BluetoothHelper
+from helper.Constants import Constants
+from helper.Sounds import Sounds
+from helper.Stations import Stations
+from helper.Strip import Strip
+from helper.System import System
+from helper.WifiHelper import WifiHelper
 from components import SoundCard
 from components import ToastCard
 from components import GpioButton
@@ -49,7 +49,7 @@ sounds = Sounds()
 strip = Strip()
 strip.start()
 
-toast_button = GpioButton(21, audio_helper.play_toast())
+toast_button = GpioButton(21, audio_helper.play_toast)
 
 bluetooth_helper.turn_on()
 bluetooth_helper.bluetooth_discovery_off()

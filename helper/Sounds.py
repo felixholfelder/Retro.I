@@ -4,7 +4,7 @@ import random
 import re
 import struct
 
-from Constants import Constants
+from helper.Constants import Constants
 
 try:
 	import urllib2

@@ -1,10 +1,10 @@
 import time
 import alsaaudio as a
 import flet as ft
-from Stations import Stations
-from Constants import Constants
+from helper.Stations import Stations
+from helper.Constants import Constants
 from playsound import playsound
-from Sounds import Sounds
+from helper.Sounds import Sounds
 
 stations_helper = Stations()
 c = Constants()

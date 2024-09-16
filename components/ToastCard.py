@@ -1,6 +1,6 @@
 import flet as ft
-from Constants import Constants
-from Audio import Audio
+from helper.Constants import Constants
+from helper.Audio import Audio
 
 c = Constants()
 audio_helper = Audio()

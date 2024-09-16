@@ -1,8 +1,8 @@
 import os
 import subprocess
-from Strip import Strip
-from Audio import Audio
-from Constants import Constants
+from helper.Strip import Strip
+from helper.Audio import Audio
+from helper.Constants import Constants
 from datetime import datetime
 
 audio_helper = Audio()
