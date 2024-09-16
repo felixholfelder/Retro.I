@@ -13,9 +13,10 @@ from helper import Stations
 from helper import Strip
 from helper import System
 from helper import WifiHelper
-from components import SoundCard
-from components import ToastCard
-from components import GpioButton
+from components.SoundCard import SoundCard
+from components.ToastCard import ToastCard
+from components.GpioButton import GpioButton
+from components.SettingsButton import SettingsButton
 
 # CLK=ORANGE
 # DT=GELB
@@ -48,8 +49,6 @@ constants = Constants()
 sounds = Sounds()
 strip = Strip()
 strip.start()
-
-toast_button = GpioButton(21, audio_helper.play_toast())
 
 bluetooth_helper.turn_on()
 bluetooth_helper.bluetooth_discovery_off()
@@ -224,27 +223,27 @@ song_info_row = ft.Row([
 
 
 def update_song_info(page: ft.Page):
-    song_info_row.visible = True
-    artist, title = sounds.get_song_info(constants.current_radio_station["src"])
+    if tab_index == 0:
+        song_info_row.visible = True
+        artist, title = sounds.get_song_info(constants.current_radio_station["src"])
 
-    if artist != "" and title != "":
-        constants.current_song_info["title"] = title
-        constants.current_song_info["artist"] = artist
-        song_info_artist.visible = True
+        if artist != "" and title != "":
+            constants.current_song_info["title"] = title
+            constants.current_song_info["artist"] = artist
+            song_info_artist.visible = True
+        else:
+            constants.current_song_info["title"] = constants.current_radio_station["name"]
+            constants.current_song_info["artist"] = ""
+            song_info_artist.visible = False
     else:
-        constants.current_song_info["title"] = constants.current_radio_station["name"]
-        constants.current_song_info["artist"] = ""
-        song_info_artist.visible = False
+        song_info_row.visible = False
 
     page.update()
 
 
 def update_song_info_process(page: ft.Page):
     while True:
-        if tab_index == 0:
-            update_song_info(page)
-        else:
-            song_info_row.visible = False
+        update_song_info(page)
         time.sleep(5)
 
 
@@ -384,9 +383,11 @@ def start_rotary(page: ft.Page):
 def main(page: ft.Page):
     global p, txt_discovery_status, ico_discovery_status, btn_discovery_status, txt_device_connected, ico_device_connected, btn_device_connected, ico_wifi, ico_bluetooth, volume_icon, volume_text, wifi_dialog, wifi_connection_dialog
     start_rotary(page)
+    GpioButton(21, audio_helper.play_toast())
+
     page.window_maximized = True
     page.window_frameless = True
-    page.spacing=0
+    #page.spacing = 0
     page.theme = ft.Theme(
         color_scheme_seed='green',
         scrollbar_theme=ft.ScrollbarTheme(
@@ -430,6 +431,8 @@ def main(page: ft.Page):
     def change_tab(e):
         global tab_index
         tab_index = e.control.selected_index
+        update_song_info(page)
+
         if tab_index == 0:
             switch_radio_tab()
             bluetooth_helper.turn_off()
@@ -513,13 +516,12 @@ def main(page: ft.Page):
         )
     )
 
-    nav = ft.NavigationBar(
+    page.navigation_bar = ft.NavigationBar(
         bgcolor="green",
         on_change=change_tab,
         selected_index=0,
         destinations=destinations
     )
-    page.navigation_bar = nav
 
     grid = ft.GridView(
         expand=1,
@@ -637,26 +639,31 @@ def main(page: ft.Page):
         page.update()
 
     lv = ft.ListView(spacing=10, padding=20)
-    lv.controls.append(ft.TextButton(height=100, content=ft.Row(alignment=ft.MainAxisAlignment.CENTER,
-                                                                controls=[ft.Icon(ft.icons.LOGOUT),
-                                                                          ft.Text("Radio ausschalten",
-                                                                                  style=ft.TextStyle(size=20))]),
-                                     on_click=show_dialog))
-    lv.controls.append(ft.TextButton(height=100, content=ft.Row(alignment=ft.MainAxisAlignment.CENTER,
-                                                                controls=[ft.Icon(ft.icons.COLOR_LENS),
-                                                                          ft.Text("LED-Streifen",
-                                                                                  style=ft.TextStyle(size=20))]),
-                                     on_click=show_led_dialog))
-    lv.controls.append(ft.TextButton(height=100, content=ft.Row(alignment=ft.MainAxisAlignment.CENTER,
-                                                                controls=[ft.Icon(ft.icons.INFO), ft.Text("Info",
-                                                                                                          style=ft.TextStyle(
-                                                                                                              size=20))]),
-                                     on_click=show_info_dialog))
-    lv.controls.append(ft.TextButton(height=100, content=ft.Row(alignment=ft.MainAxisAlignment.CENTER,
-                                                                controls=[ft.Icon(ft.icons.STAR), ft.Text("Credits",
-                                                                                                          style=ft.TextStyle(
-                                                                                                              size=20))]),
-                                     on_click=show_credits_dialog))
+    lv.controls.append(SettingsButton(ft.icons.LOGOUT, "Radio ausschalten", show_dialog))
+    lv.controls.append(SettingsButton(ft.icons.COLOR_LENS, "LED-Streifen", show_led_dialog))
+    lv.controls.append(SettingsButton(ft.icons.INFO, "Info", show_info_dialog))
+    lv.controls.append(SettingsButton(ft.icons.STAR, "Credits", show_credits_dialog))
+
+    # lv.controls.append(ft.TextButton(height=100, content=ft.Row(alignment=ft.MainAxisAlignment.CENTER,
+    #                                                             controls=[ft.Icon(ft.icons.LOGOUT),
+    #                                                                       ft.Text("Radio ausschalten",
+    #                                                                               style=ft.TextStyle(size=20))]),
+    #                                  on_click=show_dialog))
+    # lv.controls.append(ft.TextButton(height=100, content=ft.Row(alignment=ft.MainAxisAlignment.CENTER,
+    #                                                             controls=[ft.Icon(ft.icons.COLOR_LENS),
+    #                                                                       ft.Text("LED-Streifen",
+    #                                                                               style=ft.TextStyle(size=20))]),
+    #                                  on_click=show_led_dialog))
+    # lv.controls.append(ft.TextButton(height=100, content=ft.Row(alignment=ft.MainAxisAlignment.CENTER,
+    #                                                             controls=[ft.Icon(ft.icons.INFO), ft.Text("Info",
+    #                                                                                                       style=ft.TextStyle(
+    #                                                                                                           size=20))]),
+    #                                  on_click=show_info_dialog))
+    # lv.controls.append(ft.TextButton(height=100, content=ft.Row(alignment=ft.MainAxisAlignment.CENTER,
+    #                                                             controls=[ft.Icon(ft.icons.STAR), ft.Text("Credits",
+    #                                                                                                       style=ft.TextStyle(
+    #                                                                                                           size=20))]),
+    #                                  on_click=show_credits_dialog))
 
     for i in range(len(stations_helper.load_radio_stations())):
         indicator_refs.append(ft.Ref[ft.Image]())
@@ -759,17 +766,12 @@ def main(page: ft.Page):
         visible=False,
     )
 
-    tabs = []
-    tabs.append(radio_tab)
-    tabs.append(bluetooth_tab)
-    tabs.append(settings_tab)
+    tabs = [radio_tab, bluetooth_tab, settings_tab]
 
     if system_helper.is_party_mode():
         tabs.append(soundboard_tab)
 
-    page.add(
-        ft.Column(tabs)
-    )
+    page.add(ft.Column(tabs))
     page.update()
 
     p = page
