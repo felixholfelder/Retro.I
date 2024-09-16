@@ -1,4 +1,6 @@
-import subprocess, os, re
+import os
+import re
+import subprocess
 
 
 class WifiHelper:
@@ -15,12 +17,10 @@ class WifiHelper:
         networkslist = re.findall(r'"(.+?)"', networks)
         return list(dict.fromkeys(networkslist))
     
-    def connect_to_wifi(self, ssid, password):      
-        command = []
-        
+    def connect_to_wifi(self, ssid, password):
         if (password == ""):
             command = ['nmcli', 'd', 'wifi', 'connect', ssid]
         else:
             command = ['nmcli', 'd', 'wifi', 'connect', ssid, 'password', password]
 
-        result = subprocess.run(command, stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
+        subprocess.run(command, stdout=subprocess.PIPE).stdout.decode('utf-8').strip()

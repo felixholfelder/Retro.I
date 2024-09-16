@@ -1,3 +1,4 @@
+import time
 import alsaaudio as a
 import flet as ft
 from Stations import Stations
@@ -43,11 +44,14 @@ class Audio:
 	def is_mute(self):
 		return self.mixer().getmute()[0] == 1
 
-	def play(self, src):
+	def play_src(self, src):
 		self.pause()
 		audio.release()
 		audio.src = src
 		audio.autoplay = True
+		self.play()
+
+	def play(self):
 		audio.play()
 
 	def pause(self):
@@ -67,4 +71,11 @@ class Audio:
 	
 	def play_toast(self):
 		toast_src = sounds.get_random_toast()
+		self.pause()
+		self.wait()
 		playsound(f"{c.toast_path()}/{toast_src}")
+		self.wait()
+		self.play()
+
+	def wait(self):
+		time.sleep(0.5)
