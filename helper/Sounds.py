@@ -8,7 +8,7 @@ from helper.Constants import Constants
 
 try:
 	import urllib2
-except ImportError:  # Python 3
+except ImportError:
 	import urllib.request as urllib2
 
 c = Constants()
@@ -33,7 +33,6 @@ class Sounds:
 		encoding = 'utf-8'
 		request = urllib2.Request(url, headers={'Icy-MetaData': 1})
 		response = urllib2.urlopen(request)
-		# print(response.headers, file=sys.stderr)
 		metaint = int(response.headers['icy-metaint'])
 		for _ in range(10):
 			response.read(metaint)
@@ -43,13 +42,7 @@ class Sounds:
 			if m:
 				title = m.group(1)
 				if title:
-					titleString = title.decode(encoding, errors='replace')
-					try:
-						artist, title = titleString.split(" - ")
-					except _:
-						artist, title = titleString.split(": ")
-
-					return artist, title
+					return title.decode(encoding, errors='replace')					
 		else:
-			return "", ""
+			return ""
 

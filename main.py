@@ -13,9 +13,10 @@ from helper.Stations import Stations
 from helper.Strip import Strip
 from helper.System import System
 from helper.WifiHelper import WifiHelper
-from components import SoundCard
-from components import ToastCard
-from components import GpioButton
+from components.SoundCard import SoundCard
+from components.ToastCard import ToastCard
+from components.GpioButton import GpioButton
+from components.SettingsButton import SettingsButton
 
 # CLK=ORANGE
 # DT=GELB
@@ -48,8 +49,6 @@ constants = Constants()
 sounds = Sounds()
 strip = Strip()
 strip.start()
-
-toast_button = GpioButton(21, audio_helper.play_toast)
 
 bluetooth_helper.turn_on()
 bluetooth_helper.bluetooth_discovery_off()
@@ -204,48 +203,37 @@ def update_taskbar(page: ft.Page):
     page.update()
 
 
-def update_taskbar_process(page: ft.Page):
-    while True:
-        update_taskbar(page)
-        time.sleep(5)
-
-
-song_info_title = ft.Column(ft.Text(constants.current_song_info["title"], weight=ft.FontWeight.BOLD))
-song_info_artist = ft.Column(ft.Text(constants.current_song_info["artist"]))
+song_info_title = ft.Text(constants.current_song_info, weight=ft.FontWeight.BOLD)
 song_info_row = ft.Row([
     ft.Row([
         ft.Icon("music_note"),
-        ft.Row([
-            song_info_title,
-            song_info_artist,
-        ])
+        song_info_title
     ])
-])
+],
+visible=False)
 
 
-def update_song_info(page: ft.Page):
+def hide_song_info(page: ft.Page):
+    song_info_row.visible = False
+    page.update()
+
+def show_song_info(page: ft.Page):
     song_info_row.visible = True
-    artist, title = sounds.get_song_info(constants.current_radio_station["src"])
-
-    if artist != "" and title != "":
-        constants.current_song_info["title"] = title
-        constants.current_song_info["artist"] = artist
-        song_info_artist.visible = True
-    else:
-        constants.current_song_info["title"] = constants.current_radio_station["name"]
-        constants.current_song_info["artist"] = ""
-        song_info_artist.visible = False
-
     page.update()
 
 
-def update_song_info_process(page: ft.Page):
-    while True:
-        if tab_index == 0:
-            update_song_info(page)
+def update_song_info(page: ft.Page):
+    try:
+        title = sounds.get_song_info(constants.current_radio_station["src"])
+
+        if title != "":
+            song_info_title.value = title
         else:
-            song_info_row.visible = False
-        time.sleep(5)
+            song_info_title.value = constants.current_radio_station["name"]
+    except:
+        pass
+
+    page.update()
 
 
 def enable_discovery():
@@ -285,10 +273,12 @@ def update_connected_device(page):
     page.update()
 
 
-def bluetooth_listener(page):
+def background_processes(page: ft.Page):
     while True:
         update_connected_device(page)
-        time.sleep(10)
+        update_taskbar(page)
+        update_song_info(page)
+        time.sleep(5)
 
 
 def update_sound(value, page: ft.Page):
@@ -366,7 +356,8 @@ def change_radio_station(station, index, page):
     page.navigation_bar.bgcolor = color
     audio_helper.play_src(station["src"])
     strip.update_strip(color)
-
+    
+    show_song_info(page)
     update_song_info(page)
 
     page.update()
@@ -382,11 +373,13 @@ def start_rotary(page: ft.Page):
 
 
 def main(page: ft.Page):
-    global p, txt_discovery_status, ico_discovery_status, btn_discovery_status, txt_device_connected, ico_device_connected, btn_device_connected, ico_wifi, ico_bluetooth, volume_icon, volume_text, wifi_dialog, wifi_connection_dialog
+    global p, txt_discovery_status, ico_discovery_status, btn_discovery_status, txt_device_connected, ico_device_connected, btn_device_connected, ico_wifi, ico_bluetooth, volume_icon, volume_text, wifi_dialog, wifi_connection_dialog, background_processes
     start_rotary(page)
+    #GpioButton(21, audio_helper.play_toast())
+
     page.window_maximized = True
     page.window_frameless = True
-    page.spacing=0
+    page.spacing = 0
     page.theme = ft.Theme(
         color_scheme_seed='green',
         scrollbar_theme=ft.ScrollbarTheme(
@@ -428,14 +421,15 @@ def main(page: ft.Page):
     update_taskbar(page)
 
     def change_tab(e):
-        global tab_index
         tab_index = e.control.selected_index
+
         if tab_index == 0:
             switch_radio_tab()
             bluetooth_helper.turn_off()
             update_taskbar(page)
         else:
             radio_tab.visible = False
+            hide_song_info(page)
 
         if tab_index == 1:
             switch_bluetooth_tab()
@@ -513,13 +507,12 @@ def main(page: ft.Page):
         )
     )
 
-    nav = ft.NavigationBar(
+    page.navigation_bar = ft.NavigationBar(
         bgcolor="green",
         on_change=change_tab,
         selected_index=0,
         destinations=destinations
     )
-    page.navigation_bar = nav
 
     grid = ft.GridView(
         expand=1,
@@ -637,26 +630,31 @@ def main(page: ft.Page):
         page.update()
 
     lv = ft.ListView(spacing=10, padding=20)
-    lv.controls.append(ft.TextButton(height=100, content=ft.Row(alignment=ft.MainAxisAlignment.CENTER,
-                                                                controls=[ft.Icon(ft.icons.LOGOUT),
-                                                                          ft.Text("Radio ausschalten",
-                                                                                  style=ft.TextStyle(size=20))]),
-                                     on_click=show_dialog))
-    lv.controls.append(ft.TextButton(height=100, content=ft.Row(alignment=ft.MainAxisAlignment.CENTER,
-                                                                controls=[ft.Icon(ft.icons.COLOR_LENS),
-                                                                          ft.Text("LED-Streifen",
-                                                                                  style=ft.TextStyle(size=20))]),
-                                     on_click=show_led_dialog))
-    lv.controls.append(ft.TextButton(height=100, content=ft.Row(alignment=ft.MainAxisAlignment.CENTER,
-                                                                controls=[ft.Icon(ft.icons.INFO), ft.Text("Info",
-                                                                                                          style=ft.TextStyle(
-                                                                                                              size=20))]),
-                                     on_click=show_info_dialog))
-    lv.controls.append(ft.TextButton(height=100, content=ft.Row(alignment=ft.MainAxisAlignment.CENTER,
-                                                                controls=[ft.Icon(ft.icons.STAR), ft.Text("Credits",
-                                                                                                          style=ft.TextStyle(
-                                                                                                              size=20))]),
-                                     on_click=show_credits_dialog))
+    lv.controls.append(SettingsButton.get(ft.icons.LOGOUT, "Radio ausschalten", show_dialog))
+    lv.controls.append(SettingsButton.get(ft.icons.COLOR_LENS, "LED-Streifen", show_led_dialog))
+    lv.controls.append(SettingsButton.get(ft.icons.INFO, "Info", show_info_dialog))
+    lv.controls.append(SettingsButton.get(ft.icons.STAR, "Credits", show_credits_dialog))
+
+    # lv.controls.append(ft.TextButton(height=100, content=ft.Row(alignment=ft.MainAxisAlignment.CENTER,
+    #                                                             controls=[ft.Icon(ft.icons.LOGOUT),
+    #                                                                       ft.Text("Radio ausschalten",
+    #                                                                               style=ft.TextStyle(size=20))]),
+    #                                  on_click=show_dialog))
+    # lv.controls.append(ft.TextButton(height=100, content=ft.Row(alignment=ft.MainAxisAlignment.CENTER,
+    #                                                             controls=[ft.Icon(ft.icons.COLOR_LENS),
+    #                                                                       ft.Text("LED-Streifen",
+    #                                                                               style=ft.TextStyle(size=20))]),
+    #                                  on_click=show_led_dialog))
+    # lv.controls.append(ft.TextButton(height=100, content=ft.Row(alignment=ft.MainAxisAlignment.CENTER,
+    #                                                             controls=[ft.Icon(ft.icons.INFO), ft.Text("Info",
+    #                                                                                                       style=ft.TextStyle(
+    #                                                                                                           size=20))]),
+    #                                  on_click=show_info_dialog))
+    # lv.controls.append(ft.TextButton(height=100, content=ft.Row(alignment=ft.MainAxisAlignment.CENTER,
+    #                                                             controls=[ft.Icon(ft.icons.STAR), ft.Text("Credits",
+    #                                                                                                       style=ft.TextStyle(
+    #                                                                                                           size=20))]),
+    #                                  on_click=show_credits_dialog))
 
     for i in range(len(stations_helper.load_radio_stations())):
         indicator_refs.append(ft.Ref[ft.Image]())
@@ -762,14 +760,13 @@ def main(page: ft.Page):
     tabs = []
     tabs.append(radio_tab)
     tabs.append(bluetooth_tab)
-    tabs.append(settings_tab)
 
     if system_helper.is_party_mode():
         tabs.append(soundboard_tab)
+    
+    tabs.append(settings_tab)
 
-    page.add(
-        ft.Column(tabs)
-    )
+    page.add(ft.Column(tabs))
     page.update()
 
     p = page
@@ -777,14 +774,8 @@ def main(page: ft.Page):
 
     audio_helper.startup_sound()
 
-    bluetooth_process = threading.Thread(target=bluetooth_listener(page))
-    bluetooth_process.start()
-
-    taskbar_process = threading.Thread(target=update_taskbar_process(page))
-    taskbar_process.start()
-
-    song_info_process = threading.Thread(target=update_song_info_process(page))
-    song_info_process.start()
+    background_processes = threading.Thread(target=background_processes(page))
+    background_processes.start()
 
 
 ft.app(main)

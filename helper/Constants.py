@@ -3,7 +3,7 @@ import random
 
 class Constants:
 	current_radio_station = []
-	current_song_info = []
+	current_song_info = ["", ""]
 
 	def pwd(self):
 		return "/home/pi/Desktop/Retro.I"
