@@ -13,6 +13,7 @@ from helper.Stations import Stations
 from helper.Strip import Strip
 from helper.System import System
 from helper.WifiHelper import WifiHelper
+from helper.RadioHelper import RadioHelper
 from components.SoundCard import SoundCard
 from components.ToastCard import ToastCard
 from components.GpioButton import GpioButton
@@ -39,6 +40,7 @@ last_turn = 1
 tab_index = 0
 
 wifi_helper = WifiHelper()
+radio_helper = RadioHelper()
 bluetooth_helper = BluetoothHelper()
 bluetooth_helper.turn_off()
 audio_helper = Audio()
@@ -202,29 +204,61 @@ def update_taskbar(page: ft.Page):
 
     page.update()
 
+radio_search_listview = ft.ListView(spacing=10, padding=20)
+radio_search_textfield = ft.TextField(autofocus=True, on_focus=lambda e: system_helper.open_keyboard(), on_blur=lambda e: system_helper.close_keyboard())
 
-song_info_title = ft.Text(constants.current_song_info, weight=ft.FontWeight.BOLD)
+def search_stations():
+    name = radio_search_textfield.value
+    list = radio_helper.get_stations_by_name(name)
+    for el in list:
+        img = ft.Icon(ft.icons.MUSIC_NOTE) if el["logo"] == "" else ft.Image(el["logo"])
+        element = ft.Container(
+            ft.Row([
+                img,
+                ft.Text(el["name"])
+            ]),
+            on_click=change_radio_station(el, p)
+        )
+
+        radio_search_listview.controls.append(element)
+    p.update()
+
+radio_search_dialog = ft.AlertDialog(
+    content=ft.Column(
+        width=500,
+        tight=True,
+        alignment=ft.MainAxisAlignment.CENTER,
+        controls=[
+            ft.Row([radio_search_textfield, ft.FilledButton("Suchen", on_click=search_stations)], spacing=ft.MainAxisAlignment.SPACE_BETWEEN),
+            radio_search_listview
+        ]
+    )
+)
+
+def open_radio_search_dialog():
+    radio_search_dialog.open = True
+    p.update()
+
+
+song_info_title = ft.Text("", weight=ft.FontWeight.BOLD)
 song_info_row = ft.Row([
     ft.Row([
-        ft.Icon("music_note"),
-        song_info_title
-    ])
-],
-visible=False)
+        ft.Row([
+            ft.Icon(ft.icons.MUSIC_NOTE),
+            song_info_title,
+        ]),
+        ft.IconButton(ft.icons.SEARCH, on_click=open_radio_search_dialog)
+    ],
+    spacing=ft.MainAxisAlignment.SPACE_BETWEEN)
+])
 
-
-def hide_song_info(page: ft.Page):
-    song_info_row.visible = False
+def reset_song_info_row(page: ft.Page):
+    song_info_title.value = "Kein Radiosender ausgewählt"
     page.update()
-
-def show_song_info(page: ft.Page):
-    song_info_row.visible = True
-    page.update()
-
 
 def update_song_info(page: ft.Page):
     try:
-        title = sounds.get_song_info(constants.current_radio_station["src"])
+        title = radio_helper.get_song_info(constants.current_radio_station["src"])
 
         if title != "":
             song_info_title.value = title
@@ -342,10 +376,11 @@ def disable_indicator():
 
 def toggle_indicator(index):
     disable_indicator()
-    indicator_refs[index].current.visible = True
+    if index != -1:
+        indicator_refs[index].current.visible = True
 
 
-def change_radio_station(station, index, page):
+def change_radio_station(station, page, index=-1):
     global strip_color
     color = station["color"]
 
@@ -356,12 +391,10 @@ def change_radio_station(station, index, page):
     page.navigation_bar.bgcolor = color
     audio_helper.play_src(station["src"])
     strip.update_strip(color)
-    
-    show_song_info(page)
+
     update_song_info(page)
 
     page.update()
-
 
 def start_rotary(page: ft.Page):
     rotary = pyky040.Encoder(CLK=CLK_PIN, DT=DT_PIN, SW=SW_PIN)
@@ -430,7 +463,7 @@ def main(page: ft.Page):
             update_taskbar(page)
         else:
             radio_tab.visible = False
-            hide_song_info(page)
+            reset_song_info_row(page)
 
         if tab_index == 1:
             switch_bluetooth_tab()
@@ -636,27 +669,6 @@ def main(page: ft.Page):
     lv.controls.append(SettingsButton.get(ft.icons.INFO, "Info", show_info_dialog))
     lv.controls.append(SettingsButton.get(ft.icons.STAR, "Credits", show_credits_dialog))
 
-    # lv.controls.append(ft.TextButton(height=100, content=ft.Row(alignment=ft.MainAxisAlignment.CENTER,
-    #                                                             controls=[ft.Icon(ft.icons.LOGOUT),
-    #                                                                       ft.Text("Radio ausschalten",
-    #                                                                               style=ft.TextStyle(size=20))]),
-    #                                  on_click=show_dialog))
-    # lv.controls.append(ft.TextButton(height=100, content=ft.Row(alignment=ft.MainAxisAlignment.CENTER,
-    #                                                             controls=[ft.Icon(ft.icons.COLOR_LENS),
-    #                                                                       ft.Text("LED-Streifen",
-    #                                                                               style=ft.TextStyle(size=20))]),
-    #                                  on_click=show_led_dialog))
-    # lv.controls.append(ft.TextButton(height=100, content=ft.Row(alignment=ft.MainAxisAlignment.CENTER,
-    #                                                             controls=[ft.Icon(ft.icons.INFO), ft.Text("Info",
-    #                                                                                                       style=ft.TextStyle(
-    #                                                                                                           size=20))]),
-    #                                  on_click=show_info_dialog))
-    # lv.controls.append(ft.TextButton(height=100, content=ft.Row(alignment=ft.MainAxisAlignment.CENTER,
-    #                                                             controls=[ft.Icon(ft.icons.STAR), ft.Text("Credits",
-    #                                                                                                       style=ft.TextStyle(
-    #                                                                                                           size=20))]),
-    #                                  on_click=show_credits_dialog))
-
     for i in range(len(stations_helper.load_radio_stations())):
         indicator_refs.append(ft.Ref[ft.Image]())
         station = stations_helper.load_radio_stations()[i]
@@ -667,7 +679,7 @@ def main(page: ft.Page):
                 controls=[
                     ft.Container(
                         bgcolor=ft.colors.GREY_200,
-                        on_click=lambda e, index=i, src=station: change_radio_station(src, index, page),
+                        on_click=lambda e, index=i, src=station: change_radio_station(src, page, index),
                         border_radius=10,
                         content=ft.Image(src=system_helper.get_img_path(station["logo"]),
                                          border_radius=ft.border_radius.all(4)),

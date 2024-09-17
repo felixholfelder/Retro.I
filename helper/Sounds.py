@@ -1,15 +1,9 @@
 import json
 import os
 import random
-import re
-import struct
 
 from helper.Constants import Constants
 
-try:
-	import urllib2
-except ImportError:
-	import urllib.request as urllib2
 
 c = Constants()
 
@@ -28,21 +22,4 @@ class Sounds:
 			return random.choice(files)
 		except FileNotFoundError:
 			return "Directory not found."
-
-	def get_song_info(self, url):
-		encoding = 'utf-8'
-		request = urllib2.Request(url, headers={'Icy-MetaData': 1})
-		response = urllib2.urlopen(request)
-		metaint = int(response.headers['icy-metaint'])
-		for _ in range(10):
-			response.read(metaint)
-			metadata_length = struct.unpack('B', response.read(1))[0] * 16
-			metadata = response.read(metadata_length).rstrip(b'\0')
-			m = re.search(br"StreamTitle='([^']*)';", metadata)
-			if m:
-				title = m.group(1)
-				if title:
-					return title.decode(encoding, errors='replace')					
-		else:
-			return ""
 
