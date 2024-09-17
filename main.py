@@ -105,7 +105,7 @@ wifi_connection_dialog = ft.AlertDialog(
 )
 
 wifi_loading = ft.Text()
-wifi_list = ft.ListView(expand=1, spacing=10, padding=20, auto_scroll=True)
+wifi_list = ft.ListView(spacing=10, padding=20, expand=True)
 wifi_dialog = ft.AlertDialog(
     content=ft.Column(
         width=500,
@@ -153,10 +153,10 @@ def open_wifi_dialog():
     wifi_loading.value = ""
     p.update()
 
-ico_wifi = ft.IconButton(icon=ft.icons.WIFI, icon_size=30, icon_color=ft.colors.BLACK, on_click=lambda e: open_wifi_dialog())
-ico_bluetooth = ft.Icon(name=ft.icons.BLUETOOTH, size=30)
+ico_wifi = ft.IconButton(icon=ft.icons.WIFI, icon_size=25, icon_color=ft.colors.BLACK, on_click=lambda e: open_wifi_dialog())
+ico_bluetooth = ft.Icon(name=ft.icons.BLUETOOTH, size=25)
 
-volume_icon = ft.Icon(name=ft.icons.VOLUME_UP_ROUNDED, color=ft.colors.BLACK)
+volume_icon = ft.Icon(name=ft.icons.VOLUME_UP_ROUNDED, size=25, color=ft.colors.BLACK)
 volume_text = ft.Text(f"{audio_helper.get_volume()}%", size=18)
 
 
@@ -204,24 +204,33 @@ def update_taskbar(page: ft.Page):
 
     page.update()
 
-radio_search_listview = ft.ListView(spacing=10, padding=20)
-radio_search_textfield = ft.TextField(autofocus=True, on_focus=lambda e: system_helper.open_keyboard(), on_blur=lambda e: system_helper.close_keyboard())
+radio_search_listview = ft.ListView(spacing=10, padding=20, expand=True)
 
 def search_stations():
     name = radio_search_textfield.value
-    list = radio_helper.get_stations_by_name(name)
-    for el in list:
-        img = ft.Icon(ft.icons.MUSIC_NOTE) if el["logo"] == "" else ft.Image(el["logo"])
+    stations = radio_helper.get_stations_by_name(name)
+    l = []
+    for el in stations:
+        img = ft.Container(ft.Icon(ft.icons.MUSIC_NOTE), width=50, height=50) if el["logo"] == "" else ft.Image(el["logo"], fit=ft.ImageFit.SCALE_DOWN, border_radius=ft.border_radius.all(10), width=50, height=50)
         element = ft.Container(
             ft.Row([
                 img,
                 ft.Text(el["name"])
             ]),
-            on_click=change_radio_station(el, p)
+            on_click=lambda e, item=el: change_radio_station(item, p)
         )
 
-        radio_search_listview.controls.append(element)
+        l.append(element)
+    
+    radio_search_listview.controls = l
     p.update()
+
+radio_search_textfield = ft.TextField(
+    label="Radiosender",
+    expand=True,
+    on_focus=lambda e: system_helper.open_keyboard(),
+    on_blur=lambda e: system_helper.close_keyboard()
+)
 
 radio_search_dialog = ft.AlertDialog(
     content=ft.Column(
@@ -229,7 +238,13 @@ radio_search_dialog = ft.AlertDialog(
         tight=True,
         alignment=ft.MainAxisAlignment.CENTER,
         controls=[
-            ft.Row([radio_search_textfield, ft.FilledButton("Suchen", on_click=search_stations)], spacing=ft.MainAxisAlignment.SPACE_BETWEEN),
+            ft.Row(
+                [
+                    radio_search_textfield,
+                    ft.FilledButton("Suchen", on_click=lambda e: search_stations()),
+                ],
+                spacing=ft.MainAxisAlignment.SPACE_BETWEEN
+            ),
             radio_search_listview
         ]
     )
@@ -240,30 +255,31 @@ def open_radio_search_dialog():
     p.update()
 
 
-song_info_title = ft.Text("", weight=ft.FontWeight.BOLD)
+song_info_station = ft.Text("Kein Radiosender ausgewählt", weight=ft.FontWeight.BOLD)
+song_info_title = ft.Text("", expand=True)
 song_info_row = ft.Row([
-    ft.Row([
-        ft.Row([
-            ft.Icon(ft.icons.MUSIC_NOTE),
-            song_info_title,
-        ]),
-        ft.IconButton(ft.icons.SEARCH, on_click=open_radio_search_dialog)
-    ],
-    spacing=ft.MainAxisAlignment.SPACE_BETWEEN)
+    ft.Icon(ft.icons.MUSIC_NOTE),
+    song_info_station,
+    song_info_title,
+    ft.IconButton(ft.icons.SEARCH, icon_size=28, on_click=lambda e: open_radio_search_dialog())
 ])
 
 def reset_song_info_row(page: ft.Page):
-    song_info_title.value = "Kein Radiosender ausgewählt"
-    page.update()
+    constants.current_radio_station = {}
+    song_info_station.value = "Kein Radiosender ausgewählt"
+    song_info_title.value = ""
+    p.update()
 
 def update_song_info(page: ft.Page):
     try:
         title = radio_helper.get_song_info(constants.current_radio_station["src"])
 
         if title != "":
+            song_info_station.value = constants.current_radio_station["name"]
             song_info_title.value = title
         else:
-            song_info_title.value = constants.current_radio_station["name"]
+            song_info_station.value = constants.current_radio_station["name"]
+            song_info_title.value = ""
     except:
         pass
 
@@ -406,7 +422,7 @@ def start_rotary(page: ft.Page):
 
 
 def main(page: ft.Page):
-    global p, txt_discovery_status, ico_discovery_status, btn_discovery_status, txt_device_connected, ico_device_connected, btn_device_connected, ico_wifi, ico_bluetooth, volume_icon, volume_text, wifi_dialog, wifi_connection_dialog, background_processes
+    global p, txt_discovery_status, ico_discovery_status, btn_discovery_status, txt_device_connected, ico_device_connected, btn_device_connected, ico_wifi, ico_bluetooth, volume_icon, volume_text, wifi_dialog, wifi_connection_dialog, radio_search_dialog, background_processes
     start_rotary(page)
     GpioButton(21, audio_helper.play_toast)
 
@@ -434,6 +450,7 @@ def main(page: ft.Page):
 
     page.add(wifi_dialog)
     page.add(wifi_connection_dialog)
+    page.add(radio_search_dialog)
 
     page.appbar = ft.AppBar(
         leading=ft.Row([
@@ -549,7 +566,7 @@ def main(page: ft.Page):
     )
 
     grid = ft.GridView(
-        expand=1,
+        expand=True,
         runs_count=5,
         max_extent=150,
         child_aspect_ratio=1.0,
@@ -558,7 +575,7 @@ def main(page: ft.Page):
     )
 
     soundboard_grid = ft.GridView(
-        expand=1,
+        expand=True,
         runs_count=5,
         max_extent=150,
         spacing=80,
@@ -601,7 +618,7 @@ def main(page: ft.Page):
                 ft.Row([
                     ft.Text("Helligkeit", style=ft.TextStyle(size=20)),
                     ft.Slider(on_change=strip.change_brightness, min=0, max=100, value=strip.get_curr_brightness(),
-                              width=420)
+                              expand=True)
                 ])
             ]
         )
@@ -737,9 +754,9 @@ def main(page: ft.Page):
     radio_tab = ft.Container(
         content=ft.Column([
             song_info_row,
-            ft.Row([grid]),
+            ft.Row([grid])
         ]),
-        margin=ft.margin.only(right=75),
+        margin=ft.margin.only(right=75)
     )
 
     bluetooth_tab = ft.Container(

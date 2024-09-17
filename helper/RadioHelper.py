@@ -32,6 +32,6 @@ class RadioHelper:
 
         l = []
         for e in response.json():
-            l.append({"name": e["name"], "src": e["url"], "logo": e["favicon"], "color": "#00ff00"})
+            l.append({"name": e["name"], "src": e["url"], "logo": e["favicon"], "color": "#46A94B"})
 
         return l
