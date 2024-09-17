@@ -206,6 +206,28 @@ def update_taskbar(page: ft.Page):
 
 radio_search_listview = ft.ListView(spacing=10, padding=20, expand=True)
 
+def add_station():
+    pass
+
+station_add_dialog = ft.AlertDialog(
+    content=ft.Column(
+        width=500,
+        tight=True,
+        alignment=ft.MainAxisAlignment.CENTER
+    ),
+    title=ft.Text(constants.current_station_to_add["name"]),
+    actions=[
+        ft.FilledButton("Abspielen", on_click=lambda e: change_radio_station(constants.current_station_to_add, p)),
+        ft.FilledButton("Zu Liste hinzufügen", on_click=lambda e: add_station())
+    ],
+    actions_alignment=ft.MainAxisAlignment.SPACE_BETWEEN
+)
+
+def open_station_add_dialog(element, page: ft.Page):
+    constants.current_station_to_add = element
+    station_add_dialog.open = True
+    page.update()
+
 def search_stations():
     name = radio_search_textfield.value
     stations = radio_helper.get_stations_by_name(name)
@@ -217,7 +239,7 @@ def search_stations():
                 img,
                 ft.Text(el["name"])
             ]),
-            on_click=lambda e, item=el: change_radio_station(item, p)
+            on_click=lambda e, item=el: open_station_add_dialog(item, p)
         )
 
         l.append(element)
@@ -400,6 +422,7 @@ def change_radio_station(station, page, index=-1):
     global strip_color
     color = station["color"]
 
+    station_add_dialog.open = False
     constants.current_radio_station = station
 
     toggle_indicator(index)
@@ -422,7 +445,7 @@ def start_rotary(page: ft.Page):
 
 
 def main(page: ft.Page):
-    global p, txt_discovery_status, ico_discovery_status, btn_discovery_status, txt_device_connected, ico_device_connected, btn_device_connected, ico_wifi, ico_bluetooth, volume_icon, volume_text, wifi_dialog, wifi_connection_dialog, radio_search_dialog, background_processes
+    global p, txt_discovery_status, ico_discovery_status, btn_discovery_status, txt_device_connected, ico_device_connected, btn_device_connected, ico_wifi, ico_bluetooth, volume_icon, volume_text, wifi_dialog, wifi_connection_dialog, radio_search_dialog, station_add_dialog, background_processes
     start_rotary(page)
     GpioButton(21, audio_helper.play_toast)
 
@@ -451,6 +474,7 @@ def main(page: ft.Page):
     page.add(wifi_dialog)
     page.add(wifi_connection_dialog)
     page.add(radio_search_dialog)
+    page.add(station_add_dialog)
 
     page.appbar = ft.AppBar(
         leading=ft.Row([
