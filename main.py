@@ -64,6 +64,41 @@ txt_device_connected = None
 ico_device_connected = None
 btn_device_connected = None
 
+grid = ft.GridView(
+    expand=True,
+    runs_count=5,
+    max_extent=150,
+    child_aspect_ratio=1.0,
+    spacing=20,
+    run_spacing=50
+)
+
+def reload_radio_stations(page):
+    grid.controls = []
+    indicator_refs = []
+
+    for i, station in enumerate(stations_helper.load_radio_stations()):
+        constants.indicator_refs.append(ft.Ref[ft.Image]())
+        grid.controls.append(
+            ft.Stack(
+                alignment=ft.MainAxisAlignment.END,
+                fit=ft.StackFit.EXPAND,
+                controls=[
+                    ft.Container(
+                        bgcolor=ft.colors.GREY_200,
+                        on_click=lambda e, index=i, src=station: change_radio_station(src, page, index),
+                        border_radius=10,
+                        content=ft.Image(src=system_helper.get_img_path(station["logo"]),
+                                         border_radius=ft.border_radius.all(4)),
+                        padding=10,
+                    ),
+                    ft.Image(ref=constants.indicator_refs[i], src=f"{constants.pwd()}/assets/party.gif", opacity=0.7,
+                             visible=False)
+                ]
+            )
+        )
+    page.update()
+
 ssid = ""
 
 wifi_connection_dialog_ssid = ft.Text("", size=24, weight=ft.FontWeight.BOLD)
@@ -206,25 +241,59 @@ def update_taskbar(page: ft.Page):
 
 radio_search_listview = ft.ListView(spacing=10, padding=20, expand=True)
 
-def add_station():
-    pass
+duplicate_text = ft.Text("")
+duplicate_dialog = ft.AlertDialog(
+    title=duplicate_text,
+    actions=[
+        ft.FilledButton("Ok", on_click=lambda e: close_duplicate_dialog())
+    ],
+    actions_alignment=ft.MainAxisAlignment.END,
+)
 
+def close_duplicate_dialog():
+    duplicate_dialog.open = False
+    p.update()
+
+def add_station(station):
+    stations_list = stations_helper.load_radio_stations()
+    found = False
+    for el in stations_list:
+        if el["name"] == station["name"]:
+            found = True
+            duplicate_text.value = f'{constants.current_station_to_add["name"]} existiert bereits'
+            duplicate_dialog.open = True
+            p.update()
+            break
+    
+    if not found:
+        stations_helper.add_station(station)
+        reload_radio_stations(p)
+        close_station_add_dialog()
+
+
+station_to_add_text = ft.Text(f'{constants.current_station_to_add["name"]}')
 station_add_dialog = ft.AlertDialog(
     content=ft.Column(
         width=500,
         tight=True,
         alignment=ft.MainAxisAlignment.CENTER
     ),
-    title=ft.Text(constants.current_station_to_add["name"]),
+    title=station_to_add_text,
     actions=[
         ft.FilledButton("Abspielen", on_click=lambda e: change_radio_station(constants.current_station_to_add, p)),
-        ft.FilledButton("Zu Liste hinzufügen", on_click=lambda e: add_station())
+        ft.FilledButton("Zu Liste hinzufügen", on_click=lambda e: add_station(constants.current_station_to_add))
     ],
     actions_alignment=ft.MainAxisAlignment.SPACE_BETWEEN
 )
 
+def close_station_add_dialog():
+    station_add_dialog.open = False
+    p.update()
+
 def open_station_add_dialog(element, page: ft.Page):
     constants.current_station_to_add = element
+    station_to_add_text.value = element["name"]
+    station_add_dialog.update()
     station_add_dialog.open = True
     page.update()
 
@@ -283,7 +352,7 @@ song_info_row = ft.Row([
     ft.Icon(ft.icons.MUSIC_NOTE),
     song_info_station,
     song_info_title,
-    ft.IconButton(ft.icons.SEARCH, icon_size=28, on_click=lambda e: open_radio_search_dialog())
+    ft.TextButton("Sendersuche", icon=ft.icons.SEARCH, on_click=lambda e: open_radio_search_dialog())
 ])
 
 def reset_song_info_row(page: ft.Page):
@@ -397,25 +466,16 @@ def toggle_mute(page: ft.Page):
     page.update()
 
 
-def get_station_by_image(src):
-    for i, obj in enumerate(stations_helper.load_radio_stations()):
-        if system_helper.get_img_path(obj["logo"]) == src:
-            return [i, obj]
-    return -1
-
-
-indicator_refs = []
-
-
 def disable_indicator():
-    for ref in indicator_refs:
+    for ref in constants.indicator_refs:
         ref.current.visible = False
 
 
 def toggle_indicator(index):
+    print(index)
     disable_indicator()
     if index != -1:
-        indicator_refs[index].current.visible = True
+        constants.indicator_refs[index].current.visible = True
 
 
 def change_radio_station(station, page, index=-1):
@@ -445,7 +505,7 @@ def start_rotary(page: ft.Page):
 
 
 def main(page: ft.Page):
-    global p, txt_discovery_status, ico_discovery_status, btn_discovery_status, txt_device_connected, ico_device_connected, btn_device_connected, ico_wifi, ico_bluetooth, volume_icon, volume_text, wifi_dialog, wifi_connection_dialog, radio_search_dialog, station_add_dialog, background_processes
+    global p, txt_discovery_status, ico_discovery_status, btn_discovery_status, txt_device_connected, ico_device_connected, btn_device_connected, ico_wifi, ico_bluetooth, volume_icon, volume_text, wifi_dialog, wifi_connection_dialog, radio_search_dialog, station_add_dialog, background_processes, grid, duplicate_dialog
     start_rotary(page)
     GpioButton(21, audio_helper.play_toast)
 
@@ -475,6 +535,7 @@ def main(page: ft.Page):
     page.add(wifi_connection_dialog)
     page.add(radio_search_dialog)
     page.add(station_add_dialog)
+    page.add(duplicate_dialog)
 
     page.appbar = ft.AppBar(
         leading=ft.Row([
@@ -589,15 +650,6 @@ def main(page: ft.Page):
         destinations=destinations
     )
 
-    grid = ft.GridView(
-        expand=True,
-        runs_count=5,
-        max_extent=150,
-        child_aspect_ratio=1.0,
-        spacing=20,
-        run_spacing=50
-    )
-
     soundboard_grid = ft.GridView(
         expand=True,
         runs_count=5,
@@ -710,30 +762,10 @@ def main(page: ft.Page):
     lv.controls.append(SettingsButton.get(ft.icons.INFO, "Info", show_info_dialog))
     lv.controls.append(SettingsButton.get(ft.icons.STAR, "Credits", show_credits_dialog))
 
-    for i in range(len(stations_helper.load_radio_stations())):
-        indicator_refs.append(ft.Ref[ft.Image]())
-        station = stations_helper.load_radio_stations()[i]
-        grid.controls.append(
-            ft.Stack(
-                alignment=ft.MainAxisAlignment.END,
-                fit=ft.StackFit.EXPAND,
-                controls=[
-                    ft.Container(
-                        bgcolor=ft.colors.GREY_200,
-                        on_click=lambda e, index=i, src=station: change_radio_station(src, page, index),
-                        border_radius=10,
-                        content=ft.Image(src=system_helper.get_img_path(station["logo"]),
-                                         border_radius=ft.border_radius.all(4)),
-                        padding=10,
-                    ),
-                    ft.Image(ref=indicator_refs[i], src=f"{constants.pwd()}/assets/party.gif", opacity=0.7,
-                             visible=False)
-                ]
-            )
-        )
+    reload_radio_stations(page)
 
     # Card for toast (drinking)
-    soundboard_grid.controls.append(ToastCard.get(page, i))
+    soundboard_grid.controls.append(ToastCard.get(page))
 
     for i in range(len(sounds.load_sounds())):
         sound = sounds.load_sounds()[i]
