@@ -12,6 +12,7 @@ class Stations:
         return data
 
     def add_station(self, station):
+        # TODO - get main color of station and save as attribute "color"
         with open(f"{c.pwd()}/assets/radio-stations.json", "r+") as file:
             file_data = json.load(file)
             file_data.append(station)
