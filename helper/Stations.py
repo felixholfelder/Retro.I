@@ -1,7 +1,9 @@
 import json
 from helper.Constants import Constants
+from helper.colors import ColorHelper
 
 c = Constants()
+color_helper = ColorHelper()
 
 
 class Stations:
@@ -12,7 +14,8 @@ class Stations:
         return data
 
     def add_station(self, station):
-        # TODO - get main color of station and save as attribute "color"
+        station["color"] = color_helper.extract_color(station["logo"])
+        
         with open(f"{c.pwd()}/assets/radio-stations.json", "r+") as file:
             file_data = json.load(file)
             file_data.append(station)

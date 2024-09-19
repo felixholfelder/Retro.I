@@ -7,4 +7,6 @@ class ColorHelper:
 	
 	def extract_color(self, img_src):
 		ct = ColorThief(img_src)
-		palette = ct.get_palette(color_count=5)
+		color = ct.get_color(quality=1)
+		return f"#{color[0]:02x}{color[1]:02x}{color[2]:02x}"
+			

@@ -154,11 +154,5 @@
         "logo": "technobase_fm.png",
         "name": "Technobase FM",
         "src": "http://listen.technobase.fm/tunein-mp3"
-    },
-    {
-        "name": "Bayern 1 Niederbayern/Oberpfalz",
-        "src": "https://dispatcher.rndfnk.com/br/br1/nbopf/mp3/mid",
-        "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Bayern1-logo.svg/250px-Bayern1-logo.svg.png",
-        "color": "#46A94B"
     }
 ]
