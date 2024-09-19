@@ -1,5 +1,7 @@
 import threading
 import time
+
+from helper.dialogs.StationDeleteDialog import StationDeleteDialog
 from scripts import button
 from multiprocessing import Process
 import flet as ft
@@ -23,15 +25,15 @@ from components.SettingsButton import SettingsButton
 # DT=GELB
 # SW=GRÜN
 # +=BLAU
-# -=LILA#
+# -=LILA
 
 p = None
 
 ICON_SIZE = 28
 
-CLK_PIN = 13
-DT_PIN = 6
 SW_PIN = 5
+DT_PIN = 6
+CLK_PIN = 13
 
 VOLUME_STEP = 4
 
@@ -64,7 +66,7 @@ txt_device_connected = None
 ico_device_connected = None
 btn_device_connected = None
 
-grid = ft.GridView(
+radio_grid = ft.GridView(
     expand=True,
     runs_count=5,
     max_extent=150,
@@ -73,33 +75,30 @@ grid = ft.GridView(
     run_spacing=50
 )
 
-station_delete_dialog = ft.AlertDialog(
-    title=ft.Text(f'Sender löschen?'),
-    actions_alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
-    actions=[
-        ft.TextButton("Abbrechen", on_click=lambda e: close_delete_dialog()),
-        ft.FilledButton("Löschen", on_click=lambda e: delete_dialog())
-    ]
-)
-
+def open_delete_station_dialog(index):
+    constants.current_station_index_to_delete = index
+    station_delete_dialog.open()
 
 def reload_radio_stations(page):
-    grid.controls = []
+    radio_grid.controls = []
     constants.indicator_refs = []
 
     for i, station in enumerate(stations_helper.load_radio_stations()):
         constants.indicator_refs.append(ft.Ref[ft.Image]())
-        grid.controls.append(
+        radio_grid.controls.append(
             ft.Stack(
                 alignment=ft.MainAxisAlignment.END,
                 fit=ft.StackFit.EXPAND,
                 controls=[
                     ft.Container(
                         bgcolor=ft.colors.GREY_200,
-                        on_click=lambda e, index=i, src=station: change_radio_station(src, page, index),
+                        on_click=lambda e, src=station, p=page, index=i: change_radio_station(src, p, index),
                         on_long_press=lambda e, index=i: open_delete_station_dialog(index),
                         border_radius=10,
-                        content=ft.Image(src=system_helper.get_img_path(station["logo"]), border_radius=ft.border_radius.all(4)) if station["logo"] != "" else ft.Text(station["name"], text_align=ft.TextAlign.CENTER),
+                        # TODO - expand???
+                        content=ft.Image(src=system_helper.get_img_path(station["logo"]),
+                                         border_radius=ft.border_radius.all(4), fit=ft.ImageFit.FIT_WIDTH) if station["logo"] != "" else ft.Text(
+                            station["name"], text_align=ft.TextAlign.CENTER, weight=ft.FontWeight.BOLD, expand=True),
                         padding=10,
                     ),
                     ft.Image(ref=constants.indicator_refs[i], src=f"{constants.pwd()}/assets/party.gif", opacity=0.7,
@@ -107,24 +106,16 @@ def reload_radio_stations(page):
                 ]
             )
         )
-    page.update()
 
-
-def open_delete_station_dialog(index):
-    constants.current_station_index_to_delete = index
-    station_delete_dialog.open = True
-    p.update()
-
-
-def close_delete_dialog():
-    station_delete_dialog.open = False
-    p.update()
+    if page is not None:
+        page.update()
 
 def delete_dialog():
     stations_helper.delete_station(constants.current_station_index_to_delete)
     reload_radio_stations(p)
-    close_delete_dialog()
 
+
+station_delete_dialog = StationDeleteDialog(delete_dialog)
 
 ssid = ""
 
@@ -333,12 +324,20 @@ def open_station_add_dialog(element, page: ft.Page):
     page.update()
 
 
+radio_not_found_text = ft.Text("Kein Radiosender gefunden!", visible=False)
 def search_stations():
     name = radio_search_textfield.value
     stations = radio_helper.get_stations_by_name(name)
+
+    if len(stations) == 0:
+        radio_not_found_text.visible = True
+    else:
+        radio_not_found_text.visible = False
+
     l = []
     for el in stations:
-        img = ft.Container(ft.Icon(ft.icons.MUSIC_NOTE), width=60, height=60) if el["logo"] == "" else ft.Image(el["logo"], fit=ft.ImageFit.SCALE_DOWN, border_radius=ft.border_radius.all(10), width=50, height=50)
+        img = ft.Container(ft.Icon(ft.icons.MUSIC_NOTE), width=60, height=60) if el["logo"] == "" else ft.Image(
+            el["logo"], fit=ft.ImageFit.SCALE_DOWN, border_radius=ft.border_radius.all(10), width=50, height=50)
         element = ft.Container(
             ft.Row([
                 img,
@@ -377,6 +376,7 @@ radio_search_dialog = ft.AlertDialog(
                 ],
                 spacing=ft.MainAxisAlignment.SPACE_BETWEEN
             ),
+            radio_not_found_text,
             radio_search_listview
         ]
     )
@@ -550,7 +550,7 @@ def start_rotary(page: ft.Page):
 
 
 def main(page: ft.Page):
-    global p, txt_discovery_status, ico_discovery_status, btn_discovery_status, txt_device_connected, ico_device_connected, btn_device_connected, ico_wifi, ico_bluetooth, volume_icon, volume_text, wifi_dialog, wifi_connection_dialog, radio_search_dialog, station_add_dialog, background_processes, grid, duplicate_dialog, station_delete_dialog
+    global p, txt_discovery_status, ico_discovery_status, btn_discovery_status, txt_device_connected, ico_device_connected, btn_device_connected, ico_wifi, ico_bluetooth, volume_icon, volume_text, wifi_dialog, wifi_connection_dialog, radio_search_dialog, station_add_dialog, background_processes, radio_grid, duplicate_dialog, station_delete_dialog
     start_rotary(page)
     GpioButton(21, audio_helper.play_toast)
 
@@ -581,7 +581,7 @@ def main(page: ft.Page):
     page.add(radio_search_dialog)
     page.add(station_add_dialog)
     page.add(duplicate_dialog)
-    page.add(station_delete_dialog)
+    page.add(station_delete_dialog.get())
 
     page.appbar = ft.AppBar(
         leading=ft.Row([
@@ -808,8 +808,6 @@ def main(page: ft.Page):
     lv.controls.append(SettingsButton.get(ft.icons.INFO, "Info", show_info_dialog))
     lv.controls.append(SettingsButton.get(ft.icons.STAR, "Credits", show_credits_dialog))
 
-    reload_radio_stations(page)
-
     # Card for toast (drinking)
     soundboard_grid.controls.append(ToastCard.get(page))
 
@@ -856,7 +854,7 @@ def main(page: ft.Page):
     radio_tab = ft.Container(
         content=ft.Column([
             song_info_row,
-            ft.Row([grid])
+            ft.Row([radio_grid])
         ]),
         margin=ft.margin.only(right=75)
     )
@@ -903,6 +901,8 @@ def main(page: ft.Page):
 
     p = page
     p.update()
+    
+    reload_radio_stations(page)
 
     audio_helper.startup_sound()
 

@@ -108,6 +108,12 @@
         "src": "https://edge59.streamonkey.net/fho-schwarzwaldradiohifi"
     },
     {
+        "color": "#6A5F33",
+        "logo": "https://www.technobase.fm/content/images/site/logo-technobase.fm.png",
+        "name": "TechnoBase.FM",
+        "src": "https://listen.technobase.fm/tunein-mp3"
+    },
+    {
         "color": "#FFDD00",
         "logo": "chari_vari.png",
         "name": "Chari Vari",
@@ -154,5 +160,11 @@
         "logo": "technobase_fm.png",
         "name": "Technobase FM",
         "src": "http://listen.technobase.fm/tunein-mp3"
+    },
+    {
+        "name": "Bayern 1 Oberbayern",
+        "src": "https://streams.br.de/bayern1obb_2.m3u",
+        "logo": "http://www.bayern1.de/favicon.ico",
+        "color": "#9FD1EC"
     }
 ]
