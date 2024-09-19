@@ -6,7 +6,7 @@ import decimal
 import csv
 from adafruit_led_animation.animation.pulse import Pulse
 from adafruit_led_animation.color import BLACK, GREEN, RED
-from helper.colors import ColorHelper
+from helper.ColorHelper import ColorHelper
 from utils.WaiterProcess import WaiterProcess
 from helper.Constants import Constants
 
