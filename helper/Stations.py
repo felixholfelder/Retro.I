@@ -28,6 +28,6 @@ class Stations:
             file_data = json.load(file)
             file_data.pop(index)
 
-        open("./assets/radio-stations.json", "w").write(
+        open(f"{c.pwd()}/assets/radio-stations.json", "w").write(
             json.dumps(file_data, sort_keys=True, indent=4, separators=(',', ': '))
         )

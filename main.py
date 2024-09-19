@@ -1,5 +1,6 @@
 import threading
 import time
+import sys
 
 from helper.dialogs.StationDeleteDialog import StationDeleteDialog
 from scripts import button
@@ -91,6 +92,7 @@ def reload_radio_stations(page):
                 fit=ft.StackFit.EXPAND,
                 controls=[
                     ft.Container(
+                        alignment=ft.alignment.center,
                         bgcolor=ft.colors.GREY_200,
                         on_click=lambda e, src=station, p=page, index=i: change_radio_station(src, p, index),
                         on_long_press=lambda e, index=i: open_delete_station_dialog(index),
@@ -98,7 +100,7 @@ def reload_radio_stations(page):
                         # TODO - expand???
                         content=ft.Image(src=system_helper.get_img_path(station["logo"]),
                                          border_radius=ft.border_radius.all(4), fit=ft.ImageFit.FIT_WIDTH) if station["logo"] != "" else ft.Text(
-                            station["name"], text_align=ft.TextAlign.CENTER, weight=ft.FontWeight.BOLD, expand=True),
+                            station["name"], text_align=ft.TextAlign.CENTER, weight=ft.FontWeight.BOLD),
                         padding=10,
                     ),
                     ft.Image(ref=constants.indicator_refs[i], src=f"{constants.pwd()}/assets/party.gif", opacity=0.7,

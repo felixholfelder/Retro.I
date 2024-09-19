@@ -154,17 +154,5 @@
         "logo": "blasmusik_radio.png",
         "name": "Blasmusik Radio",
         "src": "https://stream.laut.fm/blasmusikradio"
-    },
-    {
-        "color": "#DFDF21",
-        "logo": "technobase_fm.png",
-        "name": "Technobase FM",
-        "src": "http://listen.technobase.fm/tunein-mp3"
-    },
-    {
-        "name": "Bayern 1 Oberbayern",
-        "src": "https://streams.br.de/bayern1obb_2.m3u",
-        "logo": "http://www.bayern1.de/favicon.ico",
-        "color": "#9FD1EC"
     }
 ]
