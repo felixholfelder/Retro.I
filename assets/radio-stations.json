@@ -1,194 +1,164 @@
 [
     {
-        "name": "Bayern 1",
-        "src": "https://dispatcher.rndfnk.com/br/br1/nbopf/mp3/mid",
+        "color": "#00A1D6",
         "logo": "bayern_1.png",
-        "color": "#00A1D6"
+        "name": "Bayern 1",
+        "src": "https://dispatcher.rndfnk.com/br/br1/nbopf/mp3/mid"
     },
     {
-        "name": "Bayern 3",
-        "src": "https://dispatcher.rndfnk.com/br/br3/live/mp3/mid",
+        "color": "#80CC28",
         "logo": "bayern_3.png",
-        "color": "#80CC28"
+        "name": "Bayern 3",
+        "src": "https://dispatcher.rndfnk.com/br/br3/live/mp3/mid"
     },
     {
-        "name": "BR Heimat",
-        "src": "https://dispatcher.rndfnk.com/br/brheimat/live/mp3/mid",
+        "color": "#003B82",
         "logo": "br_heimat.png",
-        "color": "#003B82"
+        "name": "BR Heimat",
+        "src": "https://dispatcher.rndfnk.com/br/brheimat/live/mp3/mid"
     },
     {
-        "name": "Antenne Bayern",
-        "src": "https://stream.antenne.de/antenne/stream/aacp",
+        "color": "#FCD51E",
         "logo": "antenne_bayern.png",
-        "color": "#FCD51E"
+        "name": "Antenne Bayern",
+        "src": "https://stream.antenne.de/antenne/stream/aacp"
     },
     {
-        "name": "Rock Antenne Bayern",
-        "src": "https://stream.antenne.de/rockantenne-bayern/stream/aacp",
+        "color": "#E6001E",
         "logo": "rock_antenne.png",
-        "color": "#E6001E"
+        "name": "Rock Antenne Bayern",
+        "src": "https://stream.antenne.de/rockantenne-bayern/stream/aacp"
     },
     {
-        "name": "Radio Ramasuri",
-        "src": "http://mp3.ramasuri.c.nmdn.net/ps-ramasuri/livestream.mp3",
+        "color": "#F5B52E",
         "logo": "radio_ramasuri.png",
-        "color": "#F5B52E"
+        "name": "Radio Ramasuri",
+        "src": "http://mp3.ramasuri.c.nmdn.net/ps-ramasuri/livestream.mp3"
     },
     {
-        "name": "Radio Galaxy",
-        "src": "https://edge70.streamonkey.net/fhn-radiogalaxy",
+        "color": "#003C65",
         "logo": "radio_galaxy.png",
-        "color": "#003C65"
+        "name": "Radio Galaxy",
+        "src": "https://edge70.streamonkey.net/fhn-radiogalaxy"
     },
     {
-        "name": "Radio Bob",
-        "src": "http://streams.radiobob.de/bob-national/aac-64/mediaplayer",
+        "color": "#CC0000",
         "logo": "radio_bob.png",
-        "color": "#CC0000"
+        "name": "Radio Bob",
+        "src": "http://streams.radiobob.de/bob-national/aac-64/mediaplayer"
     },
     {
-        "name": "Radio Dumba",
-        "src": "https://radio-dumba.stream.laut.fm/radio-dumba",
+        "color": "#CC0000",
         "logo": "radio_dumba.png",
-        "color": "#CC0000"
+        "name": "Radio Dumba",
+        "src": "https://radio-dumba.stream.laut.fm/radio-dumba"
     },
     {
-        "name": "Radio Schlagerparadies",
-        "src": "https://webstream.schlagerparadies.de/schlagerparadies128k.mp3",
+        "color": "#700040",
         "logo": "radio_schlagerparadies.png",
-        "color": "#700040"
+        "name": "Radio Schlagerparadies",
+        "src": "https://webstream.schlagerparadies.de/schlagerparadies128k.mp3"
     },
     {
-        "name": "Schlagergarage",
-        "src": "https://stream.laut.fm/schlagergarage",
+        "color": "#489729",
         "logo": "schlagergarage.png",
-        "color": "#489729"
+        "name": "Schlagergarage",
+        "src": "https://stream.laut.fm/schlagergarage"
     },
     {
-        "name": "Radio Paloma",
-        "src": "http://pool.radiopaloma.de/RADIOPALOMA.mp3",
+        "color": "#FF6612",
         "logo": "radio_paloma.png",
-        "color": "#FF6612"
+        "name": "Radio Paloma",
+        "src": "http://pool.radiopaloma.de/RADIOPALOMA.mp3"
     },
     {
-        "name": "Sunshine live Hardstyle",
-        "src": "https://stream.sunshine-live.de/hardstyle/mp3-192/stream.sunshine-live.de/",
+        "color": "#AD0A4F",
         "logo": "sunshine_live_hardstyle.jpg",
-        "color": "#AD0A4F"
+        "name": "Sunshine live Hardstyle",
+        "src": "https://stream.sunshine-live.de/hardstyle/mp3-192/stream.sunshine-live.de/"
     },
     {
-        "name": "Radio Energy",
-        "src": "https://edge61.streamonkey.net/energy-nuernberg?aggregator=shorty",
+        "color": "#FF0000",
         "logo": "radio_energy.png",
-        "color": "#FF0000"
+        "name": "Radio Energy",
+        "src": "https://edge61.streamonkey.net/energy-nuernberg?aggregator=shorty"
     },
     {
-        "name": "1 LIVE",
-        "src": "https://wdr-1live-live.icecastssl.wdr.de/wdr/1live/live/mp3/128/stream.mp3",
+        "color": "#FF009A",
         "logo": "1_live.png",
-        "color": "#FF009A"
+        "name": "1 LIVE",
+        "src": "https://wdr-1live-live.icecastssl.wdr.de/wdr/1live/live/mp3/128/stream.mp3"
     },
     {
-        "name": "Radio Bollerwagen",
-        "src": "https://player.ffn.de/radiobollerwagen.mp3",
+        "color": "#00928B",
         "logo": "radio_bollerwagen.png",
-        "color": "#00928B"
+        "name": "Radio Bollerwagen",
+        "src": "https://player.ffn.de/radiobollerwagen.mp3"
     },
     {
-        "name": "Absolut Hot",
-        "src": "https://edge67.live-sm.absolutradio.de/absolut-hot",
+        "color": "#CC1033",
         "logo": "absolut_hot.png",
-        "color": "#CC1033"
+        "name": "Absolut Hot",
+        "src": "https://edge67.live-sm.absolutradio.de/absolut-hot"
     },
     {
-        "name": "Schwarzwaldradio",
-        "src": "https://edge59.streamonkey.net/fho-schwarzwaldradiohifi",
+        "color": "#7A949E",
         "logo": "schwarzwaldradio.png",
-        "color": "#7A949E"
+        "name": "Schwarzwaldradio",
+        "src": "https://edge59.streamonkey.net/fho-schwarzwaldradiohifi"
     },
     {
-        "name": "Chari Vari",
-        "src": "https://live.stream.charivari.de/955charivari-webradio?aggregator=charivari_de_link",
+        "color": "#FFDD00",
         "logo": "chari_vari.png",
-        "color": "#FFDD00"
+        "name": "Chari Vari",
+        "src": "https://live.stream.charivari.de/955charivari-webradio?aggregator=charivari_de_link"
     },
     {
-        "name": "Chillout Antenne",
-        "src": "https://s5-webradio.antenne.de/chillout/stream/mp3",
+        "color": "#014C6B",
         "logo": "chillout_antenne.png",
-        "color": "#014C6B"
+        "name": "Chillout Antenne",
+        "src": "https://s5-webradio.antenne.de/chillout/stream/mp3"
     },
     {
-        "name": "Antenne Adria",
-        "src": "https://antenne-adria.stream.laut.fm/antenne-adria",
+        "color": "#2C9BD3",
         "logo": "antenne_adria.png",
-        "color": "#2C9BD3"
+        "name": "Antenne Adria",
+        "src": "https://antenne-adria.stream.laut.fm/antenne-adria"
     },
     {
-        "name": "Wacken Radio",
-        "src": "https://wacken.stream.laut.fm/wacken",
+        "color": "#104484",
         "logo": "wacken_radio.png",
-        "color": "#104484"
+        "name": "Wacken Radio",
+        "src": "https://wacken.stream.laut.fm/wacken"
     },
     {
-        "name": "Radio Bob Mittelalter",
-        "src": "http://streams.radiobob.de/mittelalter/mp3-192/mediaplayer",
+        "color": "#167EBE",
         "logo": "radio_bob_mittelalter.png",
-        "color": "#167EBE"
+        "name": "Radio Bob Mittelalter",
+        "src": "http://streams.radiobob.de/mittelalter/mp3-192/mediaplayer"
     },
     {
-        "name": "FluxFM",
-        "src": "http://channels.fluxfm.de/FluxFM/stream.mp3",
+        "color": "#FFE31B",
         "logo": "fluxfm.png",
-        "color": "#FFE31B"
+        "name": "FluxFM",
+        "src": "http://channels.fluxfm.de/FluxFM/stream.mp3"
     },
     {
-        "name": "Blasmusik Radio",
-        "src": "https://stream.laut.fm/blasmusikradio",
+        "color": "#BC941F",
         "logo": "blasmusik_radio.png",
-        "color": "#BC941F"
+        "name": "Blasmusik Radio",
+        "src": "https://stream.laut.fm/blasmusikradio"
     },
     {
-        "name": "Technobase FM",
-        "src": "http://listen.technobase.fm/tunein-mp3",
+        "color": "#DFDF21",
         "logo": "technobase_fm.png",
-        "color": "#DFDF21"
-    },
-    {
-        "name": "Antenne Bayern - Chillout",
-        "src": "http://mp3channels.webradio.antenne.de/chillout",
-        "logo": "http://www.antenne.de/logos/station-antenne-bayern/apple-touch-icon.png",
-        "color": "#46A94B"
-    },
-    {
-        "name": "Antenne Bayern - Classic Rock Live (MP3)",
-        "src": "http://mp3channels.webradio.antenne.de/classic-rock-live",
-        "logo": "http://www.antenne.de/logos/station-antenne-bayern/apple-touch-icon.png",
-        "color": "#46A94B"
-    },
-    {
-        "name": "Antenne Bayern - Chillout",
-        "src": "http://mp3channels.webradio.antenne.de/chillout",
-        "logo": "http://www.antenne.de/logos/station-antenne-bayern/apple-touch-icon.png",
-        "color": "#46A94B"
+        "name": "Technobase FM",
+        "src": "http://listen.technobase.fm/tunein-mp3"
     },
     {
         "name": "Bayern 1 Niederbayern/Oberpfalz",
         "src": "https://dispatcher.rndfnk.com/br/br1/nbopf/mp3/mid",
         "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Bayern1-logo.svg/250px-Bayern1-logo.svg.png",
-        "color": "#46A94B"
-    },
-    {
-        "name": "Bayern 1 Mainfranken",
-        "src": "https://streams.br.de/bayern1main_2.m3u",
-        "logo": "",
-        "color": "#46A94B"
-    },
-    {
-        "name": "Antenne Bayern - Top 40",
-        "src": "http://mp3channels.webradio.antenne.de/top-40",
-        "logo": "http://www.antenne.de/logos/station-antenne-bayern/apple-touch-icon.png",
         "color": "#46A94B"
     }
 ]

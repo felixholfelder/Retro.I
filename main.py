@@ -73,9 +73,19 @@ grid = ft.GridView(
     run_spacing=50
 )
 
+station_delete_dialog = ft.AlertDialog(
+    title=ft.Text(f'Sender löschen?'),
+    actions_alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+    actions=[
+        ft.TextButton("Abbrechen", on_click=lambda e: close_delete_dialog()),
+        ft.FilledButton("Löschen", on_click=lambda e: delete_dialog())
+    ]
+)
+
+
 def reload_radio_stations(page):
     grid.controls = []
-    indicator_refs = []
+    constants.indicator_refs = []
 
     for i, station in enumerate(stations_helper.load_radio_stations()):
         constants.indicator_refs.append(ft.Ref[ft.Image]())
@@ -87,7 +97,7 @@ def reload_radio_stations(page):
                     ft.Container(
                         bgcolor=ft.colors.GREY_200,
                         on_click=lambda e, index=i, src=station: change_radio_station(src, page, index),
-                        on_long_press=lambda e: show_delete_station_dialog(),
+                        on_long_press=lambda e, index=i: open_delete_station_dialog(index),
                         border_radius=10,
                         content=ft.Image(src=system_helper.get_img_path(station["logo"]), border_radius=ft.border_radius.all(4)) if station["logo"] != "" else ft.Text(station["name"], text_align=ft.TextAlign.CENTER),
                         padding=10,
@@ -99,21 +109,22 @@ def reload_radio_stations(page):
         )
     page.update()
 
-delete_station_dialog = ft.AlertDialog(
-    title=ft.Text("Radiosender löschen?"),
-    actions=[
-        ft.FilledButton("Löschen", on_click=lambda e: delete_station())
-    ],
-    actions_alignment=ft.MainAxisAlignment.END,
-)
 
-def delete_station():
-    pass
-
-
-def show_delete_station_dialog():
-    delete_station_dialog.open = True
+def open_delete_station_dialog(index):
+    constants.current_station_index_to_delete = index
+    station_delete_dialog.open = True
     p.update()
+
+
+def close_delete_dialog():
+    station_delete_dialog.open = False
+    p.update()
+
+def delete_dialog():
+    stations_helper.delete_station(constants.current_station_index_to_delete)
+    reload_radio_stations(p)
+    close_delete_dialog()
+
 
 ssid = ""
 
@@ -125,7 +136,7 @@ wifi_connection_dialog_btn = ft.FilledButton("Verbinden", on_click=lambda e: con
 
 
 def connect():
-    global ssid, p
+    global ssid
     wifi_connection_dialog_btn.disabled = True
     wifi_connection_dialog_btn.text = "Wird verbunden..."
     wifi_not_connected(p)
@@ -178,6 +189,7 @@ def open_connection_dialog(name):
 
 def close_connection_dialog():
     wifi_connection_dialog.open = False
+    p.update()
 
 
 def open_wifi_dialog():
@@ -190,7 +202,7 @@ def open_wifi_dialog():
     networks = wifi_helper.get_networks()
 
     for n in networks:
-        ico = ft.Icon("done")
+        ico = ft.Icon(ft.icons.DONE)
         btn = ft.TextButton(
             content=ft.Container(content=ft.Row(controls=[ico, ft.Text(n)])),
             on_click=lambda e, name=n: open_connection_dialog(name),
@@ -204,7 +216,9 @@ def open_wifi_dialog():
     wifi_loading.value = ""
     p.update()
 
-ico_wifi = ft.IconButton(icon=ft.icons.WIFI, icon_size=25, icon_color=ft.colors.BLACK, on_click=lambda e: open_wifi_dialog())
+
+ico_wifi = ft.IconButton(icon=ft.icons.WIFI, icon_size=25, icon_color=ft.colors.BLACK,
+                         on_click=lambda e: open_wifi_dialog())
 ico_bluetooth = ft.Icon(name=ft.icons.BLUETOOTH, size=25)
 
 volume_icon = ft.Icon(name=ft.icons.VOLUME_UP_ROUNDED, size=25, color=ft.colors.BLACK)
@@ -255,6 +269,7 @@ def update_taskbar(page: ft.Page):
 
     page.update()
 
+
 radio_search_listview = ft.ListView(spacing=10, padding=20, expand=True)
 
 duplicate_text = ft.Text("")
@@ -266,9 +281,11 @@ duplicate_dialog = ft.AlertDialog(
     actions_alignment=ft.MainAxisAlignment.END,
 )
 
+
 def close_duplicate_dialog():
     duplicate_dialog.open = False
     p.update()
+
 
 def add_station(station):
     stations_list = stations_helper.load_radio_stations()
@@ -280,7 +297,7 @@ def add_station(station):
             duplicate_dialog.open = True
             p.update()
             break
-    
+
     if not found:
         stations_helper.add_station(station)
         reload_radio_stations(p)
@@ -302,9 +319,11 @@ station_add_dialog = ft.AlertDialog(
     actions_alignment=ft.MainAxisAlignment.SPACE_BETWEEN
 )
 
+
 def close_station_add_dialog():
     station_add_dialog.open = False
     p.update()
+
 
 def open_station_add_dialog(element, page: ft.Page):
     constants.current_station_to_add = element
@@ -312,6 +331,7 @@ def open_station_add_dialog(element, page: ft.Page):
     station_add_dialog.update()
     station_add_dialog.open = True
     page.update()
+
 
 def search_stations():
     name = radio_search_textfield.value
@@ -331,9 +351,10 @@ def search_stations():
         )
 
         l.append(element)
-    
+
     radio_search_listview.controls = l
     p.update()
+
 
 radio_search_textfield = ft.TextField(
     label="Radiosender",
@@ -361,6 +382,7 @@ radio_search_dialog = ft.AlertDialog(
     )
 )
 
+
 def open_radio_search_dialog():
     radio_search_dialog.open = True
     p.update()
@@ -375,11 +397,13 @@ song_info_row = ft.Row([
     ft.TextButton("Sendersuche", icon=ft.icons.SEARCH, on_click=lambda e: open_radio_search_dialog())
 ])
 
+
 def reset_song_info_row(page: ft.Page):
     constants.current_radio_station = {}
     song_info_station.value = "Kein Radiosender ausgewählt"
     song_info_title.value = ""
     p.update()
+
 
 def update_song_info(page: ft.Page):
     try:
@@ -515,6 +539,7 @@ def change_radio_station(station, page, index=-1):
 
     page.update()
 
+
 def start_rotary(page: ft.Page):
     rotary = pyky040.Encoder(CLK=CLK_PIN, DT=DT_PIN, SW=SW_PIN)
     rotary.setup(step=VOLUME_STEP,
@@ -525,7 +550,7 @@ def start_rotary(page: ft.Page):
 
 
 def main(page: ft.Page):
-    global p, txt_discovery_status, ico_discovery_status, btn_discovery_status, txt_device_connected, ico_device_connected, btn_device_connected, ico_wifi, ico_bluetooth, volume_icon, volume_text, wifi_dialog, wifi_connection_dialog, radio_search_dialog, station_add_dialog, background_processes, grid, duplicate_dialog, delete_station_dialog
+    global p, txt_discovery_status, ico_discovery_status, btn_discovery_status, txt_device_connected, ico_device_connected, btn_device_connected, ico_wifi, ico_bluetooth, volume_icon, volume_text, wifi_dialog, wifi_connection_dialog, radio_search_dialog, station_add_dialog, background_processes, grid, duplicate_dialog, station_delete_dialog
     start_rotary(page)
     GpioButton(21, audio_helper.play_toast)
 
@@ -556,13 +581,13 @@ def main(page: ft.Page):
     page.add(radio_search_dialog)
     page.add(station_add_dialog)
     page.add(duplicate_dialog)
-    page.add(delete_station_dialog)
+    page.add(station_delete_dialog)
 
     page.appbar = ft.AppBar(
         leading=ft.Row([
-                volume_icon,
-                volume_text
-            ],
+            volume_icon,
+            volume_text
+        ],
             spacing=10
         ),
         title=ft.Text("Retro.I"),
@@ -870,7 +895,7 @@ def main(page: ft.Page):
 
     if system_helper.is_party_mode():
         tabs.append(soundboard_tab)
-    
+
     tabs.append(settings_tab)
 
     page.add(ft.Column(tabs))
