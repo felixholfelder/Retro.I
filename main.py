@@ -31,9 +31,9 @@ p = None
 
 ICON_SIZE = 28
 
-CLK_PIN = 13
-DT_PIN = 6
 SW_PIN = 5
+DT_PIN = 6
+CLK_PIN = 13
 
 VOLUME_STEP = 4
 
@@ -81,12 +81,12 @@ def delete_dialog():
     reload_radio_stations(p)
 
 
-station_delete_dialog = StationDeleteDialog(delete_dialog(), p).get()
-
-
 def open_delete_station_dialog(index):
     constants.current_station_index_to_delete = index
     station_delete_dialog.open()
+
+
+station_delete_dialog = StationDeleteDialog(delete_dialog(), p).get()
 
 def reload_radio_stations(page):
     radio_grid.controls = []
