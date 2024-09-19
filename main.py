@@ -104,9 +104,10 @@ def reload_radio_stations(page):
                         on_click=lambda e, index=i, src=station: change_radio_station(src, page, index),
                         on_long_press=lambda e, index=i: open_delete_station_dialog(index),
                         border_radius=10,
+                        # TODO - expand???
                         content=ft.Image(src=system_helper.get_img_path(station["logo"]),
                                          border_radius=ft.border_radius.all(4)) if station["logo"] != "" else ft.Text(
-                            station["name"], text_align=ft.TextAlign.CENTER),
+                            station["name"], text_align=ft.TextAlign.CENTER, weight=ft.FontWeight.BOLD, expand=True),
                         padding=10,
                     ),
                     ft.Image(ref=constants.indicator_refs[i], src=f"{constants.pwd()}/assets/party.gif", opacity=0.7,
