@@ -87,9 +87,9 @@ def reload_radio_stations(page):
                     ft.Container(
                         bgcolor=ft.colors.GREY_200,
                         on_click=lambda e, index=i, src=station: change_radio_station(src, page, index),
+                        on_long_press=lambda e: show_delete_station_dialog(),
                         border_radius=10,
-                        content=ft.Image(src=system_helper.get_img_path(station["logo"]),
-                                         border_radius=ft.border_radius.all(4)),
+                        content=ft.Image(src=system_helper.get_img_path(station["logo"]), border_radius=ft.border_radius.all(4)) if station["logo"] != "" else ft.Text(station["name"], text_align=ft.TextAlign.CENTER),
                         padding=10,
                     ),
                     ft.Image(ref=constants.indicator_refs[i], src=f"{constants.pwd()}/assets/party.gif", opacity=0.7,
@@ -98,6 +98,22 @@ def reload_radio_stations(page):
             )
         )
     page.update()
+
+delete_station_dialog = ft.AlertDialog(
+    title=ft.Text("Radiosender löschen?"),
+    actions=[
+        ft.FilledButton("Löschen", on_click=lambda e: delete_station())
+    ],
+    actions_alignment=ft.MainAxisAlignment.END,
+)
+
+def delete_station():
+    pass
+
+
+def show_delete_station_dialog():
+    delete_station_dialog.open = True
+    p.update()
 
 ssid = ""
 
@@ -302,11 +318,14 @@ def search_stations():
     stations = radio_helper.get_stations_by_name(name)
     l = []
     for el in stations:
-        img = ft.Container(ft.Icon(ft.icons.MUSIC_NOTE), width=50, height=50) if el["logo"] == "" else ft.Image(el["logo"], fit=ft.ImageFit.SCALE_DOWN, border_radius=ft.border_radius.all(10), width=50, height=50)
+        img = ft.Container(ft.Icon(ft.icons.MUSIC_NOTE), width=60, height=60) if el["logo"] == "" else ft.Image(el["logo"], fit=ft.ImageFit.SCALE_DOWN, border_radius=ft.border_radius.all(10), width=50, height=50)
         element = ft.Container(
             ft.Row([
                 img,
-                ft.Text(el["name"])
+                ft.Column([
+                    ft.Text(el["name"], weight=ft.FontWeight.BOLD),
+                    ft.Text(el["src"])
+                ])
             ]),
             on_click=lambda e, item=el: open_station_add_dialog(item, p)
         )
@@ -325,7 +344,8 @@ radio_search_textfield = ft.TextField(
 
 radio_search_dialog = ft.AlertDialog(
     content=ft.Column(
-        width=500,
+        width=600,
+        expand=True,
         tight=True,
         alignment=ft.MainAxisAlignment.CENTER,
         controls=[
@@ -505,7 +525,7 @@ def start_rotary(page: ft.Page):
 
 
 def main(page: ft.Page):
-    global p, txt_discovery_status, ico_discovery_status, btn_discovery_status, txt_device_connected, ico_device_connected, btn_device_connected, ico_wifi, ico_bluetooth, volume_icon, volume_text, wifi_dialog, wifi_connection_dialog, radio_search_dialog, station_add_dialog, background_processes, grid, duplicate_dialog
+    global p, txt_discovery_status, ico_discovery_status, btn_discovery_status, txt_device_connected, ico_device_connected, btn_device_connected, ico_wifi, ico_bluetooth, volume_icon, volume_text, wifi_dialog, wifi_connection_dialog, radio_search_dialog, station_add_dialog, background_processes, grid, duplicate_dialog, delete_station_dialog
     start_rotary(page)
     GpioButton(21, audio_helper.play_toast)
 
@@ -536,6 +556,7 @@ def main(page: ft.Page):
     page.add(radio_search_dialog)
     page.add(station_add_dialog)
     page.add(duplicate_dialog)
+    page.add(delete_station_dialog)
 
     page.appbar = ft.AppBar(
         leading=ft.Row([

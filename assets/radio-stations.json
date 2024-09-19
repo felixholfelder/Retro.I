@@ -178,5 +178,17 @@
         "src": "https://dispatcher.rndfnk.com/br/br1/nbopf/mp3/mid",
         "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Bayern1-logo.svg/250px-Bayern1-logo.svg.png",
         "color": "#46A94B"
+    },
+    {
+        "name": "Bayern 1 Mainfranken",
+        "src": "https://streams.br.de/bayern1main_2.m3u",
+        "logo": "",
+        "color": "#46A94B"
+    },
+    {
+        "name": "Antenne Bayern - Top 40",
+        "src": "http://mp3channels.webradio.antenne.de/top-40",
+        "logo": "http://www.antenne.de/logos/station-antenne-bayern/apple-touch-icon.png",
+        "color": "#46A94B"
     }
 ]

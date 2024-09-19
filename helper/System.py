@@ -35,6 +35,9 @@ class System:
         return datetime.today().strftime('%d.%m.%Y')
 
     def get_img_path(self, img_src):
+        if "http" in img_src:
+            return img_src
+
         return f"{c.pwd()}/assets/stations/{img_src}"
     
     def get_button_img_path(self):
