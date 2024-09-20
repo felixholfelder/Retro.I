@@ -4,6 +4,7 @@ import time
 from helper.dialogs.StationDeleteDialog import StationDeleteDialog
 
 from components.Rotary import Rotary
+from components.SongInfoRow import SongInfoRow
 from components.Taskbar import Taskbar
 from scripts import button
 from multiprocessing import Process
@@ -66,9 +67,11 @@ radio_grid = ft.GridView(
     run_spacing=50
 )
 
+
 def open_delete_station_dialog(index):
     constants.current_station_index_to_delete = index
     station_delete_dialog.open()
+
 
 def reload_radio_stations(page):
     radio_grid.controls = []
@@ -89,7 +92,8 @@ def reload_radio_stations(page):
                         border_radius=10,
                         # TODO - expand???
                         content=ft.Image(src=system_helper.get_img_path(station["logo"]),
-                                         border_radius=ft.border_radius.all(4), fit=ft.ImageFit.FIT_WIDTH) if station["logo"] != "" else ft.Text(
+                                         border_radius=ft.border_radius.all(4), fit=ft.ImageFit.FIT_WIDTH) if station[
+                                                                                                                  "logo"] != "" else ft.Text(
                             station["name"], text_align=ft.TextAlign.CENTER, weight=ft.FontWeight.BOLD),
                         padding=10,
                     ),
@@ -101,6 +105,7 @@ def reload_radio_stations(page):
 
     if page is not None:
         page.update()
+
 
 def delete_dialog():
     stations_helper.delete_station(constants.current_station_index_to_delete)
@@ -199,8 +204,8 @@ def open_wifi_dialog():
     wifi_loading.value = ""
     p.update()
 
-taskbar = Taskbar(open_wifi_dialog)
 
+taskbar = Taskbar(open_wifi_dialog)
 
 radio_search_listview = ft.ListView(spacing=10, padding=20, expand=True)
 
@@ -266,6 +271,8 @@ def open_station_add_dialog(element, page: ft.Page):
 
 
 radio_not_found_text = ft.Text("Kein Radiosender gefunden!", visible=False)
+
+
 def search_stations():
     name = radio_search_textfield.value
     stations = radio_helper.get_stations_by_name(name)
@@ -329,37 +336,7 @@ def open_radio_search_dialog():
     p.update()
 
 
-song_info_station = ft.Text("Kein Radiosender ausgewählt", weight=ft.FontWeight.BOLD)
-song_info_title = ft.Text("", expand=True)
-song_info_row = ft.Row([
-    ft.Icon(ft.icons.MUSIC_NOTE),
-    song_info_station,
-    song_info_title,
-    ft.TextButton("Sendersuche", icon=ft.icons.SEARCH, on_click=lambda e: open_radio_search_dialog())
-])
-
-
-def reset_song_info_row(page: ft.Page):
-    constants.current_radio_station = {}
-    song_info_station.value = "Kein Radiosender ausgewählt"
-    song_info_title.value = ""
-    p.update()
-
-
-def update_song_info(page: ft.Page):
-    try:
-        title = radio_helper.get_song_info(constants.current_radio_station["src"])
-
-        if title != "":
-            song_info_station.value = constants.current_radio_station["name"]
-            song_info_title.value = title
-        else:
-            song_info_station.value = constants.current_radio_station["name"]
-            song_info_title.value = ""
-    except:
-        pass
-
-    page.update()
+song_info_row = SongInfoRow(open_radio_search_dialog)
 
 
 def enable_discovery():
@@ -403,7 +380,7 @@ def background_processes(page: ft.Page):
     while True:
         update_connected_device(page)
         taskbar.update()
-        update_song_info(page)
+        song_info_row.update()
         time.sleep(5)
 
 
@@ -432,13 +409,13 @@ def change_radio_station(station, page, index=-1):
     audio_helper.play_src(station["src"])
     strip.update_strip(color)
 
-    update_song_info(page)
+    song_info_row.update()
 
     page.update()
 
 
 def main(page: ft.Page):
-    global p, txt_discovery_status, ico_discovery_status, btn_discovery_status, txt_device_connected, ico_device_connected, btn_device_connected, wifi_dialog, wifi_connection_dialog, radio_search_dialog, station_add_dialog, background_processes, radio_grid, duplicate_dialog, station_delete_dialog
+    global p, txt_discovery_status, ico_discovery_status, btn_discovery_status, txt_device_connected, ico_device_connected, btn_device_connected, wifi_dialog, wifi_connection_dialog, radio_search_dialog, station_add_dialog, background_processes, radio_grid, duplicate_dialog, station_delete_dialog, song_info_row
     GpioButton(21, audio_helper.play_toast)
 
     page.window_maximized = True
@@ -477,7 +454,7 @@ def main(page: ft.Page):
 
     def change_tab(e):
         tab_index = e.control.selected_index
-        update_song_info(page)
+        song_info_row.update()
 
         if tab_index == 0:
             switch_radio_tab()
@@ -485,7 +462,7 @@ def main(page: ft.Page):
             taskbar.update()
         else:
             radio_tab.visible = False
-            reset_song_info_row(page)
+            song_info_row.reset()
 
         if tab_index == 1:
             switch_bluetooth_tab()
@@ -727,7 +704,7 @@ def main(page: ft.Page):
     # Tabs
     radio_tab = ft.Container(
         content=ft.Column([
-            song_info_row,
+            song_info_row.get(),
             ft.Row([radio_grid])
         ]),
         margin=ft.margin.only(right=75)
@@ -775,7 +752,7 @@ def main(page: ft.Page):
 
     p = page
     p.update()
-    
+
     reload_radio_stations(page)
 
     audio_helper.startup_sound()
