@@ -5,6 +5,7 @@ from helper.dialogs.StationDeleteDialog import StationDeleteDialog
 
 from components.BluetoothDeviceConnected import BluetoothDeviceConnected
 from components.BluetoothDiscoveryToggle import BluetoothDiscoveryToggle
+from components.NavigationBar import NavigationBar
 from components.Rotary import Rotary
 from components.SongInfoRow import SongInfoRow
 from components.Taskbar import Taskbar
@@ -13,12 +14,10 @@ from components.dialogs.SettingsCreditsDialog import SettingsCreditsDialog
 from components.dialogs.SettingsInfoDialog import SettingsInfoDialog
 from components.dialogs.SettingsLedDialog import SettingsLedDialog
 from components.dialogs.SettingsShutdownDialog import SettingsShutdownDialog
+from components.dialogs.StationAddDialog import StationAddDialog
 from components.view.Theme import Theme
 from scripts import button
-from multiprocessing import Process
 import flet as ft
-from adafruit_led_animation.color import BLUE, GREEN
-from pyky040 import pyky040
 from helper.Audio import Audio
 from helper.BluetoothHelper import BluetoothHelper
 from helper.Constants import Constants
@@ -34,8 +33,6 @@ from components.GpioButton import GpioButton
 from components.SettingsButton import SettingsButton
 
 p = None
-
-ICON_SIZE = 28
 
 last_turn = 1
 
@@ -213,7 +210,6 @@ btn_discovery_status = BluetoothDiscoveryToggle()
 btn_device_connected = BluetoothDeviceConnected(taskbar, btn_discovery_status.disable_discovery())
 
 radio_search_listview = ft.ListView(spacing=10, padding=20, expand=True)
-
 duplicate_dialog = DuplicateDialog()
 
 
@@ -229,37 +225,35 @@ def add_station(station):
     if not found:
         stations_helper.add_station(station)
         reload_radio_stations(p)
-        close_station_add_dialog()
+
+def disable_indicator():
+    for ref in constants.indicator_refs:
+        ref.current.visible = False
 
 
-station_to_add_text = ft.Text(f'{constants.current_station_to_add["name"]}')
-station_add_dialog = ft.AlertDialog(
-    content=ft.Column(
-        width=500,
-        tight=True,
-        alignment=ft.MainAxisAlignment.CENTER
-    ),
-    title=station_to_add_text,
-    actions=[
-        ft.FilledButton("Abspielen", on_click=lambda e: change_radio_station(constants.current_station_to_add, p)),
-        ft.FilledButton("Zu Liste hinzufügen", on_click=lambda e: add_station(constants.current_station_to_add))
-    ],
-    actions_alignment=ft.MainAxisAlignment.SPACE_BETWEEN
-)
+def toggle_indicator(index):
+    disable_indicator()
+    if index != -1:
+        constants.indicator_refs[index].current.visible = True
 
 
-def close_station_add_dialog():
-    station_add_dialog.open = False
-    p.update()
+def change_radio_station(station, page, index=-1):
+    global strip_color
+    color = station["color"]
 
+    constants.current_radio_station = station
 
-def open_station_add_dialog(element, page: ft.Page):
-    constants.current_station_to_add = element
-    station_to_add_text.value = element["name"]
-    station_add_dialog.update()
-    station_add_dialog.open = True
+    toggle_indicator(index)
+    theme.update(color)
+    page.navigation_bar.bgcolor = color
+    audio_helper.play_src(station["src"])
+    strip.update_strip(color)
+
+    song_info_row.update()
+
     page.update()
 
+station_add_dialog = StationAddDialog(change_radio_station(constants.current_station_to_add, p), add_station)
 
 radio_not_found_text = ft.Text("Kein Radiosender gefunden!", visible=False)
 
@@ -285,7 +279,7 @@ def search_stations():
                     ft.Text(el["src"])
                 ])
             ]),
-            on_click=lambda e, item=el: open_station_add_dialog(item, p)
+            on_click=lambda e, item=el: station_add_dialog.open(item)
         )
 
         l.append(element)
@@ -338,35 +332,6 @@ def background_processes():
         time.sleep(5)
 
 
-def disable_indicator():
-    for ref in constants.indicator_refs:
-        ref.current.visible = False
-
-
-def toggle_indicator(index):
-    disable_indicator()
-    if index != -1:
-        constants.indicator_refs[index].current.visible = True
-
-
-def change_radio_station(station, page, index=-1):
-    global strip_color
-    color = station["color"]
-
-    station_add_dialog.open = False
-    constants.current_radio_station = station
-
-    toggle_indicator(index)
-    theme.update(color)
-    page.navigation_bar.bgcolor = color
-    audio_helper.play_src(station["src"])
-    strip.update_strip(color)
-
-    song_info_row.update()
-
-    page.update()
-
-
 def main(page: ft.Page):
     global p, wifi_dialog, wifi_connection_dialog, radio_search_dialog, station_add_dialog, background_processes, radio_grid, duplicate_dialog, station_delete_dialog, song_info_row, theme
     GpioButton(21, audio_helper.play_toast)
@@ -382,7 +347,7 @@ def main(page: ft.Page):
     page.add(wifi_dialog)
     page.add(wifi_connection_dialog)
     page.add(radio_search_dialog)
-    page.add(station_add_dialog)
+    page.add(station_add_dialog.get())
     page.add(duplicate_dialog.get())
     page.add(station_delete_dialog.get())
 
@@ -445,46 +410,7 @@ def main(page: ft.Page):
     def switch_soundboard_tab():
         soundboard_tab.visible = True
 
-    destinations = []
-    destinations.append(
-        ft.NavigationDestination(
-            label="Radiosender",
-            icon_content=ft.Icon(ft.icons.RADIO_OUTLINED, size=ICON_SIZE),
-            selected_icon_content=ft.Icon(ft.icons.RADIO, size=ICON_SIZE)
-        )
-    )
-
-    destinations.append(
-        ft.NavigationDestination(
-            label="Bluetooth",
-            icon_content=ft.Icon(ft.icons.BLUETOOTH_OUTLINED, size=ICON_SIZE),
-            selected_icon_content=ft.Icon(ft.icons.BLUETOOTH, size=ICON_SIZE)
-        )
-    )
-
-    if system_helper.is_party_mode():
-        destinations.append(
-            ft.NavigationDestination(
-                label="Soundboard",
-                icon_content=ft.Icon(ft.icons.SPACE_DASHBOARD_OUTLINED, size=ICON_SIZE),
-                selected_icon_content=ft.Icon(ft.icons.SPACE_DASHBOARD, size=ICON_SIZE)
-            ),
-        )
-
-    destinations.append(
-        ft.NavigationDestination(
-            label="Einstellungen",
-            icon_content=ft.Icon(ft.icons.SETTINGS_OUTLINED, size=ICON_SIZE),
-            selected_icon_content=ft.Icon(ft.icons.SETTINGS, size=ICON_SIZE),
-        )
-    )
-
-    page.navigation_bar = ft.NavigationBar(
-        bgcolor="green",
-        on_change=change_tab,
-        selected_index=0,
-        destinations=destinations
-    )
+    page.navigation_bar = NavigationBar(change_tab).get()
 
     soundboard_grid = ft.GridView(
         expand=True,
