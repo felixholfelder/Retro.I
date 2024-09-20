@@ -1,8 +1,10 @@
 import threading
 import time
-import sys
 
 from helper.dialogs.StationDeleteDialog import StationDeleteDialog
+
+from components.Rotary import Rotary
+from components.Taskbar import Taskbar
 from scripts import button
 from multiprocessing import Process
 import flet as ft
@@ -22,21 +24,9 @@ from components.ToastCard import ToastCard
 from components.GpioButton import GpioButton
 from components.SettingsButton import SettingsButton
 
-# CLK=ORANGE
-# DT=GELB
-# SW=GRÜN
-# +=BLAU
-# -=LILA
-
 p = None
 
 ICON_SIZE = 28
-
-SW_PIN = 5
-DT_PIN = 6
-CLK_PIN = 13
-
-VOLUME_STEP = 4
 
 last_turn = 1
 
@@ -132,7 +122,7 @@ def connect():
     global ssid
     wifi_connection_dialog_btn.disabled = True
     wifi_connection_dialog_btn.text = "Wird verbunden..."
-    wifi_not_connected(p)
+    taskbar.update()
     p.update()
 
     wifi_helper.connect_to_wifi(ssid, wifi_connection_dialog_pass.value)
@@ -142,7 +132,7 @@ def connect():
     close_connection_dialog()
     wifi_connection_dialog_btn.disabled = False
     wifi_connection_dialog_btn.text = "Verbinden"
-    update_taskbar(p)
+    taskbar.update()
     p.update()
 
 
@@ -209,58 +199,7 @@ def open_wifi_dialog():
     wifi_loading.value = ""
     p.update()
 
-
-ico_wifi = ft.IconButton(icon=ft.icons.WIFI, icon_size=25, icon_color=ft.colors.BLACK,
-                         on_click=lambda e: open_wifi_dialog())
-ico_bluetooth = ft.Icon(name=ft.icons.BLUETOOTH, size=25)
-
-volume_icon = ft.Icon(name=ft.icons.VOLUME_UP_ROUNDED, size=25, color=ft.colors.BLACK)
-volume_text = ft.Text(f"{audio_helper.get_volume()}%", size=18)
-
-
-def wifi_not_connected(page: ft.Page):
-    global ico_wifi
-    ico_wifi.icon = ft.icons.WIFI_OFF_ROUNDED
-    ico_wifi.icon_color = ft.colors.BLACK
-    page.update()
-
-
-def wifi_connected(page: ft.Page):
-    global ico_wifi
-    ico_wifi.icon = ft.icons.WIFI_ROUNDED
-    ico_wifi.icon_color = ft.colors.GREEN
-    page.update()
-
-
-def update_taskbar(page: ft.Page):
-    global ico_wifi, ico_bluetooth
-
-    ico_wifi.icon_color = ft.colors.BLACK
-    ico_bluetooth.color = ft.colors.BLACK
-
-    if wifi_helper.is_connected():
-        wifi_connected(page)
-    else:
-        wifi_not_connected(page)
-
-    page.update()
-
-    if bluetooth_helper.is_bluetooth_on():
-        ico_bluetooth.name = ft.icons.BLUETOOTH_ROUNDED
-        ico_bluetooth.color = ft.colors.BLACK
-        if bluetooth_helper.is_discovery_on():
-            ico_bluetooth.color = ft.colors.GREEN
-        else:
-            ico_bluetooth.color = ft.colors.BLACK
-
-    else:
-        ico_bluetooth.name = ft.icons.BLUETOOTH_DISABLED_ROUNDED
-
-    if bluetooth_helper.get_device_name():
-        ico_bluetooth.name = ft.icons.BLUETOOTH_CONNECTED_ROUNDED
-        ico_bluetooth.color = ft.colors.GREEN
-
-    page.update()
+taskbar = Taskbar(open_wifi_dialog)
 
 
 radio_search_listview = ft.ListView(spacing=10, padding=20, expand=True)
@@ -456,60 +395,16 @@ def update_connected_device(page):
         txt_device_connected.value = "Kein Gerät verbunden"
         ico_device_connected.name = ft.icons.PHONELINK_OFF
 
-    update_taskbar(page)
+    taskbar.update()
     page.update()
 
 
 def background_processes(page: ft.Page):
     while True:
         update_connected_device(page)
-        update_taskbar(page)
+        taskbar.update()
         update_song_info(page)
         time.sleep(5)
-
-
-def update_sound(value, page: ft.Page):
-    global volume_text
-    if not audio_helper.is_mute():
-        audio_helper.update_sound(value)
-        strip.update_sound_strip(value)
-        volume_text.value = f"{audio_helper.get_volume()}%"
-        page.update()
-
-
-def inc_sound(page: ft.Page):
-    global last_turn
-    if last_turn == 1:
-        value = audio_helper.get_volume() + VOLUME_STEP
-        if value >= 0 and value <= 100:
-            update_sound(value, page)
-    last_turn = 1
-
-
-def dec_sound(page: ft.Page):
-    global last_turn
-    if last_turn == 0:
-        value = audio_helper.get_volume() - VOLUME_STEP
-        if value >= 0 and value <= 100:
-            update_sound(value, page)
-    last_turn = 0
-
-
-def toggle_mute(page: ft.Page):
-    global volume_icon, volume_text
-    is_mute = audio_helper.toggle_mute()
-    strip.toggle_mute(is_mute)
-
-    if is_mute:
-        volume_icon.name = ft.icons.VOLUME_OFF_ROUNDED
-        volume_icon.color = ft.colors.RED
-        volume_text.value = ""
-    else:
-        volume_icon.name = ft.icons.VOLUME_UP_ROUNDED
-        volume_icon.color = ft.colors.BLACK
-        volume_text.value = f"{audio_helper.get_volume()}%"
-
-    page.update()
 
 
 def disable_indicator():
@@ -542,18 +437,8 @@ def change_radio_station(station, page, index=-1):
     page.update()
 
 
-def start_rotary(page: ft.Page):
-    rotary = pyky040.Encoder(CLK=CLK_PIN, DT=DT_PIN, SW=SW_PIN)
-    rotary.setup(step=VOLUME_STEP,
-                 inc_callback=lambda e: inc_sound(page), dec_callback=lambda e: dec_sound(page),
-                 sw_callback=lambda: toggle_mute(page))
-    rotary_thread = threading.Thread(target=rotary.watch)
-    rotary_thread.start()
-
-
 def main(page: ft.Page):
-    global p, txt_discovery_status, ico_discovery_status, btn_discovery_status, txt_device_connected, ico_device_connected, btn_device_connected, ico_wifi, ico_bluetooth, volume_icon, volume_text, wifi_dialog, wifi_connection_dialog, radio_search_dialog, station_add_dialog, background_processes, radio_grid, duplicate_dialog, station_delete_dialog
-    start_rotary(page)
+    global p, txt_discovery_status, ico_discovery_status, btn_discovery_status, txt_device_connected, ico_device_connected, btn_device_connected, wifi_dialog, wifi_connection_dialog, radio_search_dialog, station_add_dialog, background_processes, radio_grid, duplicate_dialog, station_delete_dialog
     GpioButton(21, audio_helper.play_toast)
 
     page.window_maximized = True
@@ -585,23 +470,10 @@ def main(page: ft.Page):
     page.add(duplicate_dialog)
     page.add(station_delete_dialog.get())
 
-    page.appbar = ft.AppBar(
-        leading=ft.Row([
-            volume_icon,
-            volume_text
-        ],
-            spacing=10
-        ),
-        title=ft.Text("Retro.I"),
-        center_title=True,
-        bgcolor=ft.colors.SURFACE_VARIANT,
-        toolbar_height=40,
-        actions=[ico_wifi, ico_bluetooth],
-    )
+    page.appbar = taskbar.get()
+    taskbar.update()
 
-    page.update()
-
-    update_taskbar(page)
+    Rotary(taskbar, strip)
 
     def change_tab(e):
         tab_index = e.control.selected_index
@@ -610,7 +482,7 @@ def main(page: ft.Page):
         if tab_index == 0:
             switch_radio_tab()
             bluetooth_helper.turn_off()
-            update_taskbar(page)
+            taskbar.update()
         else:
             radio_tab.visible = False
             reset_song_info_row(page)
@@ -619,7 +491,7 @@ def main(page: ft.Page):
             switch_bluetooth_tab()
             disable_indicator()
             bluetooth_helper.turn_on()
-            update_taskbar(page)
+            taskbar.update()
         else:
             bluetooth_tab.visible = False
 
