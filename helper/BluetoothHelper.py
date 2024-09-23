@@ -1,3 +1,4 @@
+import flet as ft
 import os
 import subprocess
 from multiprocessing import Process
@@ -5,15 +6,15 @@ from multiprocessing import Process
 class BluetoothHelper:
 	discovery_on = False
 
-	def init_page(self):
+	def __init__(self):
 		self.turn_on()
 		self.bluetooth_discovery_off()
 		self.turn_off()
-	
+
 	def is_discovery_on(self):
 		return self.discovery_on
 
-	def toggle_bluetooth_discovery(self, page):
+	def toggle_bluetooth_discovery(self, page: ft.Page):
 		if self.discovery_on:
 			self.bluetooth_discovery_off()
 		else:

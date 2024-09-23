@@ -5,7 +5,6 @@ from helper.ColorHelper import ColorHelper
 c = Constants()
 color_helper = ColorHelper()
 
-
 class Stations:
     def load_radio_stations(self):
         f = open(f"{c.pwd()}/assets/radio-stations.json")

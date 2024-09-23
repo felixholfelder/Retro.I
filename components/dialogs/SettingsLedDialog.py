@@ -3,7 +3,7 @@ from helper.Strip import Strip
 
 strip = Strip()
 
-class SettingsLedDialog():
+class SettingsLedDialog:
     dialog = None
 
     def __init__(self):

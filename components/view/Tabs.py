@@ -5,7 +5,7 @@ from components.view.tabs.SettingsTab import SettingsTab
 from components.view.tabs.SoundboardTab import SoundboardTab
 from helper.Audio import Audio
 from helper.BluetoothHelper import BluetoothHelper
-from helper.System import System
+from helper.SystemHelper import System
 
 bluetooth_helper = BluetoothHelper()
 system_helper = System()
@@ -17,7 +17,7 @@ class Tabs:
     bluetooth_tab: BluetoothTab = None
     settings_tab: SettingsTab = None
 
-    def __init__(self, taskbar, radio_tab: RadioTab, bluetooth_tab: BluetoothTab, soundboard_tab: SoundboardTab, settings_tab: SettingsTab):
+    def __init__(self, taskbar: Taskbar, radio_tab: RadioTab, bluetooth_tab: BluetoothTab, soundboard_tab: SoundboardTab, settings_tab: SettingsTab):
         self.taskbar = taskbar
         self.radio_tab = radio_tab
         self.bluetooth_tab = bluetooth_tab

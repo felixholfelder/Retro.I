@@ -4,9 +4,7 @@ import random
 
 from helper.Constants import Constants
 
-
 c = Constants()
-
 
 class Sounds:
 	def load_sounds(self):
@@ -22,4 +20,3 @@ class Sounds:
 			return random.choice(files)
 		except FileNotFoundError:
 			return "Directory not found."
-

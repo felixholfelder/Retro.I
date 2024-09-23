@@ -1,7 +1,7 @@
 import flet as ft
 
 from components.view.Tabs import Tabs
-from helper.System import System
+from helper.SystemHelper import System
 
 system_helper = System()
 

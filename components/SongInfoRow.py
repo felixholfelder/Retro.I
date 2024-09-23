@@ -1,5 +1,6 @@
 import flet as ft
 
+from components.RadioGrid import RadioGrid
 from components.dialogs.RadioSearchDialog import RadioSearchDialog
 from helper.Constants import Constants
 from helper.RadioHelper import RadioHelper
@@ -13,9 +14,9 @@ class SongInfoRow:
     song_info_title = ft.Text("", expand=True)
 
     row = None
-    radio_search_dialog = None
+    radio_search_dialog: RadioSearchDialog = None
 
-    def __init__(self, radio_grid):
+    def __init__(self, radio_grid: RadioGrid):
         self.radio_search_dialog = RadioSearchDialog(radio_grid)
         self.row = ft.Row([
             ft.Icon(ft.icons.MUSIC_NOTE),
@@ -48,4 +49,5 @@ class SongInfoRow:
         self.song_info_station.update()
         self.song_info_title.update()
 
-    def get(self): return [self.row] + self.radio_search_dialog.get()
+    def get(self):
+        return [self.row] + self.radio_search_dialog.get()

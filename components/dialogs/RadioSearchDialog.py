@@ -1,9 +1,10 @@
 import flet as ft
 
+from components.RadioGrid import RadioGrid
 from components.dialogs.StationAddDialog import StationAddDialog
 from helper.Constants import Constants
 from helper.RadioHelper import RadioHelper
-from helper.System import System
+from helper.SystemHelper import System
 
 system_helper = System()
 radio_helper = RadioHelper()
@@ -23,9 +24,9 @@ class RadioSearchDialog:
         on_blur=lambda e: system_helper.close_keyboard()
     )
 
-    station_add_dialog = None
+    station_add_dialog: StationAddDialog = None
 
-    def __init__(self, radio_grid):
+    def __init__(self, radio_grid: RadioGrid):
         self.station_add_dialog = StationAddDialog(radio_grid.change_radio_station(constants.current_station_to_add), radio_grid)
 
         self.dialog = ft.AlertDialog(

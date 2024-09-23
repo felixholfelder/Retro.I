@@ -18,10 +18,10 @@ class SettingsTab:
     credits_dialog = SettingsCreditsDialog()
 
     lv = ft.ListView(spacing=10, padding=20)
-    lv.controls.append(SettingsButton.get(ft.icons.LOGOUT, "Radio ausschalten", shutdown_dialog.open()))
-    lv.controls.append(SettingsButton.get(ft.icons.COLOR_LENS, "LED-Streifen", led_dialog.open()))
-    lv.controls.append(SettingsButton.get(ft.icons.INFO, "Info", info_dialog.open()))
-    lv.controls.append(SettingsButton.get(ft.icons.STAR, "Credits", credits_dialog.open()))
+    lv.controls.append(SettingsButton().get(ft.icons.LOGOUT, "Radio ausschalten", shutdown_dialog.open()))
+    lv.controls.append(SettingsButton().get(ft.icons.COLOR_LENS, "LED-Streifen", led_dialog.open()))
+    lv.controls.append(SettingsButton().get(ft.icons.INFO, "Info", info_dialog.open()))
+    lv.controls.append(SettingsButton().get(ft.icons.STAR, "Credits", credits_dialog.open()))
 
     def __init__(self):
         self.tab = ft.Container(

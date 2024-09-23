@@ -8,7 +8,7 @@ from components.view.tabs.RadioTab import RadioTab
 from components.view.tabs.SettingsTab import SettingsTab
 from components.view.tabs.SoundboardTab import SoundboardTab
 from helper.Strip import Strip
-from helper.System import System
+from helper.SystemHelper import System
 
 system_helper = System()
 

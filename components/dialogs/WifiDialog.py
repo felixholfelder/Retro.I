@@ -1,6 +1,8 @@
 import flet as ft
 
-from helper.System import System
+from components.dialogs.WifiConnectionDialog import WifiConnectionDialog
+from components.view.Taskbar import Taskbar
+from helper.SystemHelper import System
 from helper.WifiHelper import WifiHelper
 
 system_helper = System()
@@ -8,14 +10,15 @@ wifi_helper = WifiHelper()
 
 
 class WifiDialog:
+    dialog = None
+
     loading = ft.Text("Netzwerke werden geladen...")
     listview = ft.ListView(spacing=10, padding=20, expand=True)
 
-    taskbar = None
-    dialog = None
-    connection_dialog = None
+    taskbar: Taskbar = None
+    connection_dialog: WifiConnectionDialog = None
 
-    def __init__(self, connection_dialog):
+    def __init__(self, connection_dialog: WifiConnectionDialog):
         self.connection_dialog = connection_dialog
 
         self.dialog = ft.AlertDialog(

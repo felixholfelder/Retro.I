@@ -28,6 +28,7 @@ class Strip:
 		self.pixels.fill(GREEN)
 		self.pixels.brightness = self.get_curr_brightness() / 100
 		self.pixels.show()
+		self.start()
 
 	def callback(self):
 		if not self.is_strip_active():

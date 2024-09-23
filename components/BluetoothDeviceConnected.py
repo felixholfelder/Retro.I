@@ -1,4 +1,6 @@
 import flet as ft
+
+from components.view.Taskbar import Taskbar
 from helper.BluetoothHelper import BluetoothHelper
 
 bluetooth_helper = BluetoothHelper()
@@ -10,7 +12,7 @@ class BluetoothDeviceConnected:
     ico_device_connected = ft.Icon(ft.icons.PHONELINK_OFF)
     txt_device_connected = ft.Text("Kein Gerät verbunden", style=ft.TextStyle(size=20))
 
-    def __init__(self, taskbar, on_connected):
+    def __init__(self, taskbar: Taskbar, on_connected):
         self.taskbar = taskbar
 
         self.btn = ft.TextButton(

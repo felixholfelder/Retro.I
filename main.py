@@ -16,13 +16,12 @@ from helper.RadioHelper import RadioHelper
 from helper.Sounds import Sounds
 from helper.Stations import Stations
 from helper.Strip import Strip
-from helper.System import System
+from helper.SystemHelper import System
 from helper.WifiHelper import WifiHelper
 
 wifi_helper = WifiHelper()
 radio_helper = RadioHelper()
 bluetooth_helper = BluetoothHelper()
-bluetooth_helper.init_page()
 audio_helper = Audio()
 system_helper = System()
 system_helper.init_party_mode()
@@ -30,7 +29,6 @@ stations_helper = Stations()
 constants = Constants()
 sounds = Sounds()
 strip = Strip()
-strip.start()
 
 taskbar = Taskbar()
 theme = Theme(taskbar, strip)
@@ -66,9 +64,9 @@ def main(page: ft.Page):
     page.add(theme.get_settings_tab().get_dialogs())
 
     page.add(ft.Column(theme.get_tabs()))
-    page.update()
 
-    theme.get_radio_tab().get_grid().update()
+    page.update()
+    theme.get_radio_tab().get_grid().reload()
 
     audio_helper.startup_sound()
 

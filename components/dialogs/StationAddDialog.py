@@ -1,5 +1,6 @@
 import flet as ft
 
+from components.RadioGrid import RadioGrid
 from components.dialogs.DuplicateDialog import DuplicateDialog
 from helper.Constants import Constants
 from helper.Stations import Stations
@@ -9,15 +10,15 @@ stations_helper = Stations()
 
 class StationAddDialog:
     dialog = None
+
     text = ft.Text(f'{constants.current_station_to_add["name"]}')
-    on_submit = None
     on_play = None
 
-    radio_grid = None
+    radio_grid: RadioGrid = None
 
     duplicate_dialog = DuplicateDialog()
 
-    def __init__(self, on_play, radio_grid):
+    def __init__(self, on_play, radio_grid: RadioGrid):
         self.on_play = on_play
         self.radio_grid = radio_grid
 
@@ -51,7 +52,7 @@ class StationAddDialog:
 
         if not found:
             stations_helper.add_station(station)
-            self.radio_grid.update()
+            self.radio_grid.reload()
         self.close()
 
 

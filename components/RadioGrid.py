@@ -1,10 +1,12 @@
 import flet as ft
 
 from components.dialogs.StationDeleteDialog import StationDeleteDialog
+from components.view.Theme import Theme
 from helper.Constants import Constants
 from helper.RadioHelper import RadioHelper
 from helper.Stations import Stations
-from helper.System import System
+from helper.Strip import Strip
+from helper.SystemHelper import System
 from helper.Audio import Audio
 
 constants = Constants()
@@ -15,12 +17,12 @@ radio_helper = RadioHelper()
 
 class RadioGrid:
     grid = None
-    delete_dialog = None
+    delete_dialog: StationDeleteDialog = None
 
-    strip = None
-    theme = None
+    strip: Strip = None
+    theme: Theme = None
 
-    def __init__(self, strip, theme):
+    def __init__(self, strip: Strip, theme: Theme):
         self.delete_dialog = StationDeleteDialog(self.delete_station)
         self.strip = strip
         self.theme = theme
@@ -80,9 +82,8 @@ class RadioGrid:
         color = station[1]["color"]
 
         self.toggle_indicator(index)
-        self.theme = ft.Theme(color_scheme_seed=color)
+        self.theme.update(color)
         audio_helper.play_src(station[1]["src"])
-        self.theme.update()
 
         self.strip.run(color)
 
