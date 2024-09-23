@@ -8,7 +8,7 @@ audio_helper = Audio()
 sounds = Sounds()
 
 class SoundCard:
-	def get(page: ft.Page, source, name, i):
+	def get(self, source, name, i):
 		return ft.Column(
                 [
                     ft.Container(
@@ -24,5 +24,3 @@ class SoundCard:
                 ],
                 width=300,
             )
-
-SoundCard.get = staticmethod(SoundCard.get)

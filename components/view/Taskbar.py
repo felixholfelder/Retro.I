@@ -1,5 +1,7 @@
 import flet as ft
 
+from components.dialogs.WifiConnectDialog import WifiConnectDialog
+from components.dialogs.WifiDialog import WifiDialog
 from helper.Audio import Audio
 from helper.WifiHelper import WifiHelper
 from helper.BluetoothHelper import BluetoothHelper
@@ -25,8 +27,10 @@ class Taskbar:
     )
     volume_text = ft.Text(f"{audio_helper.get_volume()}%" if not audio_helper.is_mute() else "", size=18)
 
-    def __init__(self, open_wifi_dialog):
-        self.ico_wifi.on_click = lambda e: open_wifi_dialog()
+    wifi_connection_dialog = None
+    wifi_dialog = None
+
+    def __init__(self):
         self.taskbar = ft.AppBar(
             leading=ft.Row([
                 self.volume_icon,
@@ -40,6 +44,10 @@ class Taskbar:
             toolbar_height=40,
             actions=[self.ico_wifi, self.ico_bluetooth],
         )
+
+        self.wifi_connection_dialog = WifiConnectDialog(self.taskbar)
+        self.wifi_dialog = WifiDialog(self.wifi_connection_dialog)
+        self.ico_wifi.on_click = lambda e: self.wifi_dialog.open()
 
     def update(self):
         self.update_volume()
@@ -73,3 +81,4 @@ class Taskbar:
 
 
     def get(self): return self.taskbar
+    def get_dialogs(self): return [self.wifi_dialog.get(), self.wifi_connection_dialog.get()]

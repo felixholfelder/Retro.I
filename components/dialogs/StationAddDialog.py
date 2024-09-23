@@ -1,7 +1,11 @@
 import flet as ft
+
+from components.dialogs.DuplicateDialog import DuplicateDialog
 from helper.Constants import Constants
+from helper.Stations import Stations
 
 constants = Constants()
+stations_helper = Stations()
 
 class StationAddDialog:
     dialog = None
@@ -9,9 +13,13 @@ class StationAddDialog:
     on_submit = None
     on_play = None
 
-    def __init__(self, on_play, on_submit):
+    radio_grid = None
+
+    duplicate_dialog = DuplicateDialog()
+
+    def __init__(self, on_play, radio_grid):
         self.on_play = on_play
-        self.on_submit = on_submit
+        self.radio_grid = radio_grid
 
         self.dialog = ft.AlertDialog(
             content=ft.Column(
@@ -32,7 +40,18 @@ class StationAddDialog:
         self.close()
 
     def add_to_list(self):
-        self.on_submit()
+        station = constants.current_station_to_add
+        stations_list = stations_helper.load_radio_stations()
+        found = False
+        for el in stations_list:
+            if el["name"] == station["name"]:
+                found = True
+                self.duplicate_dialog.open(constants.current_station_to_add["name"])
+                break
+
+        if not found:
+            stations_helper.add_station(station)
+            self.radio_grid.update()
         self.close()
 
 
@@ -47,4 +66,4 @@ class StationAddDialog:
         self.dialog.open = True
         self.dialog.update()
 
-    def get(self): return self.dialog
+    def get(self): return [self.dialog, self.duplicate_dialog]

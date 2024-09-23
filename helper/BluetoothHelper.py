@@ -4,6 +4,11 @@ from multiprocessing import Process
 
 class BluetoothHelper:
 	discovery_on = False
+
+	def init_page(self):
+		self.turn_on()
+		self.bluetooth_discovery_off()
+		self.turn_off()
 	
 	def is_discovery_on(self):
 		return self.discovery_on

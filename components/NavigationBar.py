@@ -1,4 +1,6 @@
 import flet as ft
+
+from components.view.Tabs import Tabs
 from helper.System import System
 
 system_helper = System()
@@ -8,7 +10,7 @@ ICON_SIZE = 28
 class NavigationBar:
     bar = None
 
-    def __init__(self, on_change):
+    def __init__(self, tabs: Tabs):
         destinations = []
         destinations.append(
             ft.NavigationDestination(
@@ -45,9 +47,13 @@ class NavigationBar:
 
         self.bar = ft.NavigationBar(
             bgcolor="green",
-            on_change=on_change,
+            on_change=tabs.change_tab,
             selected_index=0,
             destinations=destinations
         )
+
+    def update(self, color):
+        self.bar.bgcolor = color
+        self.bar.update()
 
     def get(self): return self.bar

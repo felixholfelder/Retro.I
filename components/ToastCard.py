@@ -6,7 +6,7 @@ c = Constants()
 audio_helper = Audio()
 
 class ToastCard:
-	def get(page: ft.Page):
+	def get(self):
 		return ft.Column(
                 [
                     ft.Container(
@@ -22,5 +22,3 @@ class ToastCard:
                 ],
                 width=300,
             )
-
-ToastCard.get = staticmethod(ToastCard.get)
