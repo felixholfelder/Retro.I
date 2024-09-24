@@ -18,14 +18,13 @@ class Theme:
     strip: Strip = None
     taskbar: Taskbar = None
 
-    radio_tab = RadioTab(strip, theme)
-    bluetooth_tab = BluetoothTab()
-    soundboard_tab = SoundboardTab()
-    settings_tab = SettingsTab()
+    radio_tab = None
+    bluetooth_tab = None
+    soundboard_tab = None
+    settings_tab = None
 
-    tabs = Tabs(taskbar, radio_tab, bluetooth_tab, soundboard_tab, settings_tab)
-
-    navbar = NavigationBar(tabs)
+    tabs = None
+    navbar = None
 
     def __init__(self, taskbar: Taskbar, strip: Strip):
         self.strip = strip
@@ -46,6 +45,14 @@ class Theme:
                 radius=20,
             )
         )
+
+        self.radio_tab = RadioTab(strip, self.theme)
+        self.bluetooth_tab = BluetoothTab()
+        self.soundboard_tab = SoundboardTab()
+        self.settings_tab = SettingsTab()
+
+        self.tabs = Tabs(taskbar, self.radio_tab, self.bluetooth_tab, self.soundboard_tab, self.settings_tab)
+        self.navbar = NavigationBar(self.tabs)
 
     def update(self, color):
         self.theme.color_scheme_seed = color
