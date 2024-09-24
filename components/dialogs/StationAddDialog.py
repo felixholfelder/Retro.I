@@ -41,17 +41,16 @@ class StationAddDialog:
         self.close()
 
     def add_to_list(self):
-        station = constants.current_station_to_add
         stations_list = stations_helper.load_radio_stations()
         found = False
         for el in stations_list:
-            if el["name"] == station["name"]:
+            if el["name"] == constants.current_station_to_add["name"]:
                 found = True
                 self.duplicate_dialog.open(constants.current_station_to_add["name"])
                 break
 
         if not found:
-            stations_helper.add_station(station)
+            stations_helper.add_station(constants.current_station_to_add)
             self.radio_grid.reload()
         self.close()
 

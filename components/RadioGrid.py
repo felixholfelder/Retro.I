@@ -2,18 +2,19 @@ import flet as ft
 
 from components.dialogs.StationDeleteDialog import StationDeleteDialog
 from components.view.Theme import Theme
+from helper.Audio import Audio
 from helper.Constants import Constants
 from helper.RadioHelper import RadioHelper
 from helper.Stations import Stations
 from helper.Strip import Strip
 from helper.SystemHelper import System
-from helper.Audio import Audio
 
 constants = Constants()
 stations_helper = Stations()
 system_helper = System()
 audio_helper = Audio()
 radio_helper = RadioHelper()
+
 
 class RadioGrid:
     grid = None
@@ -40,7 +41,6 @@ class RadioGrid:
         constants.current_station_index_to_delete = index
         self.delete_dialog.open()
 
-
     def reload(self):
         self.grid.controls = []
         constants.indicator_refs = []
@@ -58,14 +58,11 @@ class RadioGrid:
                             on_click=lambda e, src=station, index=i: self.change_radio_station(src, index),
                             on_long_press=lambda e, index=i: self.open_delete_station_dialog(index),
                             border_radius=10,
-                            # TODO - expand???
-                            content=ft.Image(src=system_helper.get_img_path(station["logo"]),
-                                             border_radius=ft.border_radius.all(4), fit=ft.ImageFit.FIT_WIDTH) if station[
-                                                                                                                      "logo"] != "" else ft.Text(
-                                station["name"], text_align=ft.TextAlign.CENTER, weight=ft.FontWeight.BOLD),
+                            content=self.get_content(station),
                             padding=10,
                         ),
-                        ft.Image(ref=constants.indicator_refs[i], src=f"{constants.pwd()}/assets/party.gif", opacity=0.7,
+                        ft.Image(ref=constants.indicator_refs[i], src=f"{constants.pwd()}/assets/party.gif",
+                                 opacity=0.7,
                                  visible=False)
                     ]
                 )
@@ -87,16 +84,27 @@ class RadioGrid:
 
         self.strip.run(color)
 
-
     def disable_indicator(self):
         for ref in constants.indicator_refs:
             ref.current.visible = False
-
 
     def toggle_indicator(self, index):
         self.disable_indicator()
         if index != -1:
             constants.indicator_refs[index].current.visible = True
 
+    def get_logo(self, station):
+        return ft.Image(src=system_helper.get_img_path(station["logo"]), border_radius=ft.border_radius.all(4),
+                        fit=ft.ImageFit.FIT_WIDTH)
+
+    def get_text(self, station):
+        return ft.Text(station["name"], text_align=ft.TextAlign.CENTER, weight=ft.FontWeight.BOLD),
+
+    def get_content(self, station):
+        if station["logo"] != "":
+            return self.get_logo(station)
+
+        return self.get_text(station)
+
     def get(self): return self.grid
-    def get_delete_dialog(self): return self.delete_dialog
+    def get_delete_dialog(self):return self.delete_dialog

@@ -28,7 +28,6 @@ class Strip:
 		self.pixels.fill(GREEN)
 		self.pixels.brightness = self.get_curr_brightness() / 100
 		self.pixels.show()
-		self.start()
 
 	def callback(self):
 		if not self.is_strip_active():
@@ -76,7 +75,7 @@ class Strip:
 		self.curr_color = strip_color
 		self.animation.color = strip_color
 		self.pixels.show()
-		while (self.counter <= 1):
+		while self.counter <= 1:
 			try:
 				self.animation.animate()
 			except:
@@ -127,7 +126,6 @@ class Strip:
 		self.pixels.show()
 
 	def get_strip_settings(self):
-		line = ""
 		with open(f"{c.pwd()}/settings/strip-settings.csv", newline='') as csvfile:
 			reader = csv.reader(csvfile, delimiter=';', quotechar=' ')
 			for row in reader:

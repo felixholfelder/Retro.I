@@ -19,14 +19,23 @@ class RadioTab:
         self.tab = ft.Container(
             content=ft.Column([
                 self.song_info_row.get(),
-                ft.Row([self.radio_grid])
+                ft.Row([self.radio_grid.get()])
             ]),
             margin=ft.margin.only(right=75)
         )
 
     def update(self):
-        self.song_info_row.update()
+        self.song_info_row.reload()
         self.tab.update()
+
+    def show(self):
+        self.tab.visible = True
+        self.update()
+
+    def hide(self):
+        self.tab.visible = False
+        self.song_info_row.reset()
+        self.update()
 
     def get(self): return self.tab
     def get_grid(self): return self.radio_grid

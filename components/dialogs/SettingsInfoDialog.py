@@ -5,7 +5,7 @@ system_helper = System()
 
 class SettingsInfoDialog:
     dialog = None
-    text = system_helper.get_cpu_temp()
+    text = None
 
     def __init__(self):
         self.dialog = ft.AlertDialog(
@@ -22,7 +22,7 @@ class SettingsInfoDialog:
         )
 
     def open(self):
-        self.text.update()
+        self.text = system_helper.get_cpu_temp()
         self.dialog.open = True
         self.dialog.update()
 

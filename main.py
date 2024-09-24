@@ -60,6 +60,7 @@ def main(page: ft.Page):
 
     page.add(taskbar.get_dialogs())
     page.add(theme.get_radio_tab().get_song_info().get())
+    page.add(theme.get_radio_tab().get_song_info().get_search_dialog().get())
     page.add(theme.get_radio_tab().get_grid().get_delete_dialog().get())
     page.add(theme.get_settings_tab().get_dialogs())
 

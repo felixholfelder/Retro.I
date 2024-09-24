@@ -10,12 +10,12 @@ sounds = Sounds()
 
 
 class SoundCard:
-    def get(self, source, name, i):
+    def get(self, source, name):
         return ft.Column(
             [
                 ft.Container(
                     alignment=ft.alignment.bottom_center,
-                    on_click=lambda e, index=i, src=source: audio_helper.play_sound(src),
+                    on_click=lambda e, src=source: audio_helper.play_sound(src),
                     height=130,
                     image_src=c.get_button_img(),
                 ),

@@ -8,10 +8,14 @@ from components.view.Taskbar import Taskbar
 class BluetoothTab:
     tab = None
     taskbar: Taskbar = None
-    btn_toggle_discovery = BluetoothDiscoveryToggle()
-    device_connected = BluetoothDeviceConnected(taskbar, btn_toggle_discovery.disable_discovery())
+    btn_toggle_discovery = None
+    device_connected = None
 
-    def __init__(self):
+    def __init__(self, taskbar: Taskbar):
+        self.taskbar = taskbar
+        self.btn_toggle_discovery = BluetoothDiscoveryToggle()
+        self.device_connected = BluetoothDeviceConnected(taskbar, self.btn_toggle_discovery.disable_discovery())
+
         self.tab = ft.Container(
             alignment=ft.alignment.center,
             content=ft.Column(
@@ -26,6 +30,14 @@ class BluetoothTab:
 
     def update(self):
         self.tab.update()
+
+    def show(self):
+        self.tab.visible = True
+        self.update()
+
+    def hide(self):
+        self.tab.visible = False
+        self.update()
 
     def get(self): return self.tab
     def get_btn_toggle(self): return self.btn_toggle_discovery

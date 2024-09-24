@@ -13,6 +13,7 @@ class WifiDialog:
     dialog = None
 
     loading = ft.Text("Netzwerke werden geladen...")
+    not_found = ft.Text("Keine Netzwerke gefunden", visible=False)
     listview = ft.ListView(spacing=10, padding=20, expand=True)
 
     taskbar: Taskbar = None
@@ -26,11 +27,14 @@ class WifiDialog:
                 width=500,
                 tight=True,
                 alignment=ft.MainAxisAlignment.CENTER,
-                controls=[self.loading, self.listview]
+                controls=[self.loading, self.not_found, self.listview]
             )
         )
 
     def open(self):
+        self.not_found.visible = False
+        self.not_found.update()
+
         self.loading.visible = True
         self.loading.update()
 
@@ -44,21 +48,25 @@ class WifiDialog:
         networks = wifi_helper.get_networks()
 
         for n in networks:
-            ico = ft.Icon(ft.icons.DONE)
+            ico = ft.Icon(ft.icons.DONE, visible=False)
             btn = ft.TextButton(
                 content=ft.Container(content=ft.Row(controls=[ico, ft.Text(n)])),
                 on_click=lambda e, name=n: self.connection_dialog.open(name),
             )
 
-            if (curr_ssid != n):
-                ico.visible = False
+            if (curr_ssid == n):
+                ico.visible = True
 
             self.listview.controls.append(btn)
 
-        self.listview.update()
-
         self.loading.visible = False
         self.loading.update()
+
+        if len(networks) == 0:
+            self.not_found.visible = True
+            self.not_found.update()
+
+        self.listview.update()
 
     def close(self):
         self.dialog.open = False

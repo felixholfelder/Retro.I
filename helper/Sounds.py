@@ -19,4 +19,4 @@ class Sounds:
 			files = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
 			return random.choice(files)
 		except FileNotFoundError:
-			return "Directory not found."
+			pass

@@ -10,10 +10,11 @@ class BluetoothDeviceConnected:
     taskbar = None
 
     ico_device_connected = ft.Icon(ft.icons.PHONELINK_OFF)
-    txt_device_connected = ft.Text("Kein Gerät verbunden", style=ft.TextStyle(size=20))
+    txt_device_connected = ft.Text("", style=ft.TextStyle(size=20))
 
     def __init__(self, taskbar: Taskbar, on_connected):
         self.taskbar = taskbar
+        self.reset_connected_device()
 
         self.btn = ft.TextButton(
             content=ft.Row(

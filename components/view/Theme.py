@@ -47,7 +47,7 @@ class Theme:
         )
 
         self.radio_tab = RadioTab(strip, self.theme)
-        self.bluetooth_tab = BluetoothTab()
+        self.bluetooth_tab = BluetoothTab(self.taskbar)
         self.soundboard_tab = SoundboardTab()
         self.settings_tab = SettingsTab()
 
