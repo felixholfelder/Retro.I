@@ -764,8 +764,9 @@ def main(page: ft.Page):
                 ft.Text("Yannick Grübl", size=20),
                 ft.Divider(),
                 ft.Text("Besonderen Dank an:", weight=ft.FontWeight.BOLD, size=22),
-                ft.Text("Goldschmiede und Uhren Gruhle", size=20),
+                ft.Text("Manuel Melchner", size=20),
                 ft.Text("Klaus Schelter", size=20),
+                ft.Text("Goldschmiede und Uhren Gruhle", size=20),
             ]
         )
     )
