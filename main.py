@@ -554,7 +554,8 @@ def start_rotary(page: ft.Page):
 def main(page: ft.Page):
     global p, txt_discovery_status, ico_discovery_status, btn_discovery_status, txt_device_connected, ico_device_connected, btn_device_connected, ico_wifi, ico_bluetooth, volume_icon, volume_text, wifi_dialog, wifi_connection_dialog, radio_search_dialog, station_add_dialog, background_processes, radio_grid, duplicate_dialog, station_delete_dialog
     start_rotary(page)
-    GpioButton(21, audio_helper.play_toast)
+    button = GpioButton(21, audio_helper.play_toast)
+    button.activate()
 
     page.window_maximized = True
     page.window_frameless = True
@@ -764,8 +765,9 @@ def main(page: ft.Page):
                 ft.Text("Yannick Grübl", size=20),
                 ft.Divider(),
                 ft.Text("Besonderen Dank an:", weight=ft.FontWeight.BOLD, size=22),
-                ft.Text("Goldschmiede und Uhren Gruhle", size=20),
                 ft.Text("Klaus Schelter", size=20),
+                ft.Text("Manuel Melchner", size=20),
+                ft.Text("Goldschmiede und Uhren Gruhle", size=20),
             ]
         )
     )
