@@ -28,48 +28,53 @@ system_helper.init_party_mode()
 stations_helper = Stations()
 constants = Constants()
 sounds = Sounds()
-strip = Strip()
-
-taskbar = Taskbar()
-theme = Theme(taskbar, strip)
-
-def background_processes():
-    while True:
-        theme.get_bluetooth_tab().get_device_connected().update_connected_device(theme.get_bluetooth_tab().get_btn_toggle().disable_discovery())
-        taskbar.update()
-        theme.get_radio_tab().update()
-        time.sleep(5)
 
 
 def main(page: ft.Page):
-    global theme
-    btn_toast = GpioButton(21, audio_helper.play_toast)
-    btn_toast.deactivate()
+    page.add(audio_helper.init())
 
-    Rotary(taskbar, strip)
-
-    taskbar.update()
+    strip = Strip()
+    taskbar = Taskbar()
+    theme = Theme(taskbar, strip, page)
 
     page.navigation_bar = theme.get_navbar().get()
     page.appbar = taskbar.get()
-    page.window_maximized = True
-    page.window_frameless = True
+    #page.window_maximized = True
+    #page.window_frameless = True
     page.spacing = 0
     page.theme = theme.get()
     page.add(audio_helper.init())
     page.scroll = ft.ScrollMode.ADAPTIVE
     page.title = "Retro.I"
 
-    page.add(taskbar.get_dialogs())
+    def background_processes():
+        while True:
+            theme.get_bluetooth_tab().get_device_connected().update_connected_device(theme.get_bluetooth_tab().get_btn_toggle().disable_discovery())
+            taskbar.update()
+            theme.get_radio_tab().update()
+            time.sleep(5)
+
+    GpioButton(21, audio_helper.play_toast)
+    Rotary(taskbar, strip)
+
+    taskbar.update()
+
+    page.add(taskbar.get_wifi_dialog().get())
+    page.add(taskbar.get_wifi_connection_dialog().get())
     page.add(theme.get_radio_tab().get_song_info().get())
-    page.add(theme.get_radio_tab().get_song_info().get_search_dialog().get())
+    #page.add(theme.get_radio_tab().get_song_info().get_search_dialog().get())
+    #page.add(theme.get_radio_tab().get_song_info().get_station_add_dialog().get())
     page.add(theme.get_radio_tab().get_grid().get_delete_dialog().get())
-    page.add(theme.get_settings_tab().get_dialogs())
+    page.add(theme.get_settings_tab().get_shutdown_dialog().get())
+    page.add(theme.get_settings_tab().get_led_dialog().get())
+    #page.add(theme.get_settings_tab().get_info_dialog().get())
+    page.add(theme.get_settings_tab().get_credits_dialog().get())
 
     page.add(ft.Column(theme.get_tabs()))
 
     page.update()
     theme.get_radio_tab().get_grid().reload()
+    page.update()
 
     audio_helper.startup_sound()
 

@@ -2,8 +2,8 @@ import flet as ft
 
 from components.SettingsButton import SettingsButton
 from components.dialogs.SettingsCreditsDialog import SettingsCreditsDialog
-from components.dialogs.SettingsInfoDialog import SettingsInfoDialog
 from components.dialogs.SettingsLedDialog import SettingsLedDialog
+from components.dialogs.SettingsInfoDialog import SettingsInfoDialog
 from components.dialogs.SettingsShutdownDialog import SettingsShutdownDialog
 from helper.Sounds import Sounds
 
@@ -25,10 +25,10 @@ class SettingsTab:
                     ft.Text("Einstellungen", size=24),
                     ft.ListView(
                         [
-                            SettingsButton().get(ft.icons.LOGOUT, "Radio ausschalten", self.shutdown_dialog.open()),
-                            SettingsButton().get(ft.icons.COLOR_LENS, "LED-Streifen", self.led_dialog.open()),
-                            SettingsButton().get(ft.icons.INFO, "Info", self.info_dialog.open()),
-                            SettingsButton().get(ft.icons.STAR, "Credits", self.credits_dialog.open()),
+                            SettingsButton().get(ft.icons.LOGOUT, "Radio ausschalten", self.shutdown_dialog.open),
+                            SettingsButton().get(ft.icons.COLOR_LENS, "LED-Streifen", self.led_dialog.open),
+                            SettingsButton().get(ft.icons.INFO, "Info", self.info_dialog.open),
+                            SettingsButton().get(ft.icons.STAR, "Credits", self.credits_dialog.open),
                         ],
                         spacing=10,
                         padding=20)
@@ -49,5 +49,7 @@ class SettingsTab:
         self.update()
 
     def get(self): return self.tab
-
-    def get_dialogs(self): return [self.shutdown_dialog.get(), self.led_dialog.get(), self.info_dialog.get(), self.credits_dialog.get()]
+    def get_shutdown_dialog(self): return self.shutdown_dialog
+    def get_led_dialog(self): return self.led_dialog
+    def get_info_dialog(self): return self.info_dialog
+    def get_credits_dialog(self): return self.credits_dialog

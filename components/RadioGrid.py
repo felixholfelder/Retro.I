@@ -1,7 +1,6 @@
 import flet as ft
 
 from components.dialogs.StationDeleteDialog import StationDeleteDialog
-from components.view.Theme import Theme
 from helper.Audio import Audio
 from helper.Constants import Constants
 from helper.RadioHelper import RadioHelper
@@ -21,9 +20,9 @@ class RadioGrid:
     delete_dialog: StationDeleteDialog = None
 
     strip: Strip = None
-    theme: Theme = None
+    theme = None
 
-    def __init__(self, strip: Strip, theme: Theme):
+    def __init__(self, strip: Strip, theme):
         self.delete_dialog = StationDeleteDialog(self.delete_station)
         self.strip = strip
         self.theme = theme
@@ -67,7 +66,9 @@ class RadioGrid:
                     ]
                 )
             )
-
+        
+        print("Update")
+        print(self.grid.controls)
         self.grid.update()
 
     def delete_station(self):
@@ -75,6 +76,9 @@ class RadioGrid:
         self.reload()
 
     def change_radio_station(self, src, index=-1):
+        if src == None:
+            src = constants.current_station_to_add
+
         station = radio_helper.get_stations_by_name(src["name"])
         color = station[1]["color"]
 
@@ -107,4 +111,4 @@ class RadioGrid:
         return self.get_text(station)
 
     def get(self): return self.grid
-    def get_delete_dialog(self):return self.delete_dialog
+    def get_delete_dialog(self): return self.delete_dialog

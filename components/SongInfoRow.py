@@ -18,6 +18,7 @@ class SongInfoRow:
 
     def __init__(self, radio_grid: RadioGrid):
         self.radio_search_dialog = RadioSearchDialog(radio_grid)
+        print("DIALOG")
         self.row = ft.Row([
             ft.Icon(ft.icons.MUSIC_NOTE),
             self.song_info_station,
@@ -53,3 +54,4 @@ class SongInfoRow:
 
     def get(self): return self.row
     def get_search_dialog(self): return self.radio_search_dialog
+    def get_station_add_dialog(self): return self.radio_search_dialog.get_station_add_dialog()

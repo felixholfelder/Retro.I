@@ -3,8 +3,6 @@ import os
 import subprocess
 from multiprocessing import Process
 
-from pyglet.input.linux.evdev import get_devices
-
 
 class BluetoothHelper:
 	discovery_on = False
