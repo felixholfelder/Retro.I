@@ -39,5 +39,5 @@ class RadioTab:
     def get(self): return self.tab
     def get_grid(self): return self.radio_grid
     def get_song_info(self): return self.song_info_row
-    def get_search_dialog(self): return self.get_song_info().get_search_dialog()
-    def get_station_add_dialog(self): return self.get_song_info().get_station_add_dialog()
+    def get_search_dialog(self): return self.song_info_row.get_search_dialog()
+    def get_station_add_dialog(self): return self.song_info_row.get_station_add_dialog()

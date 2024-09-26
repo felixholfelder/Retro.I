@@ -39,8 +39,8 @@ def main(page: ft.Page):
     
     page.navigation_bar = theme.get_navbar().get()
     page.appbar = taskbar.get()
-    page.window_maximized = True
-    page.window_frameless = True
+    #page.window_maximized = True
+    #page.window_frameless = True
     page.spacing = 0
     page.theme = theme.get()
     page.add(audio_helper.init())
@@ -62,19 +62,21 @@ def main(page: ft.Page):
     page.add(taskbar.get_wifi_dialog().get())
     page.add(taskbar.get_wifi_connection_dialog().get())
     page.add(theme.get_radio_tab().get_song_info().get())
-    page.add(theme.get_radio_tab().get_song_info().get_search_dialog().get())
-    page.add(theme.get_radio_tab().get_song_info().get_station_add_dialog().get())
+    #page.add(theme.get_radio_tab().get_song_info().get_search_dialog().get())
+    #page.add(theme.get_radio_tab().get_song_info().get_station_add_dialog().get())
     page.add(theme.get_radio_tab().get_grid().get_delete_dialog().get())
-    page.add(theme.get_settings_tab().get_dialogs())
+    page.add(theme.get_settings_tab().get_shutdown_dialog().get())
+    page.add(theme.get_settings_tab().get_led_dialog().get())
+    #page.add(theme.get_settings_tab().get_info_dialog().get())
+    page.add(theme.get_settings_tab().get_credits_dialog().get())
 
     page.add(ft.Column(theme.get_tabs()))
 
     page.update()
     theme.get_radio_tab().get_grid().reload()
+    page.update()
 
     audio_helper.startup_sound()
-    
-    print("DONE")
 
     process = threading.Thread(target=background_processes())
     process.start()

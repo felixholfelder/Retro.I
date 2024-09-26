@@ -30,6 +30,7 @@ class WifiDialog:
         )
 
     def open(self):
+        print("open wifi")
         self.not_found.visible = False
         self.not_found.update()
 

@@ -54,4 +54,4 @@ class SongInfoRow:
 
     def get(self): return self.row
     def get_search_dialog(self): return self.radio_search_dialog
-    def get_station_add_dialog(self): return self.get_search_dialog().get_station_add_dialog()
+    def get_station_add_dialog(self): return self.radio_search_dialog.get_station_add_dialog()

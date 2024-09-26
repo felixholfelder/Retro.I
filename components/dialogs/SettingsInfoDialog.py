@@ -5,7 +5,7 @@ system_helper = System()
 
 class SettingsInfoDialog:
     dialog = None
-    text = None
+    text = ""
 
     def __init__(self):
         self.dialog = ft.AlertDialog(

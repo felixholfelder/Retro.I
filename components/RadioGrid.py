@@ -66,7 +66,9 @@ class RadioGrid:
                     ]
                 )
             )
-
+        
+        print("Update")
+        print(self.grid.controls)
         self.grid.update()
 
     def delete_station(self):
@@ -109,4 +111,4 @@ class RadioGrid:
         return self.get_text(station)
 
     def get(self): return self.grid
-    def get_delete_dialog(self):return self.delete_dialog
+    def get_delete_dialog(self): return self.delete_dialog

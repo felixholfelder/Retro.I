@@ -12,11 +12,14 @@ bluetooth_helper = BluetoothHelper()
 
 class Taskbar:
     taskbar = None
+    
+    wifi_connection_dialog: WifiConnectionDialog = None
+    wifi_dialog: WifiDialog = None
 
     ico_wifi = ft.IconButton(
         icon=ft.icons.WIFI if wifi_helper.is_connected() else ft.icons.WIFI_OFF_ROUNDED,
         icon_size=25,
-        icon_color=ft.colors.GREEN if wifi_helper.is_connected() else ft.colors.BLACK,
+        icon_color=ft.colors.GREEN if wifi_helper.is_connected() else ft.colors.BLACK
     )
 
     ico_bluetooth = ft.Icon(name=ft.icons.BLUETOOTH, size=25)
@@ -27,9 +30,6 @@ class Taskbar:
         color=ft.colors.BLACK if not audio_helper.is_mute() else ft.colors.RED
     )
     volume_text = ft.Text(f"{audio_helper.get_volume()}%" if not audio_helper.is_mute() else "", size=18)
-
-    wifi_connection_dialog: WifiConnectionDialog = None
-    wifi_dialog: WifiDialog = None
 
     def __init__(self):
         self.taskbar = ft.AppBar(
