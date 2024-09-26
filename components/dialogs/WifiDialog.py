@@ -1,7 +1,6 @@
 import flet as ft
 
 from components.dialogs.WifiConnectionDialog import WifiConnectionDialog
-from components.view.Taskbar import Taskbar
 from helper.SystemHelper import System
 from helper.WifiHelper import WifiHelper
 
@@ -16,7 +15,6 @@ class WifiDialog:
     not_found = ft.Text("Keine Netzwerke gefunden", visible=False)
     listview = ft.ListView(spacing=10, padding=20, expand=True)
 
-    taskbar: Taskbar = None
     connection_dialog: WifiConnectionDialog = None
 
     def __init__(self, connection_dialog: WifiConnectionDialog):

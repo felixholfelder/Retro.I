@@ -1,6 +1,5 @@
 import flet as ft
 
-from components.view.Taskbar import Taskbar
 from helper.SystemHelper import System
 from helper.WifiHelper import WifiHelper
 
@@ -17,10 +16,8 @@ class WifiConnectionDialog:
                             on_blur=lambda e: system_helper.close_keyboard())
     btn_connect = ft.FilledButton("Verbinden")
 
-    taskbar: Taskbar = None
-
-    def __init__(self, taskbar: Taskbar):
-        self.btn_connect.on_click = lambda e: self.connect(taskbar)
+    def __init__(self, on_connect):
+        self.btn_connect.on_click = lambda e: self.connect(on_connect)
 
         self.dialog = ft.AlertDialog(
             content=ft.Column(
@@ -45,11 +42,11 @@ class WifiConnectionDialog:
         self.dialog.open = False
         self.dialog.update()
 
-    def connect(self, taskbar):
+    def connect(self, on_connect):
         self.btn_connect.disabled = True
         self.btn_connect.text = "Wird verbunden..."
         self.btn_connect.update()
-        taskbar.update()
+        on_connect()
 
         wifi_helper.connect_to_wifi(self.ssid.value, self.password.value)
 
@@ -58,6 +55,6 @@ class WifiConnectionDialog:
         self.close()
         self.btn_connect.disabled = False
         self.btn_connect.text = "Verbinden"
-        taskbar.update()
+        on_connect()
 
     def get(self): return self.dialog

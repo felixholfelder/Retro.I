@@ -14,7 +14,7 @@ class BluetoothTab:
     def __init__(self, taskbar: Taskbar):
         self.taskbar = taskbar
         self.btn_toggle_discovery = BluetoothDiscoveryToggle()
-        self.device_connected = BluetoothDeviceConnected(taskbar, self.btn_toggle_discovery.disable_discovery())
+        self.device_connected = BluetoothDeviceConnected(taskbar, self.btn_toggle_discovery.disable_discovery)
 
         self.tab = ft.Container(
             alignment=ft.alignment.center,

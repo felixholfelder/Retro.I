@@ -46,7 +46,7 @@ class Taskbar:
             actions=[self.ico_wifi, self.ico_bluetooth],
         )
 
-        self.wifi_connection_dialog = WifiConnectionDialog(self.taskbar)
+        self.wifi_connection_dialog = WifiConnectionDialog(self.update)
         self.wifi_dialog = WifiDialog(self.wifi_connection_dialog)
         self.ico_wifi.on_click = lambda e: self.wifi_dialog.open()
 
@@ -84,4 +84,5 @@ class Taskbar:
 
 
     def get(self): return self.taskbar
-    def get_dialogs(self): return [self.wifi_dialog.get(), self.wifi_connection_dialog.get()]
+    def get_wifi_dialog(self): return self.wifi_dialog
+    def get_wifi_connection_dialog(self): return self.wifi_connection_dialog
