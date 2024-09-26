@@ -97,7 +97,6 @@ def reload_radio_stations(page):
                         on_click=lambda e, src=station, p=page, index=i: change_radio_station(src, p, index),
                         on_long_press=lambda e, index=i: open_delete_station_dialog(index),
                         border_radius=10,
-                        # TODO - expand???
                         content=ft.Image(src=system_helper.get_img_path(station["logo"]),
                                          border_radius=ft.border_radius.all(4), fit=ft.ImageFit.FIT_WIDTH) if station["logo"] != "" else ft.Text(
                             station["name"], text_align=ft.TextAlign.CENTER, weight=ft.FontWeight.BOLD),
@@ -765,8 +764,8 @@ def main(page: ft.Page):
                 ft.Text("Yannick Grübl", size=20),
                 ft.Divider(),
                 ft.Text("Besonderen Dank an:", weight=ft.FontWeight.BOLD, size=22),
-                ft.Text("Klaus Schelter", size=20),
                 ft.Text("Manuel Melchner", size=20),
+                ft.Text("Klaus Schelter", size=20),
                 ft.Text("Goldschmiede und Uhren Gruhle", size=20),
             ]
         )
