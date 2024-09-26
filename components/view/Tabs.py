@@ -57,6 +57,7 @@ class Tabs:
 
         self.bluetooth_tab.device_connected.reset_connected_device()
         self.radio_tab.show()
+        self.radio_tab.update()
         self.taskbar.update()
 
     def switch_bluetooth_tab(self):
@@ -72,7 +73,6 @@ class Tabs:
 
     def switch_soundboard_tab(self):
         self.soundboard_tab.show()
-        self.radio_tab.get_grid().disable_indicator()
 
     def switch_settings_tab(self):
         self.settings_tab.show()

@@ -43,7 +43,9 @@ def background_processes():
 
 def main(page: ft.Page):
     global theme
-    GpioButton(21, audio_helper.play_toast)
+    btn_toast = GpioButton(21, audio_helper.play_toast)
+    btn_toast.deactivate()
+
     Rotary(taskbar, strip)
 
     taskbar.update()
