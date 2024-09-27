@@ -6,6 +6,7 @@ from components.view.tabs.SoundboardTab import SoundboardTab
 from helper.Audio import Audio
 from helper.BluetoothHelper import BluetoothHelper
 from helper.SystemHelper import System
+from helper.Constants import Constants
 
 bluetooth_helper = BluetoothHelper()
 system_helper = System()
@@ -26,12 +27,15 @@ class Tabs:
 
     def change_tab(self, e):
         index = e.control.selected_index
-        self.radio_tab.get_song_info().update()
-
-        self.radio_tab.hide()
-        self.bluetooth_tab.hide()
-        self.soundboard_tab.hide()
-        self.settings_tab.hide()
+        self.radio_tab.get_song_info().reset()
+        
+        try:
+            self.radio_tab.hide()
+            self.bluetooth_tab.hide()
+            self.settings_tab.hide()
+            self.soundboard_tab.hide()
+        except:
+            pass
 
         if index == 0:
             self.switch_radio_tab()
@@ -60,6 +64,8 @@ class Tabs:
         self.taskbar.update()
 
     def switch_bluetooth_tab(self):
+        Constants.current_radio_station = {}
+
         audio_helper.pause()
         bluetooth_helper.turn_on()
 
@@ -69,6 +75,7 @@ class Tabs:
         self.bluetooth_tab.show()
 
         self.radio_tab.get_grid().disable_indicator()
+        self.radio_tab.get_song_info().reset()
 
     def switch_soundboard_tab(self):
         self.soundboard_tab.show()

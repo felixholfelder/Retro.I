@@ -18,8 +18,7 @@ class StationAddDialog:
 
     duplicate_dialog = DuplicateDialog()
 
-    def __init__(self, on_play, radio_grid: RadioGrid):
-        self.on_play = on_play
+    def __init__(self, radio_grid: RadioGrid):
         self.radio_grid = radio_grid
 
         self.dialog = ft.AlertDialog(
@@ -37,7 +36,7 @@ class StationAddDialog:
         )
 
     def play(self):
-        self.on_play()
+        self.radio_grid.change_radio_station()
         self.close()
 
     def add_to_list(self):
@@ -66,4 +65,5 @@ class StationAddDialog:
         self.dialog.open = True
         self.dialog.update()
 
-    def get(self): return [self.dialog, self.duplicate_dialog]
+    def get(self): return self.dialog
+    def get_duplicate_dialog(self): return self.duplicate_dialog

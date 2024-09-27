@@ -27,4 +27,5 @@ class Stations:
             file_data = json.load(file)
             file_data.pop(index)
 
+        with open(f"{c.pwd()}/assets/radio-stations.json", "w") as file:
             file.write(json.dumps(file_data, sort_keys=True, indent=4, separators=(',', ': ')))

@@ -27,7 +27,7 @@ class RadioSearchDialog:
     station_add_dialog: StationAddDialog = None
 
     def __init__(self, radio_grid: RadioGrid):
-        self.station_add_dialog = StationAddDialog(radio_grid.change_radio_station, radio_grid)
+        self.station_add_dialog = StationAddDialog(radio_grid)
 
         self.dialog = ft.AlertDialog(
             content=ft.Column(

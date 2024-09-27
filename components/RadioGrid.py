@@ -37,15 +37,15 @@ class RadioGrid:
         )
 
     def open_delete_station_dialog(self, index):
-        constants.current_station_index_to_delete = index
+        Constants.current_station_index_to_delete = index
         self.delete_dialog.open()
 
     def reload(self):
         self.grid.controls = []
-        constants.indicator_refs = []
+        Constants.indicator_refs = []
 
         for i, station in enumerate(stations_helper.load_radio_stations()):
-            constants.indicator_refs.append(ft.Ref[ft.Image]())
+            Constants.indicator_refs.append(ft.Ref[ft.Image]())
             self.grid.controls.append(
                 ft.Stack(
                     alignment=ft.MainAxisAlignment.END,
@@ -60,42 +60,40 @@ class RadioGrid:
                             content=self.get_content(station),
                             padding=10,
                         ),
-                        ft.Image(ref=constants.indicator_refs[i], src=f"{constants.pwd()}/assets/party.gif",
+                        ft.Image(ref=Constants.indicator_refs[i], src=f"{constants.pwd()}/assets/party.gif",
                                  opacity=0.7,
                                  visible=False)
                     ]
                 )
             )
-        
-        print("Update")
-        print(self.grid.controls)
         self.grid.update()
 
     def delete_station(self):
-        stations_helper.delete_station(constants.current_station_index_to_delete)
+        stations_helper.delete_station(Constants.current_station_index_to_delete)
         self.reload()
 
-    def change_radio_station(self, src, index=-1):
-        if src == None:
-            src = constants.current_station_to_add
+    def change_radio_station(self, station=None, index=-1):
+        if station == None:
+            station = Constants.current_station_to_add
+        
+        Constants.current_radio_station = station
 
-        station = radio_helper.get_stations_by_name(src["name"])
-        color = station[1]["color"]
+        color = station["color"]
 
         self.toggle_indicator(index)
         self.theme.update(color)
-        audio_helper.play_src(station[1]["src"])
+        audio_helper.play_src(station["src"])
 
         self.strip.run(color)
 
     def disable_indicator(self):
-        for ref in constants.indicator_refs:
+        for ref in Constants.indicator_refs:
             ref.current.visible = False
 
     def toggle_indicator(self, index):
         self.disable_indicator()
         if index != -1:
-            constants.indicator_refs[index].current.visible = True
+            Constants.indicator_refs[index].current.visible = True
 
     def get_logo(self, station):
         return ft.Image(src=system_helper.get_img_path(station["logo"]), border_radius=ft.border_radius.all(4),

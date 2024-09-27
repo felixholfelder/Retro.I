@@ -18,7 +18,6 @@ class SongInfoRow:
 
     def __init__(self, radio_grid: RadioGrid):
         self.radio_search_dialog = RadioSearchDialog(radio_grid)
-        print("DIALOG")
         self.row = ft.Row([
             ft.Icon(ft.icons.MUSIC_NOTE),
             self.song_info_station,
@@ -28,13 +27,13 @@ class SongInfoRow:
 
     def reload(self):
         try:
-            title = radio_helper.get_song_info(constants.current_radio_station["src"])
+            title = radio_helper.get_song_info(Constants.current_radio_station["src"])
 
             if title != "":
-                self.song_info_station.value = constants.current_radio_station["name"]
+                self.song_info_station.value = Constants.current_radio_station["name"]
                 self.song_info_title.value = title
             else:
-                self.song_info_station.value = constants.current_radio_station["name"]
+                self.song_info_station.value = Constants.current_radio_station["name"]
                 self.song_info_title.value = ""
         except:
             pass
@@ -46,12 +45,11 @@ class SongInfoRow:
         self.song_info_title.update()
 
     def reset(self):
-        constants.current_radio_station = {}
         self.song_info_station.value = "Kein Radiosender ausgewählt"
         self.song_info_title.value = ""
-
         self.update()
 
     def get(self): return self.row
     def get_search_dialog(self): return self.radio_search_dialog
     def get_station_add_dialog(self): return self.radio_search_dialog.get_station_add_dialog()
+    def get_duplicate_dialog(self): return self.radio_search_dialog.get_station_add_dialog().get_duplicate_dialog()

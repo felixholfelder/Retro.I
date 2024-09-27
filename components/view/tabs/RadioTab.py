@@ -29,12 +29,12 @@ class RadioTab:
 
     def show(self):
         self.tab.visible = True
-        self.update()
+        self.tab.update()
 
     def hide(self):
         self.tab.visible = False
         self.song_info_row.reset()
-        self.update()
+        self.tab.update()
 
     def get(self): return self.tab
     def get_grid(self): return self.radio_grid

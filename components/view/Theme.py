@@ -51,7 +51,6 @@ class Theme:
 
         
         self.radio_tab = RadioTab(strip, self)
-        print("HELLO")
         self.bluetooth_tab = BluetoothTab(self.taskbar)
         self.soundboard_tab = SoundboardTab()
         self.settings_tab = SettingsTab()
@@ -60,8 +59,10 @@ class Theme:
 
     def update(self, color):
         self.theme.color_scheme_seed = color
-        self.page.update()
         self.navbar.update(color)
+        self.page.update()
+        self.radio_tab.update()
+        self.page.update()
 
     def get_tabs(self):
         tabs = [self.radio_tab.get(), self.bluetooth_tab.get()]
