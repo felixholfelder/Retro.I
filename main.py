@@ -37,7 +37,7 @@ def main(page: ft.Page):
     strip = Strip()
     taskbar = Taskbar()
     theme = Theme(taskbar, strip, page)
-    
+
     page.navigation_bar = theme.get_navbar().get()
     page.appbar = taskbar.get()
     #page.window_maximized = True
