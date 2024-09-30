@@ -58,7 +58,10 @@ class NavigationBar:
     def update(self, color):
         self.bar.bgcolor = color
         self.icon_color = color_helper.get_navbar_icon_color(color)
+        print(self.icon_color)
         self.bar.update()
+        for i in self.bar.destinations:
+            i.update()
         print("UPDATE")
     
     def get_bgcolor(self):

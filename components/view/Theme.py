@@ -1,5 +1,7 @@
 import flet as ft
 
+from scripts import button
+
 from components.NavigationBar import NavigationBar
 from components.view.Tabs import Tabs
 from components.view.Taskbar import Taskbar
@@ -71,6 +73,8 @@ class Theme:
             tabs.append(self.soundboard_tab.get())
 
         tabs.append(self.settings_tab.get())
+        
+        print(tabs)
 
         return tabs
 

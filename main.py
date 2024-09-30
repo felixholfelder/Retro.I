@@ -3,8 +3,6 @@ import time
 
 import flet as ft
 
-from scripts import button
-
 from components.GpioButton import GpioButton
 from components.Rotary import Rotary
 from components.view.Taskbar import Taskbar
@@ -24,7 +22,6 @@ radio_helper = RadioHelper()
 bluetooth_helper = BluetoothHelper()
 audio_helper = Audio()
 system_helper = System()
-system_helper.init_party_mode()
 stations_helper = Stations()
 constants = Constants()
 sounds = Sounds()
@@ -40,14 +37,16 @@ def main(page: ft.Page):
 
     page.navigation_bar = theme.get_navbar().get()
     page.appbar = taskbar.get()
-    #page.window_maximized = True
-    #page.window_frameless = True
+    page.window_maximized = True
+    page.window_frameless = True
     page.spacing = 0
     page.theme = theme.get()
     page.scroll = ft.ScrollMode.ADAPTIVE
     page.title = "Retro.I" 
 
-    GpioButton(21, audio_helper.play_toast)
+    button = GpioButton(21, audio_helper.play_toast)
+    button.activate()
+
     Rotary(taskbar, strip)
 
     page.add(taskbar.get_wifi_dialog().get())
