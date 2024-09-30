@@ -72,13 +72,9 @@ class RadioGrid:
         stations_helper.delete_station(Constants.current_station_index_to_delete)
         self.reload()
 
-    def change_radio_station(self, station=None, index=-1):
-        if station == None:
-            station = Constants.current_station_to_add
-        
-        Constants.current_radio_station = station
-
+    def change_radio_station(self, station, index=-1):
         color = station["color"]
+        Constants.current_radio_station = station
 
         self.toggle_indicator(index)
         self.theme.update(color)

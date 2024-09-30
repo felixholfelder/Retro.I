@@ -10,8 +10,9 @@ stations_helper = Stations()
 
 class StationAddDialog:
     dialog = None
+    station = {"name": ""}
 
-    text = ft.Text(f'{constants.current_station_to_add["name"]}')
+    text = ft.Text(station["name"])
     on_play = None
 
     radio_grid: RadioGrid = None
@@ -36,21 +37,22 @@ class StationAddDialog:
         )
 
     def play(self):
-        self.radio_grid.change_radio_station()
         self.close()
+        self.radio_grid.change_radio_station(self.station)
 
     def add_to_list(self):
         stations_list = stations_helper.load_radio_stations()
         found = False
         for el in stations_list:
-            if el["name"] == constants.current_station_to_add["name"]:
+            if el["name"] == self.station["name"]:
                 found = True
-                self.duplicate_dialog.open(constants.current_station_to_add["name"])
+                self.duplicate_dialog.open(self.station["name"])
                 break
 
         if not found:
-            stations_helper.add_station(constants.current_station_to_add)
+            stations_helper.add_station(self.station)
             self.radio_grid.reload()
+
         self.close()
 
 
@@ -60,7 +62,7 @@ class StationAddDialog:
 
 
     def open(self, element):
-        constants.current_station_to_add = element
+        self.station = element
         self.text.value = element["name"]
         self.dialog.open = True
         self.dialog.update()
