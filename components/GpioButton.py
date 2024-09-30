@@ -1,3 +1,5 @@
+import time
+
 from gpiozero import LED, Button
 
 class GpioButton:
