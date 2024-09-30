@@ -11,8 +11,13 @@ class GpioButton:
         self.callback = callback
         self.deactivate()
 
+    def on_pressed(self):
+        self.deactivate()
+        self.callback()
+        self.activate()
+
     def activate(self):
-        self.button.when_pressed = lambda e: self.callback()
-    
+        self.button.when_pressed = lambda e: self.on_pressed()
+
     def deactivate(self):
         self.button.when_pressed = None

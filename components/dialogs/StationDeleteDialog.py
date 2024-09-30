@@ -18,8 +18,6 @@ class StationDeleteDialog:
         submit_callback()
         self.close()
 
-    def get(self): return self.dialog
-
     def open(self):
         self.dialog.open = True
         self.dialog.update()
@@ -27,3 +25,7 @@ class StationDeleteDialog:
     def close(self):
         self.dialog.open = False
         self.dialog.update()
+
+    def get(self): return self.dialog
+
+

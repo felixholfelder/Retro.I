@@ -11,6 +11,9 @@ c = Constants()
 class System:
     strip = Strip()
     is_party = "0"
+    
+    def __init__(self):
+        self.init_party_mode()
 
     def shutdown_system(self, _):
         audio_helper.init_sound()

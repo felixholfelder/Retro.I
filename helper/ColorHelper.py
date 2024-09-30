@@ -26,7 +26,7 @@ class ColorHelper:
 		dominant_color = kmeans.cluster_centers_[0].astype(int)
 
 		return f"#{dominant_color[0]:02x}{dominant_color[1]:02x}{dominant_color[2]:02x}".upper()
-	
+
 	def get_navbar_icon_color(self, theme_color):
 		color = theme_color[1:]
 

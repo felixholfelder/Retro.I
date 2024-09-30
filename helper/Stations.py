@@ -5,7 +5,6 @@ from helper.ColorHelper import ColorHelper
 c = Constants()
 color_helper = ColorHelper()
 
-
 class Stations:
     def load_radio_stations(self):
         f = open(f"{c.pwd()}/assets/radio-stations.json")
@@ -28,6 +27,5 @@ class Stations:
             file_data = json.load(file)
             file_data.pop(index)
 
-        open(f"{c.pwd()}/assets/radio-stations.json", "w").write(
-            json.dumps(file_data, sort_keys=True, indent=4, separators=(',', ': '))
-        )
+        with open(f"{c.pwd()}/assets/radio-stations.json", "w") as file:
+            file.write(json.dumps(file_data, sort_keys=True, indent=4, separators=(',', ': ')))

@@ -2,7 +2,7 @@ import flet as ft
 
 
 class SettingsButton:
-    def get(icon, text, callback):
+    def get(self, icon, text, callback):
         return ft.TextButton(
             height=100,
             content=ft.Row(
@@ -14,6 +14,3 @@ class SettingsButton:
             ),
             on_click=callback
         )
-
-
-SettingsButton.get = staticmethod(SettingsButton.get)
