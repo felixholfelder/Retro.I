@@ -73,8 +73,6 @@ class Theme:
             tabs.append(self.soundboard_tab.get())
 
         tabs.append(self.settings_tab.get())
-        
-        print(tabs)
 
         return tabs
 

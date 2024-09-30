@@ -20,7 +20,7 @@ class RadioTab:
                 self.song_info_row.get(),
                 ft.Row([self.radio_grid.get()])
             ]),
-            margin=ft.margin.only(right=75)
+            margin=ft.margin.only(right=60)
         )
 
     def update(self):
