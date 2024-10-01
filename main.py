@@ -55,6 +55,7 @@ def main(page: ft.Page):
     page.add(theme.get_radio_tab().get_song_info().get_station_add_dialog().get())
     page.add(theme.get_radio_tab().get_song_info().get_station_add_dialog().get_duplicate_dialog().get())
     page.add(theme.get_radio_tab().get_grid().get_delete_dialog().get())
+    page.add(theme.get_bluetooth_tab().get_disconnect_dialog().get())
     page.add(theme.get_settings_tab().get_shutdown_dialog().get())
     page.add(theme.get_settings_tab().get_led_dialog().get())
     page.add(theme.get_settings_tab().get_info_dialog().get())

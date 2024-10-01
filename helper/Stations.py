@@ -7,10 +7,9 @@ color_helper = ColorHelper()
 
 class Stations:
     def load_radio_stations(self):
-        f = open(f"{c.pwd()}/assets/radio-stations.json")
-        data = json.load(f)
-        f.close()
-        return data
+        with open(f"{c.pwd()}/assets/radio-stations.json") as file:
+            data = json.load(file)
+            return data
 
     def add_station(self, station):
         if station["name"] != "":

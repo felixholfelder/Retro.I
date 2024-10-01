@@ -53,6 +53,10 @@ class Tabs:
             self.settings_tab.show()
 
     def switch_radio_tab(self):
+        name = bluetooth_helper.get_device_name()
+        if name != "":
+            self.bluetooth_tab.get_disconnect_dialog().open(name)
+
         if bluetooth_helper.is_discovery_on():
             self.bluetooth_tab.get_btn_toggle().toggle_bluetooth_discovery()
 
@@ -60,6 +64,9 @@ class Tabs:
         bluetooth_helper.turn_off()
 
         self.bluetooth_tab.device_connected.reset_connected_device()
+        
+        self.bluetooth_tab.get_disconnect_dialog().close()
+        
         self.radio_tab.show()
         self.radio_tab.update()
         self.taskbar.update()

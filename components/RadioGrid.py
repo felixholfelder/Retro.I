@@ -46,6 +46,7 @@ class RadioGrid:
 
         for i, station in enumerate(stations_helper.load_radio_stations()):
             Constants.indicator_refs.append(ft.Ref[ft.Image]())
+
             self.grid.controls.append(
                 ft.Stack(
                     alignment=ft.MainAxisAlignment.END,
@@ -96,11 +97,11 @@ class RadioGrid:
                         fit=ft.ImageFit.FIT_WIDTH)
 
     def get_text(self, station):
-        return ft.Text(station["name"], text_align=ft.TextAlign.CENTER, weight=ft.FontWeight.BOLD),
+        return ft.Text(station["name"], text_align=ft.TextAlign.CENTER, weight=ft.FontWeight.BOLD)
 
     def get_content(self, station):
         if station["logo"] != "":
-            return self.get_logo(station)
+            return self.get_logo(station)        
 
         return self.get_text(station)
 

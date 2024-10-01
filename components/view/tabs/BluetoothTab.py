@@ -2,6 +2,7 @@ import flet as ft
 
 from components.BluetoothDeviceConnected import BluetoothDeviceConnected
 from components.BluetoothDiscoveryToggle import BluetoothDiscoveryToggle
+from components.dialogs.BluetoothDisconnectDialog import BluetoothDisconnectDialog
 from components.view.Taskbar import Taskbar
 
 
@@ -10,6 +11,7 @@ class BluetoothTab:
     taskbar: Taskbar = None
     btn_toggle_discovery = None
     device_connected = None
+    bluetooth_disconnect_dialog = BluetoothDisconnectDialog()
 
     def __init__(self, taskbar: Taskbar):
         self.taskbar = taskbar
@@ -42,3 +44,4 @@ class BluetoothTab:
     def get(self): return self.tab
     def get_btn_toggle(self): return self.btn_toggle_discovery
     def get_device_connected(self): return self.device_connected
+    def get_disconnect_dialog(self): return self.bluetooth_disconnect_dialog
