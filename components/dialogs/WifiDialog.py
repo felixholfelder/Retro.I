@@ -11,9 +11,9 @@ wifi_helper = WifiHelper()
 class WifiDialog:
     dialog = None
 
-    loading = ft.Text("Netzwerke werden geladen...")
-    not_found = ft.Text("Keine Netzwerke gefunden", visible=False)
-    listview = ft.ListView(spacing=10, padding=20, expand=True)
+    loading_spinner = ft.Container(ft.ProgressRing(), expand=True, visible=False, alignment=ft.alignment.center)
+    not_found = ft.Text("Keine Netzwerke gefunden!", visible=False)
+    listview = ft.ListView(spacing=10, padding=20, expand=True, visible=True)
 
     connection_dialog: WifiConnectionDialog = None
 
@@ -25,18 +25,22 @@ class WifiDialog:
                 width=500,
                 tight=True,
                 alignment=ft.MainAxisAlignment.CENTER,
-                controls=[self.loading, self.not_found, self.listview]
+                controls=[
+                    self.loading_spinner,
+                    self.not_found,
+                    self.listview
+                ]
             )
         )
 
     def open(self):
-        print("open wifi")
         self.not_found.visible = False
         self.not_found.update()
 
-        self.loading.visible = True
-        self.loading.update()
+        self.loading_spinner.visible = True
+        self.loading_spinner.update()
 
+        self.listview.visible = False
         self.listview.controls = []
         self.listview.update()
 
@@ -58,13 +62,14 @@ class WifiDialog:
 
             self.listview.controls.append(btn)
 
-        self.loading.visible = False
-        self.loading.update()
+        self.loading_spinner.visible = False
+        self.loading_spinner.update()
 
         if len(networks) == 0:
             self.not_found.visible = True
             self.not_found.update()
 
+        self.listview.visible = True
         self.listview.update()
 
     def close(self):

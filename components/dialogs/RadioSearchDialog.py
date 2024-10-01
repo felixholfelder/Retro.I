@@ -12,11 +12,12 @@ constants = Constants()
 
 
 class RadioSearchDialog:
-    text = ft.Text("")
     dialog = None
 
     not_found_text = ft.Text("Kein Radiosender gefunden!", visible=False)
-    listview = ft.ListView(spacing=10, padding=20, expand=True)
+    loading_spinner = ft.Container(ft.ProgressRing(), expand=True, visible=False, alignment=ft.alignment.center)
+    listview = ft.ListView(spacing=10, padding=20, expand=True, visible=True)
+
     search_textfield = ft.TextField(
         label="Radiosender",
         expand=True,
@@ -43,6 +44,7 @@ class RadioSearchDialog:
                         ],
                         spacing=ft.MainAxisAlignment.SPACE_BETWEEN
                     ),
+                    self.loading_spinner,
                     self.not_found_text,
                     self.listview
                 ]
@@ -58,6 +60,16 @@ class RadioSearchDialog:
         self.dialog.update()
 
     def search_stations(self):
+        self.not_found_text.visible = False
+        self.not_found_text.update()
+        
+        self.listview.visible = False
+        self.listview.controls = []
+        self.listview.update()
+
+        self.loading_spinner.visible = True
+        self.loading_spinner.update()
+
         name = self.search_textfield.value
         stations = radio_helper.get_stations_by_name(name)
 
@@ -65,6 +77,8 @@ class RadioSearchDialog:
             self.not_found_text.visible = True
         else:
             self.not_found_text.visible = False
+        
+        self.not_found_text.update()
 
         self.listview.controls = []
         for el in stations:
@@ -82,7 +96,11 @@ class RadioSearchDialog:
             )
 
             self.listview.controls.append(element)
+            
+        self.loading_spinner.visible = False
+        self.loading_spinner.update()
 
+        self.listview.visible = True
         self.listview.update()
 
 
