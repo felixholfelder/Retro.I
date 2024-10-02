@@ -32,28 +32,27 @@ def main(page: ft.Page):
     page.update()
 
     strip = Strip()
-    taskbar = Taskbar()
-    theme = Theme(taskbar, strip, page)
+    theme = Theme(strip, page)
 
     page.navigation_bar = theme.get_navbar().get()
-    page.appbar = taskbar.get()
-    #page.window_maximized = True
-    #page.window_frameless = True
+    page.appbar = theme.get_taskbar().get()
+    page.window_maximized = True
+    page.window_frameless = True
     page.spacing = 0
     page.theme = theme.get()
     page.scroll = ft.ScrollMode.ADAPTIVE
-    page.title = "Retro.I" 
+    page.title = "Retro.I"
 
     button = GpioButton(21, audio_helper.play_toast)
     button.activate()
 
-    Rotary(taskbar, strip)
+    Rotary(theme.get_taskbar(), strip)
 
-    page.add(taskbar.get_wifi_dialog().get())
-    page.add(taskbar.get_wifi_connection_dialog().get())
-    page.add(theme.get_radio_tab().get_song_info().get_search_dialog().get())
-    page.add(theme.get_radio_tab().get_song_info().get_station_add_dialog().get())
-    page.add(theme.get_radio_tab().get_song_info().get_station_add_dialog().get_duplicate_dialog().get())
+    page.add(theme.get_taskbar().get_wifi_dialog().get())
+    page.add(theme.get_taskbar().get_wifi_connection_dialog().get())
+    page.add(theme.get_taskbar().get_song_info().get_search_dialog().get())
+    page.add(theme.get_taskbar().get_song_info().get_search_dialog().get_station_add_dialog().get())
+    page.add(theme.get_taskbar().get_song_info().get_search_dialog().get_station_add_dialog().get_duplicate_dialog().get())
     page.add(theme.get_radio_tab().get_grid().get_delete_dialog().get())
     page.add(theme.get_bluetooth_tab().get_disconnect_dialog().get())
     page.add(theme.get_settings_tab().get_shutdown_dialog().get())
@@ -67,13 +66,12 @@ def main(page: ft.Page):
 
     audio_helper.startup_sound()
     
-    taskbar.update()
-    
     def background_processes():
         while True:
             theme.get_bluetooth_tab().get_device_connected().update_connected_device(theme.get_bluetooth_tab().get_btn_toggle().disable_discovery)
-            taskbar.update()
+            theme.get_taskbar().update()
             theme.get_radio_tab().update()
+            theme.get_taskbar().get_song_info().reload()
             time.sleep(5)
 
     process = threading.Thread(target=background_processes())

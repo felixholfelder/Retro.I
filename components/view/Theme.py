@@ -30,9 +30,8 @@ class Theme:
     
     page = None
 
-    def __init__(self, taskbar: Taskbar, strip: Strip, page: ft.Page):
+    def __init__(self, strip: Strip, page: ft.Page):
         self.strip = strip
-        self.taskbar = taskbar
         self.page = page
 
         self.theme = ft.Theme(
@@ -53,10 +52,12 @@ class Theme:
 
         
         self.radio_tab = RadioTab(strip, self)
+        self.taskbar = Taskbar(self.radio_tab.get_grid())
+
         self.bluetooth_tab = BluetoothTab(self.taskbar)
         self.soundboard_tab = SoundboardTab()
         self.settings_tab = SettingsTab()
-        self.tabs = Tabs(taskbar, self.radio_tab, self.bluetooth_tab, self.soundboard_tab, self.settings_tab)
+        self.tabs = Tabs(self.taskbar, self.radio_tab, self.bluetooth_tab, self.soundboard_tab, self.settings_tab)
         self.navbar = NavigationBar(self.tabs)
 
     def update(self, color):
@@ -77,11 +78,9 @@ class Theme:
         return tabs
 
     def get(self): return self.theme
+    def get_taskbar(self): return self.taskbar
     def get_radio_tab(self): return self.radio_tab
     def get_bluetooth_tab(self): return self.bluetooth_tab
     def get_soundboard_tab(self): return self.soundboard_tab
     def get_settings_tab(self): return self.settings_tab
     def get_navbar(self): return self.navbar
-    
-    def get_search_dialog(self): return self.get_radio_tab().get_song_info().get_search_dialog()
-    def get_station_add_dialog(self): return self.get_radio_tab().get_song_info().get_station_add_dialog()

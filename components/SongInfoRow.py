@@ -10,20 +10,27 @@ radio_helper = RadioHelper()
 
 
 class SongInfoRow:
-    song_info_station = ft.Text("Kein Radiosender ausgewählt", weight=ft.FontWeight.BOLD)
-    song_info_title = ft.Text("", expand=True)
-
-    row = None
+    song_info_station = ft.Text("Kein Radiosender ausgewählt", size=14, weight=ft.FontWeight.BOLD)
+    song_info_title = ft.Text("", size=14, expand=True)
+    
     radio_search_dialog: RadioSearchDialog = None
+    row = None
 
     def __init__(self, radio_grid: RadioGrid):
         self.radio_search_dialog = RadioSearchDialog(radio_grid)
+
         self.row = ft.Row([
-            ft.Icon(ft.icons.MUSIC_NOTE),
-            self.song_info_station,
-            self.song_info_title,
-            ft.TextButton("Sendersuche", icon=ft.icons.SEARCH, on_click=lambda e: self.radio_search_dialog.open())
-        ])
+            ft.Row([
+                ft.Icon(ft.icons.MUSIC_NOTE, color=ft.colors.GREEN),
+                self.song_info_station,
+                self.song_info_title
+            ]),
+            ft.TextButton(
+                "Sendersuche",
+                icon=ft.icons.SEARCH,
+                on_click=lambda e: self.radio_search_dialog.open()
+            )
+        ]) #, alignment=ft.MainAxisAlignment.SPACE_BETWEEN)
 
     def reload(self):
         try:
@@ -43,6 +50,14 @@ class SongInfoRow:
     def update(self):
         self.song_info_station.update()
         self.song_info_title.update()
+    
+    def hide(self):
+        self.row.visible = False
+        self.row.update()
+    
+    def show(self):
+        self.row.visible = True
+        self.row.update()
 
     def reset(self):
         self.song_info_station.value = "Kein Radiosender ausgewählt"
@@ -51,5 +66,3 @@ class SongInfoRow:
 
     def get(self): return self.row
     def get_search_dialog(self): return self.radio_search_dialog
-    def get_station_add_dialog(self): return self.radio_search_dialog.get_station_add_dialog()
-    def get_duplicate_dialog(self): return self.radio_search_dialog.get_station_add_dialog().get_duplicate_dialog()

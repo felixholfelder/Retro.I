@@ -27,7 +27,8 @@ class Tabs:
 
     def change_tab(self, e):
         index = e.control.selected_index
-        self.radio_tab.get_song_info().reset()
+        #self.taskbar.get_song_info().reset()
+        #self.taskbar.get_song_info().hide()
         
         try:
             self.radio_tab.hide()
@@ -53,6 +54,8 @@ class Tabs:
             self.settings_tab.show()
 
     def switch_radio_tab(self):
+        self.taskbar.get_song_info().show()
+
         name = bluetooth_helper.get_device_name()
         if name != "":
             self.bluetooth_tab.get_disconnect_dialog().open(name)
@@ -72,18 +75,18 @@ class Tabs:
         self.taskbar.update()
 
     def switch_bluetooth_tab(self):
-        Constants.current_radio_station = {}
+        #Constants.current_radio_station = {}
 
-        audio_helper.pause()
-        bluetooth_helper.turn_on()
+        #audio_helper.pause()
+        #bluetooth_helper.turn_on()
 
-        self.taskbar.update()
+        #self.taskbar.update()
 
-        self.bluetooth_tab.get_device_connected().reset_connected_device()
+        #self.bluetooth_tab.get_device_connected().reset_connected_device()
         self.bluetooth_tab.show()
 
-        self.radio_tab.get_grid().disable_indicator()
-        self.radio_tab.get_song_info().reset()
+        #self.radio_tab.get_grid().disable_indicator()
+        #self.taskbar.get_song_info().reset()
 
     def switch_soundboard_tab(self):
         self.soundboard_tab.show()
