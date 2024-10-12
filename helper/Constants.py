@@ -7,7 +7,7 @@ class Constants:
 	indicator_refs = []
 
 	def pwd(self):
-		return "/home/pi/Desktop/test/Retro.I"
+		return "/home/pi/Documents/Retro.I"
 
 	def sound_path(self):
 		return f"{self.pwd()}/assets/sounds"
