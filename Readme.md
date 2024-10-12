@@ -131,12 +131,15 @@ Exec=sh /home/pi/Documents/Retro.I/scripts/start.sh
 Terminal=false
 ```
 ## Packages
-### Das Programm verwendet Pulseaudio für die Audioausgabe. Hierzu müssen folgende Pakete installiert werden:
+### Pulseaudio
+Das Programm verwendet Pulseaudio für die Audioausgabe. Hierzu müssen folgende Pakete installiert werden:
 ```
 sudo apt-get install python3-alsaaudio
 sudo apt-get install alsaaudio
 sudo apt-get install python-alsaaudio
 ```
+### SPI
+Über `sudo raspi-config` muss in den `Interface Options` SPI aktiviert werden.
 
 ### Updates
 Bei jedem Boot des Raspberry's wird ein Update-Skript (`update.sh`) ausgeführt.\
