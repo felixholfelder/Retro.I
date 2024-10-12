@@ -102,7 +102,7 @@ Um den Rainbow-Splashscreen zu deaktivieren, muss in der Datei `/boot/firmare/co
 <hr>
 
 ## Taskbar ausblenden
-Um die Taskbar auszublenden müssen die folgenden Zeilen in der Datei `/home/pi/config/wf-panel-pi.ini` hinzugefügt werden:\
+Um die Taskbar auszublenden müssen die folgenden Zeilen in der Datei `/home/pi/.config/wf-panel-pi.ini` hinzugefügt werden:\
 ```
 autohide=true
 autohide_duration=500
