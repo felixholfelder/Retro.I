@@ -141,6 +141,13 @@ sudo apt-get install python-alsaaudio
 ### SPI
 Über `sudo raspi-config` muss in den `Interface Options` SPI aktiviert werden.
 
+### Libmpv
+```
+sudo apt update
+sudo apt install libmpv-dev libmpv2
+sudo ln -s /usr/lib/aarch64-linux-gnu/libmpv.so /usr/lib/libmpv.so.1
+```
+
 ### Updates
 Bei jedem Boot des Raspberry's wird ein Update-Skript (`update.sh`) ausgeführt.\
 Dieses Skript prüft, ob neue Updates verfügbar sind, indem es die aktuelle Tag-Version auf dem Raspberry mit dem neuesten Tag im Github-Repo vergleicht.\
