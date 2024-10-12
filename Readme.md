@@ -121,7 +121,15 @@ Durch entsprechende Kommandos kann die Tastatur nun sichtbar/unsichtbar gemacht 
 ## Autostart
 ### Start der Anwendung
 Die Anwendung zur Steuerung des Radio's wird automatisch nach dem Boot des Raspberry's gestartet (`start.sh`)\
-Der Aufruf des Start-Skripts erfolgt über eine Desktop-Datei (`retroi.desktop`). Diese liegt im Ordner `/etc/xdg/autostart`.
+Der Aufruf des Start-Skripts erfolgt über eine Desktop-Datei (`retroi.desktop`). Diese liegt im Ordner `/etc/xdg/autostart`.\
+Inhalt von `retroi.desktop`:
+```
+[Desktop Entry]
+Name=Retro.I
+Type=Application
+Exec=sh /home/pi/Documents/Retro.I/scripts/start.sh
+Terminal=false
+```
 
 ### Updates
 Bei jedem Boot des Raspberry's wird ein Update-Skript (`update.sh`) ausgeführt.\
