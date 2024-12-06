@@ -1,4 +1,5 @@
 import flet as ft
+from PIL.ImageOps import expand
 
 from components.dialogs.WifiConnectionDialog import WifiConnectionDialog
 from helper.SystemHelper import System
@@ -11,7 +12,7 @@ wifi_helper = WifiHelper()
 class WifiDialog:
     dialog = None
 
-    loading = ft.ProgressRing()
+    loading = ft.ProgressRing(visible=False, expand=True)
     not_found = ft.Text("Keine Netzwerke gefunden", visible=False)
     listview = ft.ListView(spacing=10, padding=20, expand=True)
 

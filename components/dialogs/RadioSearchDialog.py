@@ -15,7 +15,7 @@ class RadioSearchDialog:
     text = ft.Text("")
     dialog = None
 
-    loading = ft.ProgressRing()
+    loading = ft.ProgressRing(visible=False)
     not_found_text = ft.Text("Kein Radiosender gefunden!", visible=False)
     listview = ft.ListView(spacing=10, padding=20, expand=True)
     search_textfield = ft.TextField(
