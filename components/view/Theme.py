@@ -27,10 +27,12 @@ class Theme:
 
     tabs = None
     navbar = None
+    page = None
 
-    def __init__(self, taskbar: Taskbar, strip: Strip):
+    def __init__(self, taskbar: Taskbar, strip: Strip, page: ft.Page):
         self.strip = strip
         self.taskbar = taskbar
+        self.page = page
 
         self.theme = ft.Theme(
             color_scheme_seed='green',
@@ -38,13 +40,6 @@ class Theme:
                 track_color={
                     ft.MaterialState.DEFAULT: ft.colors.TRANSPARENT,
                 },
-                thumb_visibility=True,
-                thumb_color={
-                    ft.MaterialState.HOVERED: ft.colors.GREY_500,
-                    ft.MaterialState.DEFAULT: ft.colors.GREY_400,
-                },
-                thickness=40,
-                radius=20,
             )
         )
 
@@ -59,10 +54,9 @@ class Theme:
     def update(self, color):
         self.theme.color_scheme_seed = color
         self.navbar.update(color)
-        #self.page.update()
+        self.page.update()
         self.radio_tab.update()
-        #self.page.update()
-        self.theme.update()
+        self.page.update()
 
     def get_tabs(self):
         tabs = [self.radio_tab.get(), self.bluetooth_tab.get()]
@@ -71,8 +65,6 @@ class Theme:
             tabs.append(self.soundboard_tab.get())
 
         tabs.append(self.settings_tab.get())
-        
-        print(tabs)
 
         return tabs
 
