@@ -34,15 +34,7 @@ class Theme:
         self.taskbar = taskbar
         self.page = page
 
-        self.theme = ft.Theme(
-            color_scheme_seed='green',
-            scrollbar_theme=ft.ScrollbarTheme(
-                track_color={
-                    ft.MaterialState.DEFAULT: ft.colors.TRANSPARENT,
-                },
-            )
-        )
-
+        self.theme = ft.Theme(color_scheme_seed='green')
         
         self.radio_tab = RadioTab(strip, self)
         self.bluetooth_tab = BluetoothTab(self.taskbar)
@@ -65,6 +57,8 @@ class Theme:
             tabs.append(self.soundboard_tab.get())
 
         tabs.append(self.settings_tab.get())
+
+        print(tabs)
 
         return tabs
 
