@@ -42,7 +42,7 @@ class RadioGrid:
         self.delete_dialog.open()
 
     def reload(self):
-        self.grid.controls = []
+        self.grid.controls.extend([])
         Constants.indicator_refs = []
 
         for i, station in enumerate(stations_helper.load_radio_stations()):
