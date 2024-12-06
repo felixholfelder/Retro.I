@@ -1,7 +1,6 @@
 import flet as ft
 
 from components.dialogs.StationDeleteDialog import StationDeleteDialog
-from components.view.Theme import Theme
 from helper.Audio import Audio
 from helper.Constants import Constants
 from helper.RadioHelper import RadioHelper
@@ -23,7 +22,7 @@ class RadioGrid:
     strip: Strip = None
     theme = None
 
-    def __init__(self, strip: Strip, theme: Theme):
+    def __init__(self, strip: Strip, theme):
         self.delete_dialog = StationDeleteDialog(self.delete_station)
         self.strip = strip
         self.theme = theme
