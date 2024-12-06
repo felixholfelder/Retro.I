@@ -27,13 +27,10 @@ class Theme:
 
     tabs = None
     navbar = None
-    
-    page = None
 
     def __init__(self, taskbar: Taskbar, strip: Strip):
         self.strip = strip
         self.taskbar = taskbar
-        # self.page = page
 
         self.theme = ft.Theme(
             color_scheme_seed='green',
