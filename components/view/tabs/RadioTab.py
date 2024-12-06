@@ -11,8 +11,8 @@ class RadioTab:
     radio_grid: RadioGrid = None
     song_info_row: SongInfoRow = None
 
-    def __init__(self, strip: Strip, theme):
-        self.radio_grid = RadioGrid(strip, theme)
+    def __init__(self, strip: Strip, theme, page: ft.Page):
+        self.radio_grid = RadioGrid(strip, theme, page)
         self.song_info_row = SongInfoRow(self.radio_grid)
 
         self.tab = ft.Container(

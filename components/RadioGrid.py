@@ -22,10 +22,13 @@ class RadioGrid:
     strip: Strip = None
     theme = None
 
-    def __init__(self, strip: Strip, theme):
+    page = None
+
+    def __init__(self, strip: Strip, theme, page: ft.Page):
         self.delete_dialog = StationDeleteDialog(self.delete_station)
         self.strip = strip
         self.theme = theme
+        self.page = page
 
         self.grid = ft.GridView(
             expand=True,
@@ -66,7 +69,7 @@ class RadioGrid:
                     ]
                 )
             )
-        self.grid.update()
+        self.page.update()
 
     def delete_station(self):
         stations_helper.delete_station(Constants.current_station_index_to_delete)

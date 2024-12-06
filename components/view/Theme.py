@@ -52,7 +52,7 @@ class Theme:
         )
 
         
-        self.radio_tab = RadioTab(strip, self)
+        self.radio_tab = RadioTab(strip, self, page)
         self.bluetooth_tab = BluetoothTab(self.taskbar)
         self.soundboard_tab = SoundboardTab()
         self.settings_tab = SettingsTab()
