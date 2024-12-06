@@ -16,7 +16,7 @@ class Taskbar:
     wifi_connection_dialog: WifiConnectionDialog = None
     wifi_dialog: WifiDialog = None
 
-    ico_wifi = ft.IconButton(icon=ft.icons.WIFI, icon_size=25, color=ft.colors.GREEN)
+    ico_wifi = ft.IconButton(icon=ft.icons.WIFI, icon_size=25, icon_color=ft.colors.GREEN)
     ico_bluetooth = ft.Icon(name=ft.icons.BLUETOOTH, size=25)
     ico_volume = ft.Icon(name=ft.icons.VOLUME_UP_ROUNDED, size=25)
     txt_volume = ft.Text("", size=18)
