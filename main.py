@@ -49,6 +49,8 @@ def main(page: ft.Page):
 
     Rotary(taskbar, strip)
 
+    page.add(ft.Column(theme.get_tabs()))
+
     page.add(taskbar.get_wifi_dialog().get())
     page.add(taskbar.get_wifi_connection_dialog().get())
     page.add(theme.get_radio_tab().get_song_info().get_search_dialog().get())
@@ -59,10 +61,9 @@ def main(page: ft.Page):
     page.add(theme.get_settings_tab().get_led_dialog().get())
     page.add(theme.get_settings_tab().get_info_dialog().get())
     page.add(theme.get_settings_tab().get_credits_dialog().get())
-    
-    page.add(ft.Column(theme.get_tabs()))
-    theme.get_radio_tab().get_grid().reload()
+
     page.update()
+    theme.get_radio_tab().get_grid().reload()
 
     audio_helper.startup_sound()
     
