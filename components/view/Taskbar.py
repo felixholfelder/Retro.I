@@ -29,7 +29,7 @@ class Taskbar:
         size=25,
         color=ft.colors.BLACK if not audio_helper.is_mute() else ft.colors.RED
     )
-    volume_text = ft.Text(f"{audio_helper.get_volume()}%" if not audio_helper.is_mute() else "", size=18)
+    volume_text = ft.Text("", size=18)
 
     def __init__(self):
         self.taskbar = ft.AppBar(
@@ -58,6 +58,7 @@ class Taskbar:
     def update_volume(self):
         print(audio_helper.get_volume())
         self.volume_icon.update()
+        self.volume_text.value = f"{audio_helper.get_volume()}%" if not audio_helper.is_mute() else ""
         self.volume_text.update()
 
     def update_wifi(self):
