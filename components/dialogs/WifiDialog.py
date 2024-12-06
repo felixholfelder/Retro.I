@@ -26,7 +26,6 @@ class WifiDialog:
                 width=500,
                 alignment=ft.alignment.center,
                 content=ft.Column(
-                    tight=True,
                     alignment=ft.MainAxisAlignment.CENTER,
                     horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                     controls=[
