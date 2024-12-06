@@ -37,8 +37,8 @@ def main(page: ft.Page):
 
     page.navigation_bar = theme.get_navbar().get()
     page.appbar = taskbar.get()
-    page.window_maximized = True
-    page.window_frameless = True
+    page.window.maximized = True
+    page.window.frameless = True
     page.spacing = 0
     page.theme = theme.get()
     page.scroll = ft.ScrollMode.ADAPTIVE
