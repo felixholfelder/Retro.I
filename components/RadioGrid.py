@@ -16,7 +16,14 @@ radio_helper = RadioHelper()
 
 
 class RadioGrid:
-    grid = None
+    grid = ft.GridView(
+        expand=True,
+        runs_count=5,
+        max_extent=150,
+        child_aspect_ratio=1.0,
+        spacing=20,
+        run_spacing=50
+    )
     delete_dialog: StationDeleteDialog = None
 
     strip: Strip = None
@@ -26,15 +33,6 @@ class RadioGrid:
         self.delete_dialog = StationDeleteDialog(self.delete_station)
         self.strip = strip
         self.theme = theme
-
-        self.grid = ft.GridView(
-            expand=True,
-            runs_count=5,
-            max_extent=150,
-            child_aspect_ratio=1.0,
-            spacing=20,
-            run_spacing=50
-        )
 
     def open_delete_station_dialog(self, index):
         Constants.current_station_index_to_delete = index
