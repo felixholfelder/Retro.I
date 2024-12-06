@@ -15,6 +15,7 @@ class RadioSearchDialog:
     text = ft.Text("")
     dialog = None
 
+    loading = ft.ProgressRing()
     not_found_text = ft.Text("Kein Radiosender gefunden!", visible=False)
     listview = ft.ListView(spacing=10, padding=20, expand=True)
     search_textfield = ft.TextField(
@@ -43,6 +44,7 @@ class RadioSearchDialog:
                         ],
                         spacing=ft.MainAxisAlignment.SPACE_BETWEEN
                     ),
+                    self.loading,
                     self.not_found_text,
                     self.listview
                 ]
@@ -58,13 +60,21 @@ class RadioSearchDialog:
         self.dialog.update()
 
     def search_stations(self):
+        self.loading.visible = True
+        self.loading.update()
+
         name = self.search_textfield.value
         stations = radio_helper.get_stations_by_name(name)
+
+        self.loading.visible = False
+        self.loading.update()
 
         if len(stations) == 0:
             self.not_found_text.visible = True
         else:
             self.not_found_text.visible = False
+
+        self.not_found_text.update()
 
         self.listview.controls = []
         for el in stations:
