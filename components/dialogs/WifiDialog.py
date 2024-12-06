@@ -11,7 +11,7 @@ wifi_helper = WifiHelper()
 class WifiDialog:
     dialog = None
 
-    loading = ft.Text("Netzwerke werden geladen...")
+    loading = ft.ProgressRing()
     not_found = ft.Text("Keine Netzwerke gefunden", visible=False)
     listview = ft.ListView(spacing=10, padding=20, expand=True)
 
@@ -30,7 +30,6 @@ class WifiDialog:
         )
 
     def open(self):
-        print("open wifi")
         self.not_found.visible = False
         self.not_found.update()
 
