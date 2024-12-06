@@ -16,26 +16,16 @@ class Taskbar:
     wifi_connection_dialog: WifiConnectionDialog = None
     wifi_dialog: WifiDialog = None
 
-    ico_wifi = ft.IconButton(
-        icon=ft.icons.WIFI if wifi_helper.is_connected() else ft.icons.WIFI_OFF_ROUNDED,
-        icon_size=25,
-        icon_color=ft.colors.GREEN if wifi_helper.is_connected() else ft.colors.BLACK
-    )
-
+    ico_wifi = ft.IconButton(icon=ft.icons.WIFI, icon_size=25, icon_color=ft.colors.GREEN)
     ico_bluetooth = ft.Icon(name=ft.icons.BLUETOOTH, size=25)
-
-    volume_icon = ft.Icon(
-        name=ft.icons.VOLUME_UP_ROUNDED if not audio_helper.is_mute() else ft.icons.VOLUME_OFF_ROUNDED,
-        size=25,
-        color=ft.colors.BLACK if not audio_helper.is_mute() else ft.colors.RED
-    )
-    volume_text = ft.Text("", size=18)
+    ico_volume = ft.Icon(name=ft.icons.VOLUME_UP_ROUNDED, size=25, color=ft.colors.BLACK)
+    txt_volume = ft.Text("", size=18)
 
     def __init__(self):
         self.taskbar = ft.AppBar(
             leading=ft.Row([
-                self.volume_icon,
-                self.volume_text
+                self.ico_volume,
+                self.txt_volume
             ],
                 spacing=10
             ),
@@ -56,13 +46,15 @@ class Taskbar:
         self.update_bluetooth()
 
     def update_volume(self):
-        self.volume_icon.icon = ft.icons.WIFI if wifi_helper.is_connected() else ft.icons.WIFI_OFF_ROUNDED
-        self.volume_icon.color = ft.colors.GREEN if wifi_helper.is_connected() else ft.colors.BLACK
-        self.volume_icon.update()
-        self.volume_text.value = f"{audio_helper.get_volume()}%" if not audio_helper.is_mute() else ""
-        self.volume_text.update()
+        self.ico_volume.name = ft.icons.VOLUME_UP_ROUNDED if not audio_helper.is_mute() else ft.icons.VOLUME_OFF_ROUNDED,
+        self.ico_volume.color = ft.colors.BLACK if not audio_helper.is_mute() else ft.colors.RED
+        self.ico_volume.update()
+        self.txt_volume.value = f"{audio_helper.get_volume()}%" if not audio_helper.is_mute() else ""
+        self.txt_volume.update()
 
     def update_wifi(self):
+        self.ico_wifi.name = ft.icons.WIFI if wifi_helper.is_connected() else ft.icons.WIFI_OFF_ROUNDED
+        self.ico_wifi.color = ft.colors.GREEN if wifi_helper.is_connected() else ft.colors.BLACK
         self.ico_wifi.update()
 
     def update_bluetooth(self):
