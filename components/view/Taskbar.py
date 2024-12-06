@@ -56,6 +56,7 @@ class Taskbar:
         self.update_bluetooth()
 
     def update_volume(self):
+        print("HELLOOOOOOO")
         self.volume_icon.update()
         self.volume_text.update()
 
