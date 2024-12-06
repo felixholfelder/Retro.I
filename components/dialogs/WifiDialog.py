@@ -12,7 +12,7 @@ wifi_helper = WifiHelper()
 class WifiDialog:
     dialog = None
 
-    loading = ft.ProgressRing(visible=False, expand=True)
+    loading = ft.ProgressRing(visible=False)
     not_found = ft.Text("Keine Netzwerke gefunden", visible=False)
     listview = ft.ListView(spacing=10, padding=20, expand=True)
 
