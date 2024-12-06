@@ -34,7 +34,13 @@ class Theme:
         self.taskbar = taskbar
         self.page = page
 
-        self.theme = ft.Theme(color_scheme_seed='green')
+        self.theme = ft.Theme(
+            color_scheme_seed='green',
+            scrollbar_theme=ft.ScrollbarTheme(
+                thumb_visibility=False,
+            )
+        )
+
         
         self.radio_tab = RadioTab(strip, self)
         self.bluetooth_tab = BluetoothTab(self.taskbar)
