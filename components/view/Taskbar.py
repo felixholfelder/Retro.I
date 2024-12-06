@@ -56,7 +56,8 @@ class Taskbar:
         self.update_bluetooth()
 
     def update_volume(self):
-        print(audio_helper.get_volume())
+        self.volume_icon.icon = ft.icons.WIFI if wifi_helper.is_connected() else ft.icons.WIFI_OFF_ROUNDED
+        self.volume_icon.color = ft.colors.GREEN if wifi_helper.is_connected() else ft.colors.BLACK
         self.volume_icon.update()
         self.volume_text.value = f"{audio_helper.get_volume()}%" if not audio_helper.is_mute() else ""
         self.volume_text.update()
