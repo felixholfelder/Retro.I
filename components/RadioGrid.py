@@ -1,6 +1,7 @@
 import flet as ft
 
 from components.dialogs.StationDeleteDialog import StationDeleteDialog
+from components.view.Theme import Theme
 from helper.Audio import Audio
 from helper.Constants import Constants
 from helper.RadioHelper import RadioHelper
@@ -22,13 +23,10 @@ class RadioGrid:
     strip: Strip = None
     theme = None
 
-    page = None
-
-    def __init__(self, strip: Strip, theme, page: ft.Page):
+    def __init__(self, strip: Strip, theme: Theme):
         self.delete_dialog = StationDeleteDialog(self.delete_station)
         self.strip = strip
         self.theme = theme
-        self.page = page
 
         self.grid = ft.GridView(
             expand=True,
@@ -69,7 +67,7 @@ class RadioGrid:
                     ]
                 )
             )
-        self.page.update()
+        self.grid.update()
 
     def delete_station(self):
         stations_helper.delete_station(Constants.current_station_index_to_delete)
