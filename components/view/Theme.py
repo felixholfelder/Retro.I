@@ -30,10 +30,10 @@ class Theme:
     
     page = None
 
-    def __init__(self, taskbar: Taskbar, strip: Strip, page: ft.Page):
+    def __init__(self, taskbar: Taskbar, strip: Strip):
         self.strip = strip
         self.taskbar = taskbar
-        self.page = page
+        # self.page = page
 
         self.theme = ft.Theme(
             color_scheme_seed='green',
@@ -62,9 +62,10 @@ class Theme:
     def update(self, color):
         self.theme.color_scheme_seed = color
         self.navbar.update(color)
-        self.page.update()
+        #self.page.update()
         self.radio_tab.update()
-        self.page.update()
+        #self.page.update()
+        self.theme.update()
 
     def get_tabs(self):
         tabs = [self.radio_tab.get(), self.bluetooth_tab.get()]
