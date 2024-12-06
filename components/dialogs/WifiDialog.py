@@ -22,12 +22,20 @@ class WifiDialog:
         self.connection_dialog = connection_dialog
 
         self.dialog = ft.AlertDialog(
-            content=ft.Column(
+            content=ft.Container(
                 width=500,
-                tight=True,
-                alignment=ft.MainAxisAlignment.CENTER,
-                controls=[self.loading, self.not_found, self.listview]
-            )
+                alignment=ft.alignment.center,
+                content=ft.Column(
+                    tight=True,
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                    controls=[
+                        self.loading,
+                        self.not_found,
+                        self.listview,
+                    ],
+                ),
+            ),
         )
 
     def open(self):
