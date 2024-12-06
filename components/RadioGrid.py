@@ -48,7 +48,7 @@ class RadioGrid:
             Constants.indicator_refs.append(ft.Ref[ft.Image]())
             self.grid.controls.append(
                 ft.Stack(
-                    alignment=ft.MainAxisAlignment.END,
+                    alignment=ft.alignment.center,
                     fit=ft.StackFit.EXPAND,
                     controls=[
                         ft.Container(
