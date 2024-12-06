@@ -65,7 +65,7 @@ def main(page: ft.Page):
     page.update()
     theme.get_radio_tab().get_grid().reload()
 
-    audio_helper.startup_sound()
+    #audio_helper.startup_sound()
     
     taskbar.update()
     

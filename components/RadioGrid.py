@@ -64,8 +64,6 @@ class RadioGrid:
                     ]
                 )
             )
-        print(self.grid.controls)
-        print(type(self.grid.controls))
         self.grid.update()
 
     def delete_station(self):
