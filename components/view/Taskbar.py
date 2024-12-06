@@ -16,9 +16,9 @@ class Taskbar:
     wifi_connection_dialog: WifiConnectionDialog = None
     wifi_dialog: WifiDialog = None
 
-    ico_wifi = ft.IconButton(icon=ft.icons.WIFI, icon_size=25, icon_color=ft.colors.GREEN)
+    ico_wifi = ft.IconButton(icon=ft.icons.WIFI, icon_size=25, color=ft.colors.GREEN)
     ico_bluetooth = ft.Icon(name=ft.icons.BLUETOOTH, size=25)
-    ico_volume = ft.Icon(name=ft.icons.VOLUME_UP_ROUNDED, size=25, color=ft.colors.BLACK)
+    ico_volume = ft.Icon(name=ft.icons.VOLUME_UP_ROUNDED, size=25)
     txt_volume = ft.Text("", size=18)
 
     def __init__(self):
@@ -46,8 +46,8 @@ class Taskbar:
         self.update_bluetooth()
 
     def update_volume(self):
-        self.ico_volume.name = ft.icons.VOLUME_UP_ROUNDED if not audio_helper.is_mute() else ft.icons.VOLUME_OFF_ROUNDED,
-        self.ico_volume.color = ft.colors.BLACK if not audio_helper.is_mute() else ft.colors.RED
+        self.ico_volume.name = ft.icons.VOLUME_OFF_ROUNDED if audio_helper.is_mute() else ft.icons.VOLUME_UP_ROUNDED
+        self.ico_volume.color = ft.colors.RED if audio_helper.is_mute() else ft.colors.BLACK
         self.ico_volume.update()
         self.txt_volume.value = f"{audio_helper.get_volume()}%" if not audio_helper.is_mute() else ""
         self.txt_volume.update()
