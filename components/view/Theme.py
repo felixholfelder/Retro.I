@@ -38,6 +38,7 @@ class Theme:
             color_scheme_seed='green',
             scrollbar_theme=ft.ScrollbarTheme(
                 thumb_visibility=False,
+                track_visibility=False,
             )
         )
 
