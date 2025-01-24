@@ -1,4 +1,5 @@
 import time
+import vlc
 import alsaaudio as a
 import flet as ft
 from helper.Stations import Stations
@@ -8,10 +9,11 @@ from helper.Sounds import Sounds
 
 stations_helper = Stations()
 c = Constants()
-audio = ft.Audio(src=stations_helper.load_radio_stations()[0]["src"], autoplay=False)
 sounds = Sounds()
 
 class Audio:
+	audio = vlc.MediaPlayer("")
+
 	def __init__(self):
 		self.init_sound()
 
@@ -45,30 +47,28 @@ class Audio:
 		return self.mixer().getmute()[0] == 1
 
 	def play_src(self, src):
-		self.pause()
-		audio.release()
-		audio.src = src
-		audio.autoplay = True
+		try:
+			self.stop()
+		except:
+			print("Fehler")
+		Audio.audio = vlc.MediaPlayer(src)
 		self.play()
 
 	def play(self):
-		audio.play()
-
+		Audio.audio.play()
+	
 	def pause(self):
-		audio.pause()
+		Audio.audio.stop()
 
-	def init(self):
-		return audio
-	
-	def startup_sound(self):
-		self.play_sound("startup.mp3")
-	
-	def shutdown_sound(self):
-		self.play_sound("shutdown.mp3")
-	
 	def play_sound(self, src):
 		playsound(f"{c.sound_path()}/{src}")
-	
+
+	def startup_sound(self):
+		self.play_sound("startup.mp3")
+
+	def shutdown_sound(self):
+		self.play_sound("shutdown.mp3")
+
 	def play_toast(self):
 		toast_src = sounds.get_random_toast()
 		self.pause()
