@@ -46,7 +46,7 @@ def main(page: ft.Page):
     page.scroll = ft.ScrollMode.ADAPTIVE
     page.title = "Retro.I"
 
-    button = GpioButton(21, Audio.play_toast)
+    button = GpioButton(21, audio_helper.play_toast)
     button.activate()
 
     Rotary(taskbar, strip)
