@@ -1,5 +1,7 @@
 import threading
 import time
+import multiprocessing
+import vlc
 
 import flet as ft
 
@@ -16,19 +18,19 @@ from helper.Stations import Stations
 from helper.Strip import Strip
 from helper.SystemHelper import System
 from helper.WifiHelper import WifiHelper
+from helper.Audio import Audio
 
 wifi_helper = WifiHelper()
 radio_helper = RadioHelper()
 bluetooth_helper = BluetoothHelper()
-audio_helper = Audio()
 system_helper = System()
 stations_helper = Stations()
 constants = Constants()
 sounds = Sounds()
+audio_helper = Audio()
 
 
 def main(page: ft.Page):
-    page.add(audio_helper.init())
     page.update()
 
     strip = Strip()
@@ -37,19 +39,17 @@ def main(page: ft.Page):
 
     page.navigation_bar = theme.get_navbar().get()
     page.appbar = taskbar.get()
-    page.window.maximized = True
-    page.window.frameless = True
+    page.window_maximized = True
+    page.window_frameless = True
     page.spacing = 0
     page.theme = theme.get()
     page.scroll = ft.ScrollMode.ADAPTIVE
-    page.title = "Retro.I" 
+    page.title = "Retro.I"
 
-    button = GpioButton(21, audio_helper.play_toast)
+    button = GpioButton(21, Audio.play_toast)
     button.activate()
 
     Rotary(taskbar, strip)
-
-    page.add(ft.Column(theme.get_tabs()))
 
     page.add(taskbar.get_wifi_dialog().get())
     page.add(taskbar.get_wifi_connection_dialog().get())
@@ -57,15 +57,17 @@ def main(page: ft.Page):
     page.add(theme.get_radio_tab().get_song_info().get_station_add_dialog().get())
     page.add(theme.get_radio_tab().get_song_info().get_station_add_dialog().get_duplicate_dialog().get())
     page.add(theme.get_radio_tab().get_grid().get_delete_dialog().get())
+    page.add(theme.get_bluetooth_tab().get_disconnect_dialog().get())
     page.add(theme.get_settings_tab().get_shutdown_dialog().get())
     page.add(theme.get_settings_tab().get_led_dialog().get())
     page.add(theme.get_settings_tab().get_info_dialog().get())
     page.add(theme.get_settings_tab().get_credits_dialog().get())
 
-    page.update()
+    page.add(ft.Column(theme.get_tabs()))
     theme.get_radio_tab().get_grid().reload()
+    page.update()
 
-    #audio_helper.startup_sound()
+    audio_helper.startup_sound()
     
     taskbar.update()
     
