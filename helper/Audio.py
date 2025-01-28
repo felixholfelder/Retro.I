@@ -48,7 +48,7 @@ class Audio:
 
 	def play_src(self, src):
 		try:
-			self.stop()
+			self.pause()
 		except:
 			print("Fehler")
 		Audio.audio = vlc.MediaPlayer(src)
