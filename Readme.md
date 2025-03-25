@@ -18,87 +18,21 @@ Der Radio wurde zu einem Internetradio umgebaut. Die Auswahl der Radiosender erf
 
 ## Konfigurationen
 ## Retro.I Image beim Start
+Für ein eigenes Bild wird die Bibliothek `Plymouth` verwendet!
 Beim Start wird ein Bild angezeigt. Das Bild liegt unter `/usr/share/plymouth/themes/pix/splash.png` und hat die exakte Größe für das Touch Display.
 Das Bild ist außerdem im Projektordner unter `assets/splashscreen/splash.png`.
 Um das Bild zu generieren, muss ein Befehl ausgeführt werden: `sudo update-initramfs -u`.
 Um den Rainbow-Splashscreen zu deaktivieren, muss in der Datei `/boot/firmare/config.txt` die Option `disable_splash=1` vorhanden sein.
 
-[//]: # (## HifiBerry)
+## Retro.I Image beim Shutdown
+Das Bild wird komischerweise nur beim Start und Reboot gezeigt. Nicht beim Shutdown!
+Als Workaround muss in der Datei `/usr/lib/systemd/system/plymouth-poweroff.service` der Befehl bei ExecStart verändert werden:
+```
+ExecStart=/usr/sbin/plymouthd --mode=reboot --attach-to-session
+```
 
-[//]: # (In der Datei `/boot/firmare/config.txt` müssen folgende Optionen auskommentiert werden:)
+Der Mode muss von `shutdown` zu `reboot` geändert werden!
 
-[//]: # (- `dtparam=audio=on`)
-
-[//]: # ()
-[//]: # (folgenden Block finden:)
-
-[//]: # (```)
-
-[//]: # (# Enable DRM VC4 V3D driver)
-
-[//]: # (dtoverlay=vc4-kms-v3d)
-
-[//]: # (max_framebuffers=2)
-
-[//]: # (```)
-
-[//]: # ()
-[//]: # (und folgenden Befehl darunter einfügen:)
-
-[//]: # (- `dtoverlay=vc4-kms-v3d,noaudio`)
-
-[//]: # ()
-[//]: # (damit der Block am Ende so aussieht:)
-
-[//]: # (```)
-
-[//]: # (# Enable DRM VC4 V3D driver)
-
-[//]: # (dtoverlay=vc4-kms-v3d)
-
-[//]: # (max_framebuffers=2)
-
-[//]: # (# Also for HifiBerry...)
-
-[//]: # (dtoverlay=vc4-kms-v3d,noaudio)
-
-[//]: # (```)
-
-[//]: # ()
-[//]: # (Und folgenden Block einfügen:)
-
-[//]: # (```)
-
-[//]: # ([all])
-
-[//]: # (# For the Hifiberry AMP 2)
-
-[//]: # (force_eeprom_read = 0)
-
-[//]: # (dtoverlay=hifiberry-dacplus)
-
-[//]: # (# dtoverlay=hifiberry-dacplus-std)
-
-[//]: # (```)
-
-[//]: # ()
-[//]: # (Außerdem muss die Datei /etc/assound.conf mit folgendem Inhalt erstellt werden:)
-
-[//]: # (```)
-
-[//]: # (pcm.!default {)
-
-[//]: # (  type hw card 0)
-
-[//]: # (})
-
-[//]: # (ctl.!default {)
-
-[//]: # (  type hw card 0)
-
-[//]: # (})
-
-[//]: # (```)
 <hr>
 
 ## Taskbar ausblenden
