@@ -19,15 +19,20 @@ class Strip:
 	color_helper = ColorHelper()
 
 	pixel_pin = board.D10
-	pixel_num = 62
+	pixel_num = 38
 
 	pixels = neopixel.NeoPixel(pixel_pin, pixel_num, brightness=0, auto_write=True)
 	animation = Pulse(pixels, min_intensity=0.1, speed=0.1, period=5, color=BLACK)
+	
+	wait_proc = WaiterProcess(None)
 
 	def __init__(self):
 		self.pixels.fill(GREEN)
 		self.pixels.brightness = self.get_curr_brightness() / 100
 		self.pixels.show()
+		
+		self.wait_proc = WaiterProcess(self.callback)
+		self.animation.color = self.curr_color
 
 	def callback(self):
 		if not self.is_strip_active():
@@ -35,12 +40,6 @@ class Strip:
 		else:
 			self.animation.resume()
 		self.pixels.show()
-
-	wait_proc = WaiterProcess(callback)
-
-	def start(self):
-		self.wait_proc = WaiterProcess(self.callback)
-		self.animation.color = self.curr_color
 
 	def update_sound_strip(self, value):
 		self.animation.freeze()

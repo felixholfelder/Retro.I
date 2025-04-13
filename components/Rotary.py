@@ -8,11 +8,11 @@ from helper.Strip import Strip
 audio_helper = Audio()
 
 class Rotary:
-    last_turn = 1
+    last_turn = 0
     SW_PIN = 5
     DT_PIN = 6
     CLK_PIN = 13
-    VOLUME_STEP = 4
+    VOLUME_STEP = 6
 
     taskbar: Taskbar = None
     strip: Strip = None
@@ -36,14 +36,21 @@ class Rotary:
             value = audio_helper.get_volume() + self.VOLUME_STEP
             if 0 <= value <= 100:
                 self.update_sound(value)
+                
+            if value > 100:
+                self.update_sound(100)
         self.last_turn = 1
 
 
     def dec_sound(self):
+        print("DEC")
         if self.last_turn == 0:
             value = audio_helper.get_volume() - self.VOLUME_STEP
             if 0 <= value <= 100:
                 self.update_sound(value)
+                
+            if value < 0:
+                self.update_sound(0)
         self.last_turn = 0
 
 

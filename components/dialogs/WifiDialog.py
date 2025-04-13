@@ -14,7 +14,7 @@ class WifiDialog:
 
     loading = ft.ProgressRing(visible=False)
     not_found = ft.Text("Keine Netzwerke gefunden", visible=False)
-    listview = ft.ListView(spacing=10, padding=20, expand=True)
+    listview = ft.ListView(spacing=10, padding=20, expand=True, visible=False)
 
     connection_dialog: WifiConnectionDialog = None
 
@@ -22,23 +22,24 @@ class WifiDialog:
         self.connection_dialog = connection_dialog
 
         self.dialog = ft.AlertDialog(
-            content=ft.Container(
+            content=ft.Column(
                 width=500,
-                alignment=ft.alignment.center,
-                content=ft.Column(
-                    expand=True,
-                    alignment=ft.MainAxisAlignment.CENTER,
-                    horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                    controls=[
-                        self.loading,
-                        self.not_found,
-                        self.listview,
-                    ],
-                ),
+                height=500,
+                tight=True,
+                alignment=ft.MainAxisAlignment.CENTER,
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                controls=[
+                    self.loading,
+                    self.not_found,
+                    self.listview,
+                ],
             ),
         )
 
     def open(self):
+        self.listview.visible = False
+        self.listview.update()
+        
         self.not_found.visible = False
         self.not_found.update()
 
@@ -73,6 +74,7 @@ class WifiDialog:
             self.not_found.visible = True
             self.not_found.update()
 
+        self.listview.visible = True
         self.listview.update()
 
     def close(self):

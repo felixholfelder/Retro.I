@@ -154,5 +154,11 @@
         "logo": "blasmusik_radio.png",
         "name": "Blasmusik Radio",
         "src": "https://stream.laut.fm/blasmusikradio"
+    },
+    {
+        "name": "Rock Antenne - Heavy Metal",
+        "src": "http://mp3channels.webradio.rockantenne.de/heavy-metal",
+        "logo": "http://www.rockantenne.de/logos/station-rock-antenne/favicon.ico",
+        "color": "#593C51"
     }
 ]

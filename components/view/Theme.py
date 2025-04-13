@@ -65,8 +65,6 @@ class Theme:
 
         tabs.append(self.settings_tab.get())
 
-        print(tabs)
-
         return tabs
 
     def get(self): return self.theme

@@ -53,6 +53,8 @@ class Audio:
 			print("Fehler")
 		Audio.audio = vlc.MediaPlayer(src)
 		self.play()
+		
+		print("playing")
 
 	def play(self):
 		Audio.audio.play()
@@ -61,19 +63,21 @@ class Audio:
 		Audio.audio.stop()
 
 	def play_sound(self, src):
-		playsound(f"{c.sound_path()}/{src}")
+		Audio.audio = vlc.MediaPlayer(src)
+		self.play()
 
 	def startup_sound(self):
-		self.play_sound("startup.mp3")
+		self.play_sound(f"{c.sound_path()}/startup.mp3")
 
 	def shutdown_sound(self):
-		self.play_sound("shutdown.mp3")
+		self.pause()
+		self.play_sound(f"{c.sound_path()}/shutdown.mp3")
 
 	def play_toast(self):
 		toast_src = sounds.get_random_toast()
 		self.pause()
 		self.wait()
-		playsound(f"{c.toast_path()}/{toast_src}")
+		self.play_sound(f"{c.toast_path()}/{toast_src}")
 		self.wait()
 		self.play()
 

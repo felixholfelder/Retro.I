@@ -36,5 +36,5 @@ class ColorHelper:
 
 		if (hex_red*0.299 + hex_green*0.587 + hex_blue*0.114) > 186:
 			return "#000000"
-		else:
-			return "#ffffff"
+
+		return "#ffffff"

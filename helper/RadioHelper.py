@@ -28,7 +28,7 @@ class RadioHelper:
             return ""
 
     def get_stations_by_name(self, name):
-        response = requests.get(f"https://de1.api.radio-browser.info/json/stations/byname/{name}?order=votes&reverse=true")
+        response = requests.get(f"https://de2.api.radio-browser.info/json/stations/byname/{name}?order=votes&reverse=true")
 
         l = []
         for e in response.json():
