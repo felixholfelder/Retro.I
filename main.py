@@ -6,7 +6,9 @@ import vlc
 import flet as ft
 
 from components.GpioButton import GpioButton
-from components.Rotary import Rotary
+from components.RotaryBassBoost import RotaryBassBoost
+from components.RotaryVolume import RotaryVolume
+from components.RotaryPitch import RotaryPitch
 from components.view.Taskbar import Taskbar
 from components.view.Theme import Theme
 from helper.Audio import Audio
@@ -63,11 +65,13 @@ def main(page: ft.Page):
     page.add(ft.Column(theme.get_tabs()))
     theme.get_radio_tab().get_grid().reload()
     page.update()
-    
-    Rotary(taskbar, strip)
+
+    RotaryVolume(taskbar, strip)
+    RotaryBassBoost()
+    RotaryPitch()
 
     audio_helper.startup_sound()
-    
+
     taskbar.update()
     
     def background_processes():
