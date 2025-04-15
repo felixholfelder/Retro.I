@@ -19,13 +19,16 @@ class RotaryPitch:
     def __init__(self):
         rotary = pyky040.Encoder(CLK=self.CLK_PIN, DT=self.DT_PIN, SW=self.SW_PIN)
         rotary.setup(
+            step=self.PITCH_STEP,
             inc_callback=lambda e: self.inc_pitch(),
-            dec_callback=lambda e: self.dec_pitch()
+            dec_callback=lambda e: self.dec_pitch(),
+            sw_callback=lambda: self.pass_sw()
         )
         rotary_thread = threading.Thread(target=rotary.watch)
         rotary_thread.start()
 
     def inc_pitch(self):
+        print("INC PITCH")
         if self.LAST_TURN == 1:
             value = audio_effects.get_pitch_value() + self.PITCH_STEP
             if -12 <= value <= 12:
@@ -36,6 +39,7 @@ class RotaryPitch:
         self.LAST_TURN = 1
 
     def dec_pitch(self):
+        print("DEC PITCH")
         if self.LAST_TURN == 0:
             value = audio_effects.get_pitch_value() - self.PITCH_STEP
             if -12 <= value <= 12:
@@ -44,3 +48,6 @@ class RotaryPitch:
             if value < -12:
                 audio_effects.update_pitch(-12)
         self.LAST_TURN = 0
+
+    def pass_sw(self):
+        pass
