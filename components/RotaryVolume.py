@@ -8,11 +8,11 @@ from helper.Strip import Strip
 audio_helper = Audio()
 
 class RotaryVolume:
-    last_turn = 0
+    LAST_TURN = 0
+    VOLUME_STEP = 6
     SW_PIN = 6   # PIN 31
     DT_PIN = 12  # PIN 32
     CLK_PIN = 13 # PIN 33
-    VOLUME_STEP = 6
 
     taskbar: Taskbar = None
     strip: Strip = None

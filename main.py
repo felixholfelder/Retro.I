@@ -12,6 +12,7 @@ from components.RotaryPitch import RotaryPitch
 from components.view.Taskbar import Taskbar
 from components.view.Theme import Theme
 from helper.Audio import Audio
+from helper.AudioEffects import AudioEffects
 from helper.BluetoothHelper import BluetoothHelper
 from helper.Constants import Constants
 from helper.RadioHelper import RadioHelper
@@ -30,12 +31,14 @@ stations_helper = Stations()
 constants = Constants()
 sounds = Sounds()
 audio_helper = Audio()
+audio_effects = AudioEffects()
 
 
 def main(page: ft.Page):
     page.update()
 
     strip = Strip()
+    audio_effects.start()
     taskbar = Taskbar()
     theme = Theme(taskbar, strip, page)
 
