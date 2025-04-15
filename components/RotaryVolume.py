@@ -1,4 +1,5 @@
 import threading
+
 from pyky040 import pyky040
 
 from components.view.Taskbar import Taskbar
@@ -7,12 +8,13 @@ from helper.Strip import Strip
 
 audio_helper = Audio()
 
+
 class RotaryVolume:
     LAST_TURN = 0
     VOLUME_STEP = 6
-    SW_PIN = 6   # PIN 31
+    SW_PIN = 6  # PIN 31
     DT_PIN = 12  # PIN 32
-    CLK_PIN = 13 # PIN 33
+    CLK_PIN = 13  # PIN 33
 
     taskbar: Taskbar = None
     strip: Strip = None
@@ -41,7 +43,6 @@ class RotaryVolume:
                 self.update_sound(100)
         self.last_turn = 1
 
-
     def dec_sound(self):
         if self.last_turn == 0:
             value = audio_helper.get_volume() - self.VOLUME_STEP
@@ -51,7 +52,6 @@ class RotaryVolume:
             if value < 0:
                 self.update_sound(0)
         self.last_turn = 0
-
 
     def toggle_mute(self):
         is_mute = audio_helper.toggle_mute()

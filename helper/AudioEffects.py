@@ -12,7 +12,7 @@ class AudioEffects:
 
 	def start(self):
 		self.update_effects()
-		command = ['easyeffects', '--gapplication-service']
+		command = ['easyeffects', '--gapplication-service&']
 		subprocess.run(command, stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
 
 	def stop(self):
