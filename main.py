@@ -4,6 +4,7 @@ import multiprocessing
 import vlc
 
 import flet as ft
+import RPi.GPIO as GPIO
 
 from components.GpioButton import GpioButton
 from components.RotaryBassBoost import RotaryBassBoost
@@ -36,6 +37,7 @@ audio_effects = AudioEffects()
 
 def main(page: ft.Page):
     page.update()
+    GPIO.setmode(GPIO.BCM)
 
     strip = Strip()
     audio_effects.start()
