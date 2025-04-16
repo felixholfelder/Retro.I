@@ -24,7 +24,7 @@
             "octaves": 0,
             "output-gain": 0.0,
             "phase": "Laminar",
-            "semitones": -3,
+            "semitones": -8,
             "transients": "Crisp"
         },
         "plugins_order": [

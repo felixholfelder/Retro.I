@@ -28,8 +28,8 @@ class RotaryPitch:
         rotary_thread.start()
 
     def inc_pitch(self):
-        print("INC PITCH")
         if self.LAST_TURN == 1:
+            print("INC PITCH")
             value = audio_effects.get_pitch_value() + self.PITCH_STEP
             if -12 <= value <= 12:
                 audio_effects.update_pitch(value)
@@ -39,8 +39,8 @@ class RotaryPitch:
         self.LAST_TURN = 1
 
     def dec_pitch(self):
-        print("DEC PITCH")
         if self.LAST_TURN == 0:
+            print("DEC PITCH")
             value = audio_effects.get_pitch_value() - self.PITCH_STEP
             if -12 <= value <= 12:
                 audio_effects.update_pitch(value)

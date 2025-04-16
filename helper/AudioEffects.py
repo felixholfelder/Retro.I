@@ -14,11 +14,11 @@ class AudioEffects:
 	def start(self):
 		self.update_effects()
 		command = ['easyeffects', '--gapplications-service']
-		subprocess.run(command, stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
+		subprocess.run(command, stdout=subprocess.DEVNULL)
 
 	def stop(self):
 		command = ['pkill', 'easyeffects']
-		subprocess.run(command, stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
+		subprocess.run(command, stdout=subprocess.DEVNULL)
 
 	def get_config(self):
 		f = open(f"{self.effects_path}.json")
@@ -55,4 +55,4 @@ class AudioEffects:
 
 	def update_effects(self):
 		command = ['easyeffects', '-l', self.effects_path]
-		subprocess.run(command, stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
+		subprocess.run(command, stdout=subprocess.DEVNULL)
