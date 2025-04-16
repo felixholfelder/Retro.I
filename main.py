@@ -7,7 +7,7 @@ import flet as ft
 import RPi.GPIO as GPIO
 
 from components.GpioButton import GpioButton
-from components.RotaryBassBoost import RotaryBassBoost
+from components.RotaryBass import RotaryBass
 from components.RotaryVolume import RotaryVolume
 from components.RotaryPitch import RotaryPitch
 from components.view.Taskbar import Taskbar
@@ -70,8 +70,8 @@ def main(page: ft.Page):
     page.update()
 
     RotaryVolume(taskbar, strip)
-    RotaryBassBoost()
-    RotaryPitch()
+    RotaryBass(taskbar)
+    RotaryPitch(taskbar)
 
     audio_helper.startup_sound()
 

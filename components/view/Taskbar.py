@@ -48,10 +48,10 @@ class Taskbar:
 
     def update(self):
         self.taskbar_volume.update()
+        self.taskbar_bass.update()
+        self.taskbar_pitch.update()
         self.update_wifi()
         self.update_bluetooth()
-
-
 
     def update_wifi(self):
         self.ico_wifi.name = ft.icons.WIFI if wifi_helper.is_connected() else ft.icons.WIFI_OFF_ROUNDED

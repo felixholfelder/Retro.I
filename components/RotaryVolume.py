@@ -37,20 +37,20 @@ class RotaryVolume:
         if self.LAST_TURN == 1:
             value = audio_helper.get_volume() + self.VOLUME_STEP
             if 0 <= value <= 100:
-                self.update_sound(value)
+                self.update(value)
 
             if value > 100:
-                self.update_sound(100)
+                self.update(100)
         self.LAST_TURN = 1
 
     def dec_sound(self):
         if self.LAST_TURN == 0:
             value = audio_helper.get_volume() - self.VOLUME_STEP
             if 0 <= value <= 100:
-                self.update_sound(value)
+                self.update(value)
 
             if value < 0:
-                self.update_sound(0)
+                self.update(0)
         self.LAST_TURN = 0
 
     def toggle_mute(self):
@@ -58,7 +58,7 @@ class RotaryVolume:
         self.strip.toggle_mute(is_mute)
         self.taskbar.update()
 
-    def update_sound(self, value):
+    def update(self, value):
         if not audio_helper.is_mute():
             audio_helper.update_sound(value)
             self.strip.update_sound_strip(value)
