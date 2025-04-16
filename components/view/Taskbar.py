@@ -91,7 +91,7 @@ class Taskbar:
         self.txt_volume.update()
 
     def update_bass(self):
-        self.txt_bass.value = f"+{audio_effects.get_bass_value()} dB" if audio_effects.get_bass_value() >= 0 else f"{audio_effects.get_bass_value()} dB"
+        self.txt_bass.value = f"+{audio_effects.get_bass_value()} dB" if audio_effects.get_bass_value() > 0 else f"{audio_effects.get_bass_value()} dB"
         self.txt_bass.update()
 
     def update_pitch(self):
