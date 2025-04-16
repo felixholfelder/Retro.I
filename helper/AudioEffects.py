@@ -1,5 +1,6 @@
 import subprocess
 import json
+import threading
 from helper.Constants import Constants
 
 c = Constants()
@@ -12,7 +13,7 @@ class AudioEffects:
 
 	def start(self):
 		self.update_effects()
-		command = ['easyeffects', '--gapplication-service&']
+		command = ['easyeffects', '--gapplications-service']
 		subprocess.run(command, stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
 
 	def stop(self):
@@ -30,7 +31,7 @@ class AudioEffects:
 		return config['output']['bass_enhancer#0']['amount']
 
 	def get_pitch_value(self):
-		config = self.get_config()
+		config = self.get_config()		
 		return config['output']['pitch#0']['semitones']
 
 	def update_bass(self, value):
@@ -48,7 +49,7 @@ class AudioEffects:
 		self.update_effects()
 
 	def write_config(self, config):
-		with open(f"{self.effects_path}.json", "r+") as file:
+		with open(f"{self.effects_path}.json", "w") as file:
 			file_data = config
 			json.dump(file_data, file, indent=4)
 

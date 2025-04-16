@@ -4,6 +4,7 @@ import multiprocessing
 import vlc
 
 import flet as ft
+import RPi.GPIO as GPIO
 
 from components.GpioButton import GpioButton
 from components.RotaryBassBoost import RotaryBassBoost
@@ -38,7 +39,6 @@ def main(page: ft.Page):
     page.update()
 
     strip = Strip()
-    audio_effects.start()
     taskbar = Taskbar()
     theme = Theme(taskbar, strip, page)
 
@@ -78,6 +78,7 @@ def main(page: ft.Page):
     taskbar.update()
     
     def background_processes():
+        audio_effects.start()
         while True:
             theme.get_bluetooth_tab().get_device_connected().update_connected_device(theme.get_bluetooth_tab().get_btn_toggle().disable_discovery)
             taskbar.update()

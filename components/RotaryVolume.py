@@ -34,24 +34,24 @@ class RotaryVolume:
         rotary_thread.start()
 
     def inc_sound(self):
-        if self.last_turn == 1:
+        if self.LAST_TURN == 1:
             value = audio_helper.get_volume() + self.VOLUME_STEP
             if 0 <= value <= 100:
                 self.update_sound(value)
 
             if value > 100:
                 self.update_sound(100)
-        self.last_turn = 1
+        self.LAST_TURN = 1
 
     def dec_sound(self):
-        if self.last_turn == 0:
+        if self.LAST_TURN == 0:
             value = audio_helper.get_volume() - self.VOLUME_STEP
             if 0 <= value <= 100:
                 self.update_sound(value)
 
             if value < 0:
                 self.update_sound(0)
-        self.last_turn = 0
+        self.LAST_TURN = 0
 
     def toggle_mute(self):
         is_mute = audio_helper.toggle_mute()
