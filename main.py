@@ -74,8 +74,6 @@ def main(page: ft.Page):
     RotaryPitch(taskbar)
 
     audio_helper.startup_sound()
-
-    taskbar.update()
     
     def background_processes():
         audio_effects.start()

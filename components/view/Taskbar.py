@@ -2,14 +2,13 @@ import flet as ft
 
 from components.dialogs.WifiConnectionDialog import WifiConnectionDialog
 from components.dialogs.WifiDialog import WifiDialog
-from components.view.TaskbarBass import TaskbarBass
-from components.view.TaskbarPitch import TaskbarPitch
-from components.view.TaskbarVolume import TaskbarVolume
 from helper.Audio import Audio
+from helper.AudioEffects import AudioEffects
 from helper.WifiHelper import WifiHelper
 from helper.BluetoothHelper import BluetoothHelper
 
 audio_helper = Audio()
+audio_effects = AudioEffects()
 wifi_helper = WifiHelper()
 bluetooth_helper = BluetoothHelper()
 
@@ -21,20 +20,26 @@ class Taskbar:
 
     ico_wifi = ft.IconButton(icon=ft.icons.WIFI, icon_size=25, icon_color=ft.colors.GREEN)
     ico_bluetooth = ft.Icon(name=ft.icons.BLUETOOTH, size=25)
-
-    taskbar_volume = TaskbarVolume()
-    taskbar_bass = TaskbarBass()
-    taskbar_pitch = TaskbarPitch()
+    
+    ico_volume = ft.Icon(name=ft.icons.VOLUME_UP_ROUNDED, size=25)
+    txt_volume = ft.Text(f"{audio_helper.get_volume()}%", size=18)
+    
+    ico_bass = ft.Icon(name=ft.icons.SURROUND_SOUND, size=25)
+    txt_bass = ft.Text(f"+{audio_effects.get_bass_value()} dB", size=18)
+    
+    ico_pitch = ft.Icon(name=ft.icons.HEIGHT, size=25)
+    txt_pitch = ft.Text(audio_effects.get_pitch_value(), size=18)
 
     def __init__(self):
         self.taskbar = ft.AppBar(
             leading=ft.Row([
-                self.taskbar_volume.get(),
-                self.taskbar_bass.get(),
-                self.taskbar_pitch.get(),
-            ],
-                spacing=10
-            ),
+                ft.Row([self.ico_volume, self.txt_volume]),
+                ft.VerticalDivider(),
+                ft.Row([self.ico_bass, self.txt_bass]),
+                ft.VerticalDivider(),
+                ft.Row([self.ico_pitch, self.txt_pitch]),
+                ft.VerticalDivider(),
+            ]),
             title=ft.Text("Retro.I"),
             center_title=True,
             bgcolor=ft.colors.SURFACE_VARIANT,
@@ -47,9 +52,9 @@ class Taskbar:
         self.ico_wifi.on_click = lambda e: self.wifi_dialog.open()
 
     def update(self):
-        self.taskbar_volume.update()
-        self.taskbar_bass.update()
-        self.taskbar_pitch.update()
+        self.update_volume()
+        self.update_bass()
+        self.update_pitch()
         self.update_wifi()
         self.update_bluetooth()
 
@@ -78,6 +83,20 @@ class Taskbar:
 
         self.ico_bluetooth.update()
 
+    def update_volume(self):
+        self.ico_volume.name = ft.icons.VOLUME_OFF_ROUNDED if audio_helper.is_mute() else ft.icons.VOLUME_UP_ROUNDED
+        self.ico_volume.color = ft.colors.RED if audio_helper.is_mute() else ft.colors.BLACK
+        self.ico_volume.update()
+        self.txt_volume.value = f"{audio_helper.get_volume()}%" if not audio_helper.is_mute() else ""
+        self.txt_volume.update()
+
+    def update_bass(self):
+        self.txt_bass.value = f"+{audio_effects.get_bass_value()} dB" if audio_effects.get_bass_value() >= 0 else f"{audio_effects.get_bass_value()} dB"
+        self.txt_bass.update()
+
+    def update_pitch(self):
+        self.txt_pitch.value = audio_effects.get_pitch_value()
+        self.txt_pitch.update()
 
     def get(self): return self.taskbar
     def get_wifi_dialog(self): return self.wifi_dialog

@@ -1,7 +1,7 @@
 {
     "output": {
         "bass_enhancer#0": {
-            "amount": 14.0,
+            "amount": 4.0,
             "blend": 0.0,
             "bypass": false,
             "floor": 20.0,
@@ -24,7 +24,7 @@
             "octaves": 0,
             "output-gain": 0.0,
             "phase": "Laminar",
-            "semitones": -8,
+            "semitones": -7,
             "transients": "Crisp"
         },
         "plugins_order": [
