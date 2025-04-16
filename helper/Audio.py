@@ -53,8 +53,6 @@ class Audio:
 			print("Fehler")
 		Audio.audio = vlc.MediaPlayer(src)
 		self.play()
-		
-		print("playing")
 
 	def play(self):
 		Audio.audio.play()

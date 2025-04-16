@@ -2,6 +2,9 @@ import flet as ft
 
 from components.dialogs.WifiConnectionDialog import WifiConnectionDialog
 from components.dialogs.WifiDialog import WifiDialog
+from components.view.TaskbarBass import TaskbarBass
+from components.view.TaskbarPitch import TaskbarPitch
+from components.view.TaskbarVolume import TaskbarVolume
 from helper.Audio import Audio
 from helper.WifiHelper import WifiHelper
 from helper.BluetoothHelper import BluetoothHelper
@@ -18,14 +21,17 @@ class Taskbar:
 
     ico_wifi = ft.IconButton(icon=ft.icons.WIFI, icon_size=25, icon_color=ft.colors.GREEN)
     ico_bluetooth = ft.Icon(name=ft.icons.BLUETOOTH, size=25)
-    ico_volume = ft.Icon(name=ft.icons.VOLUME_UP_ROUNDED, size=25)
-    txt_volume = ft.Text("", size=18)
+
+    taskbar_volume = TaskbarVolume()
+    taskbar_bass = TaskbarBass()
+    taskbar_pitch = TaskbarPitch()
 
     def __init__(self):
         self.taskbar = ft.AppBar(
             leading=ft.Row([
-                self.ico_volume,
-                self.txt_volume
+                self.taskbar_volume.get(),
+                self.taskbar_bass.get(),
+                self.taskbar_pitch.get(),
             ],
                 spacing=10
             ),
@@ -41,16 +47,11 @@ class Taskbar:
         self.ico_wifi.on_click = lambda e: self.wifi_dialog.open()
 
     def update(self):
-        self.update_volume()
+        self.taskbar_volume.update()
+        self.taskbar_bass.update()
+        self.taskbar_pitch.update()
         self.update_wifi()
         self.update_bluetooth()
-
-    def update_volume(self):
-        self.ico_volume.name = ft.icons.VOLUME_OFF_ROUNDED if audio_helper.is_mute() else ft.icons.VOLUME_UP_ROUNDED
-        self.ico_volume.color = ft.colors.RED if audio_helper.is_mute() else ft.colors.BLACK
-        self.ico_volume.update()
-        self.txt_volume.value = f"{audio_helper.get_volume()}%" if not audio_helper.is_mute() else ""
-        self.txt_volume.update()
 
     def update_wifi(self):
         self.ico_wifi.name = ft.icons.WIFI if wifi_helper.is_connected() else ft.icons.WIFI_OFF_ROUNDED
