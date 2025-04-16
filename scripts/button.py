@@ -9,7 +9,7 @@ GPIO.setup(PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 input_state = GPIO.input(PIN)
 
-print(input_state)
+input_state = False # Enable soundboard
 
 if input_state == False:
     os.environ["PARTY_MODE"] = "1"

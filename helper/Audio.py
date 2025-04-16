@@ -65,11 +65,11 @@ class Audio:
 		self.play()
 
 	def startup_sound(self):
-		self.play_sound(f"{c.sound_path()}/startup.mp3")
+		self.play_sound(f"{c.system_sound_path()}/startup.mp3")
 
 	def shutdown_sound(self):
 		self.pause()
-		self.play_sound(f"{c.sound_path()}/shutdown.mp3")
+		self.play_sound(f"{c.system_sound_path()}/shutdown.mp3")
 
 	def play_toast(self):
 		toast_src = sounds.get_random_toast()

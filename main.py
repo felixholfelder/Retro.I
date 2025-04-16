@@ -1,10 +1,8 @@
 import threading
 import time
-import multiprocessing
 import vlc
 
 import flet as ft
-import RPi.GPIO as GPIO
 
 from components.GpioButton import GpioButton
 from components.RotaryBass import RotaryBass
@@ -36,8 +34,6 @@ audio_effects = AudioEffects()
 
 
 def main(page: ft.Page):
-    page.update()
-
     strip = Strip()
     taskbar = Taskbar()
     theme = Theme(taskbar, strip, page)

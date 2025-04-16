@@ -18,11 +18,9 @@ class SoundboardTab:
             spacing=80,
             run_spacing=50
         )
-
-        # TODO - maybe loop with enumerate
         for i in range(len(sounds.load_sounds())):
             sound = sounds.load_sounds()[i]
-            soundboard_grid.controls.append(SoundCard().get(sound["src"], sound["name"]))
+            soundboard_grid.controls.append(SoundCard().get(sound))
 
         self.tab = ft.Container(
             # TODO - row necessary?

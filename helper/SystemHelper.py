@@ -16,17 +16,17 @@ class System:
         self.init_party_mode()
 
     def shutdown_system(self, _):
-        audio_helper.init_sound()
         self.strip.disable()
         audio_helper.pause()
         audio_helper.shutdown_sound()
+        audio_helper.init_sound()
         os.system('sudo shutdown -h 0')
 
     def restart_system(self, _):
-        audio_helper.init_sound()
         self.strip.disable()
         audio_helper.pause()
         audio_helper.shutdown_sound()
+        audio_helper.init_sound()
         os.system('sudo reboot')
     
     def get_cpu_temp(self):
@@ -53,7 +53,6 @@ class System:
         return self.is_party == "1"
     
     def open_keyboard(self):
-        print("open keyboard")
         self.close_keyboard()
         os.system("wvkbd-mobintl -L 300")
     

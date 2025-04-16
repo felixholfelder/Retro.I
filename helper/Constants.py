@@ -12,6 +12,9 @@ class Constants:
 	def sound_path(self):
 		return f"{self.pwd()}/assets/sounds"
 
+	def system_sound_path(self):
+		return f"{self.pwd()}/assets/system_sounds"
+
 	def toast_path(self):
 		return f"{self.pwd()}/assets/toasts"
 

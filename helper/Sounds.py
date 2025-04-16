@@ -8,15 +8,17 @@ c = Constants()
 
 class Sounds:
 	def load_sounds(self):
-		f = open(f"{c.pwd()}/assets/sounds.json")
-		data = json.load(f)
-		f.close()
-		return data
+		directory = c.sound_path()
+		files = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
+		return files
+
+	def load_toasts(self):
+		directory = c.toast_path()
+		files = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
+		return files
 
 	def get_random_toast(self):
-		directory = c.toast_path()
 		try:
-			files = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
-			return random.choice(files)
+			return random.choice(self.load_toasts())
 		except FileNotFoundError:
 			pass
