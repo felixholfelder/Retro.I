@@ -11,8 +11,8 @@ audio_effects = AudioEffects()
 class RotaryPitch:
     COUNTER = 0
     PITCH_STEP = 1
-    DT_PIN = 11  # PIN 23
-    CLK_PIN = 8  # PIN 24
+    CLK_PIN = 11  # PIN 23
+    DT_PIN = 8  # PIN 24
 
     taskbar = None
 

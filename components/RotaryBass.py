@@ -13,8 +13,8 @@ audio_effects = AudioEffects()
 class RotaryBass:
     COUNTER = 0
     BASS_STEP = 2
+    CLK_PIN = 4  # PIN 7
     DT_PIN = 14  # PIN 8
-    CLK_PIN = 15  # PIN 10
 
     taskbar = None
 
