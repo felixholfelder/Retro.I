@@ -7,6 +7,8 @@ from helper.Constants import Constants
 c = Constants()
 
 class Sounds:
+	last_toast = ""
+	
 	def load_sounds(self):
 		directory = c.sound_path()
 		files = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
@@ -19,6 +21,11 @@ class Sounds:
 
 	def get_random_toast(self):
 		try:
-			return random.choice(self.load_toasts())
+			ran = random.choice(self.load_toasts())
+			while self.last_toast == ran:
+				ran = random.choice(self.load_toasts())
+			
+			self.last_toast = ran
+			return ran
 		except FileNotFoundError:
 			pass

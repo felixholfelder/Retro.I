@@ -4,7 +4,7 @@ import alsaaudio as a
 import flet as ft
 from helper.Stations import Stations
 from helper.Constants import Constants
-from playsound import playsound
+from playsound3 import playsound
 from helper.Sounds import Sounds
 
 stations_helper = Stations()
@@ -13,6 +13,7 @@ sounds = Sounds()
 
 class Audio:
 	audio = vlc.MediaPlayer("")
+	toast_playing = False
 
 	def __init__(self):
 		self.init_sound()
@@ -68,16 +69,21 @@ class Audio:
 		self.play_sound(f"{c.system_sound_path()}/startup.mp3")
 
 	def shutdown_sound(self):
-		self.pause()
 		self.play_sound(f"{c.system_sound_path()}/shutdown.mp3")
 
 	def play_toast(self):
 		toast_src = sounds.get_random_toast()
-		self.pause()
-		self.wait()
-		self.play_sound(f"{c.toast_path()}/{toast_src}")
-		self.wait()
-		self.play()
+		if not self.toast_playing:
+			self.toast_playing = True
+			self.pause()
+			self.wait()
+			self.toast = playsound(f"{c.toast_path()}/{toast_src}")
+			self.wait()
+			self.play()
+			self.toast_playing = False
+	
+	def play_sound_board(self, src):
+		playsound(f"{c.sound_path()}/{src}")
 
 	def wait(self):
 		time.sleep(0.5)

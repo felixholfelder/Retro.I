@@ -1,4 +1,5 @@
 import os
+import time
 import subprocess
 from helper.Strip import Strip
 from helper.Audio import Audio
@@ -16,17 +17,15 @@ class System:
         self.init_party_mode()
 
     def shutdown_system(self, _):
-        self.strip.disable()
-        audio_helper.pause()
         audio_helper.shutdown_sound()
-        audio_helper.init_sound()
+        self.strip.disable()
+        time.sleep(3)
         os.system('sudo shutdown -h 0')
 
     def restart_system(self, _):
-        self.strip.disable()
-        audio_helper.pause()
         audio_helper.shutdown_sound()
-        audio_helper.init_sound()
+        self.strip.disable()
+        time.sleep(3)
         os.system('sudo reboot')
     
     def get_cpu_temp(self):
