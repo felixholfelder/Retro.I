@@ -43,7 +43,7 @@ class RadioGrid:
         Constants.indicator_refs = []
 
         for i, station in enumerate(stations_helper.load_radio_stations()):
-            Constants.indicator_refs.append(ft.Ref[ft.Image]())
+            Constants.indicator_refs.append(ft.Ref[ft.Container]())
             self.grid.controls.append(
                 ft.Stack(
                     alignment=ft.alignment.center,
@@ -58,9 +58,12 @@ class RadioGrid:
                             content=self.get_content(station),
                             padding=10,
                         ),
-                        ft.Image(ref=Constants.indicator_refs[i], src=f"{constants.pwd()}/assets/party.gif",
-                                 opacity=0.7,
-                                 visible=False)
+                        ft.Container(
+                            ref=Constants.indicator_refs[i],
+                            on_click=lambda e: self.stop_radio_station(),
+                            visible=False,
+                            content=ft.Image(src=f"{constants.pwd()}/assets/party.gif", opacity=0.7)
+                        )
                     ]
                 )
             )
@@ -80,11 +83,17 @@ class RadioGrid:
 
         self.strip.run(color)
 
+    def stop_radio_station(self):
+        Constants.current_radio_station = {}
+        self.toggle_indicator()
+        audio_helper.pause()
+        self.theme.update()
+
     def disable_indicator(self):
         for ref in Constants.indicator_refs:
             ref.current.visible = False
 
-    def toggle_indicator(self, index):
+    def toggle_indicator(self, index=-1):
         self.disable_indicator()
         if index != -1:
             Constants.indicator_refs[index].current.visible = True

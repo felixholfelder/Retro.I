@@ -50,11 +50,11 @@ class Theme:
         self.tabs = Tabs(taskbar, self.radio_tab, self.bluetooth_tab, self.soundboard_tab, self.settings_tab)
         self.navbar = NavigationBar(self.tabs)
 
-    def update(self, color):
-        self.theme.color_scheme_seed = color
-        self.navbar.update(color)
-        self.page.update()
-        self.radio_tab.update()
+    def update(self, color=None):
+        if color != None:
+            self.theme.color_scheme_seed = color
+            self.navbar.update(color)
+            self.radio_tab.update()
         self.page.update()
 
     def get_tabs(self):
