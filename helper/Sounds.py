@@ -11,7 +11,7 @@ class Sounds:
 	
 	def load_sounds(self):
 		directory = c.sound_path()
-		files = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
+		files = sorted([f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))])
 		return files
 
 	def load_toasts(self):

@@ -103,9 +103,12 @@ class RadioGrid:
                         fit=ft.ImageFit.FIT_WIDTH)
 
     def get_text(self, station):
-        return ft.Text(station["name"], text_align=ft.TextAlign.CENTER, weight=ft.FontWeight.BOLD),
+        return ft.Text(station["name"], text_align=ft.TextAlign.CENTER, weight=ft.FontWeight.BOLD)
 
     def get_content(self, station):
+        print(station["name"])
+        print(station["logo"])
+        
         if station["logo"] != "":
             return self.get_logo(station)
 
