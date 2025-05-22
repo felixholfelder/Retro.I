@@ -96,6 +96,10 @@ Der Rotary Drehregler gibt sein Signal an den Raspberry weiter und dieser steuer
 ## Stummschaltung
 Der Wechsel von Stummschaltung/Aufhebung erfolgt über Drücken des gleichen Drehreglers wie zur Veränderung der Lautstärke.
 
+## Bass/Höhen
+Die Veränderung von Bass/Höhen ist über weitere Rotary-Drehregler möglich! Hierzu wird die Software `EasyEffects` verwendet:\
+`sudo apt install easyeffects`
+
 ## WS2812B LED-Streifen
 Der LED-Streifen mit `62` LED's wird ebenfalls über den Raspberry angesteuert.\
 Jeder Radiosender verfügt über eine Farbe, welche den Radiosender repräsentiert. Diese Farbe wird bei Auswahl des jeweiligen Radiosenders auf dem Streifen in einer Animation angezeigt.
