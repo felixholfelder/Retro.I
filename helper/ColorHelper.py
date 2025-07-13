@@ -15,11 +15,12 @@ class ColorHelper:
 		if img_src == "":
 			return "#46a94b"
 		
-		if ".svg".upper() in img_src.upper():
+		if ".svg".upper() not in img_src.upper():
+			response = requests.get(img_src)
+			img = Image.open(BytesIO(response.content))
+		else:
 			cairosvg.svg2png(url=img_src, write_to=tmp_path)
-			img_src = tmp_path
-		response = requests.get(img_src)
-		img = Image.open(BytesIO(response.content))
+			img = Image.open(tmp_path)
 
 		img = img.convert("RGB")
 		img_array = np.array(img)
