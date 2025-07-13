@@ -154,17 +154,5 @@
         "logo": "blasmusik_radio.png",
         "name": "Blasmusik Radio",
         "src": "https://stream.laut.fm/blasmusikradio"
-    },
-    {
-        "name": "ROCK ANTENNE BLUES ROCK",
-        "src": "https://stream.rockantenne.de/hair-metal/stream/mp3",
-        "logo": "",
-        "color": "#46A94B"
-    },
-    {
-        "name": "Rock Antenne",
-        "src": "http://mp3channels.webradio.rockantenne.de/rockantenne",
-        "logo": "http://www.rockantenne.de/logos/rock-antenne/apple-touch-icon.png",
-        "color": "#8A3F6E"
     }
 ]

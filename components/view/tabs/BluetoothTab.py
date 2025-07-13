@@ -1,4 +1,6 @@
 import flet as ft
+import threading
+import time
 
 from components.BluetoothDeviceConnected import BluetoothDeviceConnected
 from components.BluetoothDiscoveryToggle import BluetoothDiscoveryToggle
@@ -10,6 +12,7 @@ class BluetoothTab:
     taskbar: Taskbar = None
     btn_toggle_discovery = None
     device_connected = None
+    update_device_connection = False
 
     def __init__(self, taskbar: Taskbar):
         self.taskbar = taskbar
@@ -18,8 +21,11 @@ class BluetoothTab:
 
         self.tab = ft.Container(
             alignment=ft.alignment.center,
+            expand=True,
             content=ft.Column(
                 spacing=50,
+                alignment=ft.MainAxisAlignment.CENTER,
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                 controls=[
                     self.btn_toggle_discovery.get(),
                     self.device_connected.get()
@@ -33,11 +39,26 @@ class BluetoothTab:
 
     def show(self):
         self.tab.visible = True
+        self.update_device_connection = True
+        self.process_bluetooth_connection()
         self.update()
 
     def hide(self):
         self.tab.visible = False
+        self.update_device_connection = False
         self.update()
+        
+    def update_connected_device(self):
+        while self.update_device_connection:
+            connected = self.device_connected.update_connected_device(self.get_btn_toggle().disable_discovery)
+            if connected:
+                self.update_device_connection = False
+                
+            time.sleep(0.5)
+
+    def process_bluetooth_connection(self):
+        process = threading.Thread(target=self.update_connected_device)
+        process.start()
 
     def get(self): return self.tab
     def get_btn_toggle(self): return self.btn_toggle_discovery

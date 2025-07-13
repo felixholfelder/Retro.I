@@ -32,6 +32,12 @@ class SettingsShutdownDialog:
                                     ft.Text("Neustarten", text_align=ft.TextAlign.CENTER, style=ft.TextStyle(size=16))
                                 ],
                                 alignment=ft.MainAxisAlignment.CENTER),
+                            ft.Column(
+                                [
+                                    ft.IconButton(ft.icons.REPLAY, icon_size=75, on_click=system_helper.stopp_app),
+                                    ft.Text("App beenden", text_align=ft.TextAlign.CENTER, style=ft.TextStyle(size=16))
+                                ],
+                                alignment=ft.MainAxisAlignment.CENTER),
                         ]
                     )
                 ]

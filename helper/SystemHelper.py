@@ -1,6 +1,7 @@
 import os
 import time
 import subprocess
+import keyboard
 from helper.Strip import Strip
 from helper.Audio import Audio
 from helper.Constants import Constants
@@ -27,6 +28,9 @@ class System:
         self.strip.disable()
         time.sleep(3)
         os.system('sudo reboot')
+    
+    def stopp_app(self, _):
+        keyboard.send('alt', 'F4')
     
     def get_cpu_temp(self):
         line = subprocess.run(['vcgencmd', 'measure_temp'], stdout=subprocess.PIPE).stdout.decode('utf-8')

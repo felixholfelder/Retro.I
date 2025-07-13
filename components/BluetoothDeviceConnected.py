@@ -2,8 +2,10 @@ import flet as ft
 
 from components.view.Taskbar import Taskbar
 from helper.BluetoothHelper import BluetoothHelper
+from helper.Audio import Audio
 
 bluetooth_helper = BluetoothHelper()
+audio_helper = Audio()
 
 class BluetoothDeviceConnected:
     btn = None
@@ -38,6 +40,8 @@ class BluetoothDeviceConnected:
         if name != "":
             self.txt_device_connected.value = f"Verbunden mit: {name}"
             self.ico_device_connected.name = ft.icons.PHONELINK
+            
+            audio_helper.bluetooth_connected()
             on_connected()
         else:
             self.reset_connected_device()
@@ -45,5 +49,7 @@ class BluetoothDeviceConnected:
         self.ico_device_connected.update()
         self.txt_device_connected.update()
         self.taskbar.update()
+        
+        return name != ""
 
     def get(self): return self.btn

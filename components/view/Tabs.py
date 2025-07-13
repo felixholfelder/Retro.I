@@ -7,6 +7,7 @@ from helper.Audio import Audio
 from helper.BluetoothHelper import BluetoothHelper
 from helper.SystemHelper import System
 from helper.Constants import Constants
+import time
 
 bluetooth_helper = BluetoothHelper()
 system_helper = System()
@@ -57,6 +58,7 @@ class Tabs:
             self.bluetooth_tab.get_btn_toggle().toggle_bluetooth_discovery()
 
         bluetooth_helper.disconnect()
+        time.sleep(0.2)
         bluetooth_helper.turn_off()
 
         self.bluetooth_tab.device_connected.reset_connected_device()

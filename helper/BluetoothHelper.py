@@ -46,6 +46,7 @@ class BluetoothHelper:
 		address = self.get_device_mac()
 		process = Process(target=lambda: os.system(f'bluetoothctl disconnect {address}'))
 		process.start()
+		print("Device disconnected")
 
 	def get_device(self):
 		return subprocess.run(['bluetoothctl', 'devices', 'Connected'], stdout=subprocess.PIPE).stdout.decode('utf-8')

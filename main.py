@@ -74,12 +74,11 @@ def main(page: ft.Page):
     def background_processes():
         audio_effects.start()
         while True:
-            theme.get_bluetooth_tab().get_device_connected().update_connected_device(theme.get_bluetooth_tab().get_btn_toggle().disable_discovery)
             taskbar.update()
             theme.get_radio_tab().update()
             time.sleep(5)
 
-    process = threading.Thread(target=background_processes())
+    process = threading.Thread(target=background_processes)
     process.start()
 
 

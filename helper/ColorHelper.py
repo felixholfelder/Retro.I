@@ -1,10 +1,13 @@
 from PIL import Image, ImageColor
 import numpy as np
+import cairosvg
 from sklearn.cluster import KMeans
 import requests
 from io import BytesIO
 
-class ColorHelper:
+tmp_path = "/tmp/output.png"
+
+class ColorHelper:	
 	def toRgb(self, hex_value):
 		return ImageColor.getcolor(hex_value, "RGB")
 	
@@ -12,6 +15,9 @@ class ColorHelper:
 		if img_src == "":
 			return "#46a94b"
 		
+		if ".svg".upper() in img_src.upper():
+			cairosvg.svg2png(url=img_src, write_to=tmp_path)
+			img_src = tmp_path
 		response = requests.get(img_src)
 		img = Image.open(BytesIO(response.content))
 
