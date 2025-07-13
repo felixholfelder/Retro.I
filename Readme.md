@@ -82,10 +82,12 @@ sudo apt install libmpv-dev libmpv2
 sudo ln -s /usr/lib/aarch64-linux-gnu/libmpv.so /usr/lib/libmpv.so.1
 ```
 
+<!--
 ### Updates
 Bei jedem Boot des Raspberry's wird ein Update-Skript (`update.sh`) ausgeführt.\
 Dieses Skript prüft, ob neue Updates verfügbar sind, indem es die aktuelle Tag-Version auf dem Raspberry mit dem neuesten Tag im Github-Repo vergleicht.\
 Ist ein neues Update für die Anwendung verfügbar wird der neueste Tag heruntergeladen.
+-->
 
 ## Lautstärke
 Die Lautstärkenregelung erfolgt über den original Drehknopf des Radios!\
@@ -93,6 +95,10 @@ Der Rotary Drehregler gibt sein Signal an den Raspberry weiter und dieser steuer
 
 ## Stummschaltung
 Der Wechsel von Stummschaltung/Aufhebung erfolgt über Drücken des gleichen Drehreglers wie zur Veränderung der Lautstärke.
+
+## Bass/Höhen
+Die Veränderung von Bass/Höhen ist über weitere Rotary-Drehregler möglich! Hierzu wird die Software `EasyEffects` verwendet:\
+`sudo apt install easyeffects`
 
 ## WS2812B LED-Streifen
 Der LED-Streifen mit `62` LED's wird ebenfalls über den Raspberry angesteuert.\
