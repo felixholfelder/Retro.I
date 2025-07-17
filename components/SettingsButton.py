@@ -8,7 +8,7 @@ class SettingsButton:
             content=ft.Row(
                 alignment=ft.MainAxisAlignment.CENTER,
                 controls=[
-                    ft.Icon(icon),
+                    ft.Icon(icon, size=32),
                     ft.Text(f"{text}", style=ft.TextStyle(size=20))
                 ]
             ),

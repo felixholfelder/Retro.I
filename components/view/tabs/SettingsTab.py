@@ -25,7 +25,7 @@ class SettingsTab:
                     ft.Text("Einstellungen", size=24),
                     ft.ListView(
                         [
-                            SettingsButton().get(ft.icons.LOGOUT, "Radio ausschalten", lambda e: self.shutdown_dialog.open()),
+                            SettingsButton().get(ft.icons.POWER_SETTINGS_NEW, "Radio ausschalten", lambda e: self.shutdown_dialog.open()),
                             SettingsButton().get(ft.icons.COLOR_LENS, "LED-Streifen", lambda e: self.led_dialog.open()),
                             SettingsButton().get(ft.icons.INFO, "Info", lambda e: self.info_dialog.open()),
                             SettingsButton().get(ft.icons.STAR, "Credits", lambda e: self.credits_dialog.open()),
