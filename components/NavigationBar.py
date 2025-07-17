@@ -2,9 +2,9 @@ import flet as ft
 
 from components.view.Tabs import Tabs
 from helper.ColorHelper import ColorHelper
-from helper.SystemHelper import System
+from helper.SystemHelper import SystemHelper
 
-system_helper = System()
+system_helper = SystemHelper()
 color_helper = ColorHelper()
 
 ICON_SIZE = 28

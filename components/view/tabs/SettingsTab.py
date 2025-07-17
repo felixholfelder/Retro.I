@@ -49,7 +49,3 @@ class SettingsTab:
         self.update()
 
     def get(self): return self.tab
-    def get_shutdown_dialog(self): return self.shutdown_dialog
-    def get_led_dialog(self): return self.led_dialog
-    def get_info_dialog(self): return self.info_dialog
-    def get_credits_dialog(self): return self.credits_dialog

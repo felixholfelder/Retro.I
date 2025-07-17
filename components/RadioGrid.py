@@ -6,11 +6,11 @@ from helper.Constants import Constants
 from helper.RadioHelper import RadioHelper
 from helper.Stations import Stations
 from helper.Strip import Strip
-from helper.SystemHelper import System
+from helper.SystemHelper import SystemHelper
 
 constants = Constants()
 stations_helper = Stations()
-system_helper = System()
+system_helper = SystemHelper()
 audio_helper = Audio()
 radio_helper = RadioHelper()
 
@@ -26,13 +26,15 @@ class RadioGrid:
     )
     delete_dialog: StationDeleteDialog = None
 
-    strip: Strip = None
-    theme = None
+    on_strip_run_color = None
+    on_theme_change_radio_station = None
+    on_theme_stop_radio_station = None
 
-    def __init__(self, strip: Strip, theme):
+    def __init__(self, on_strip_run_color, on_theme_change_radio_station, on_theme_stop_radio_station):
         self.delete_dialog = StationDeleteDialog(self.delete_station)
-        self.strip = strip
-        self.theme = theme
+        self.on_strip_run_color = on_strip_run_color
+        self.on_theme_change_radio_station = on_theme_change_radio_station
+        self.on_theme_stop_radio_station = on_theme_stop_radio_station
 
     def open_delete_station_dialog(self, index):
         Constants.current_station_index_to_delete = index
@@ -52,7 +54,7 @@ class RadioGrid:
                         ft.Container(
                             alignment=ft.alignment.center,
                             bgcolor=ft.colors.GREY_200,
-                            on_click=lambda e, src=station, index=i: self.change_radio_station(src, index),
+                            on_click=lambda e, src=station, index=i: self.change_radio_station(src, self.on_theme_change_radio_station, index),
                             on_long_press=lambda e, index=i: self.open_delete_station_dialog(index),
                             border_radius=10,
                             content=self.get_content(station),
@@ -60,7 +62,7 @@ class RadioGrid:
                         ),
                         ft.Container(
                             ref=Constants.indicator_refs[i],
-                            on_click=lambda e: self.stop_radio_station(),
+                            on_click=lambda e: self.stop_radio_station(self.on_theme_stop_radio_station),
                             visible=False,
                             content=ft.Image(src=f"{constants.pwd()}/assets/party.gif", opacity=0.7)
                         )
@@ -73,21 +75,21 @@ class RadioGrid:
         stations_helper.delete_station(Constants.current_station_index_to_delete)
         self.reload()
 
-    def change_radio_station(self, station, index=-1):
+    def change_radio_station(self, station, on_theme_change_radio_station, index=-1):
         color = station["color"]
         Constants.current_radio_station = station
 
         self.toggle_indicator(index)
-        self.theme.update(color)
+        on_theme_change_radio_station(color)
         audio_helper.play_src(station["src"])
 
-        self.strip.run(color)
+        self.on_strip_run_color(color)
 
-    def stop_radio_station(self):
+    def stop_radio_station(self, on_theme_stop_radio_station):
         Constants.current_radio_station = {}
         self.toggle_indicator()
         audio_helper.pause()
-        self.theme.update()
+        on_theme_stop_radio_station()
 
     def disable_indicator(self):
         for ref in Constants.indicator_refs:
@@ -112,4 +114,3 @@ class RadioGrid:
         return self.get_text(station)
 
     def get(self): return self.grid
-    def get_delete_dialog(self): return self.delete_dialog

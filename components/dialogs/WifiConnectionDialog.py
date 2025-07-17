@@ -1,9 +1,10 @@
 import flet as ft
 
-from helper.SystemHelper import System
+from helper.PageState import PageState
+from helper.SystemHelper import SystemHelper
 from helper.WifiHelper import WifiHelper
 
-system_helper = System()
+system_helper = SystemHelper()
 wifi_helper = WifiHelper()
 
 
@@ -31,6 +32,7 @@ class WifiConnectionDialog:
             ),
             actions=[self.btn_connect]
         )
+        PageState.page.add(self.dialog)
 
     def open(self, name):
         self.ssid.value = name
@@ -56,5 +58,3 @@ class WifiConnectionDialog:
         self.btn_connect.disabled = False
         self.btn_connect.text = "Verbinden"
         on_connect()
-
-    def get(self): return self.dialog

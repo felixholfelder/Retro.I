@@ -1,5 +1,7 @@
 import flet as ft
 
+from helper.PageState import PageState
+
 
 class DuplicateDialog:
     text = ft.Text("")
@@ -13,6 +15,7 @@ class DuplicateDialog:
             ],
             actions_alignment=ft.MainAxisAlignment.END,
         )
+        PageState.page.add(self.dialog)
 
     def open(self, name):
         self.text.value = name
@@ -23,5 +26,3 @@ class DuplicateDialog:
     def close(self):
         self.dialog.open = False
         self.dialog.update()
-
-    def get(self): return self.dialog

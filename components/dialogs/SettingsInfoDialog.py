@@ -1,8 +1,10 @@
 import flet as ft
-from helper.SystemHelper import System
+
+from helper.PageState import PageState
+from helper.SystemHelper import SystemHelper
 from helper.WifiHelper import WifiHelper
 
-system_helper = System()
+system_helper = SystemHelper()
 
 class SettingsInfoDialog:
     dialog = None
@@ -40,6 +42,7 @@ class SettingsInfoDialog:
                 )
             )
         )
+        PageState.page.add(self.dialog)
 
     def open(self):
         self.cpu_temp_text.text = system_helper.get_cpu_temp()
@@ -66,5 +69,3 @@ class SettingsInfoDialog:
         self.gateway_text.update()
         self.dns_pri_text.update()
         self.dns_sec_text.update()
-
-    def get(self): return self.dialog

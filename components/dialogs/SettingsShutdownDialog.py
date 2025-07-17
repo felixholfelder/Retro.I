@@ -1,8 +1,9 @@
 import flet as ft
 
-from helper.SystemHelper import System
+from helper.PageState import PageState
+from helper.SystemHelper import SystemHelper
 
-system_helper = System()
+system_helper = SystemHelper()
 
 
 class SettingsShutdownDialog:
@@ -43,9 +44,8 @@ class SettingsShutdownDialog:
                 ]
             )
         )
+        PageState.page.add(self.dialog)
 
     def open(self):
         self.dialog.open = True
         self.dialog.update()
-
-    def get(self): return self.dialog

@@ -5,12 +5,12 @@ from components.view.tabs.SettingsTab import SettingsTab
 from components.view.tabs.SoundboardTab import SoundboardTab
 from helper.Audio import Audio
 from helper.BluetoothHelper import BluetoothHelper
-from helper.SystemHelper import System
+from helper.SystemHelper import SystemHelper
 from helper.Constants import Constants
 import time
 
 bluetooth_helper = BluetoothHelper()
-system_helper = System()
+system_helper = SystemHelper()
 audio_helper = Audio()
 
 class Tabs:

@@ -52,18 +52,18 @@ class Taskbar:
         self.ico_wifi.on_click = lambda e: self.wifi_dialog.open()
 
     def update(self):
-        self.update_volume()
+        self.update_volume_icon()
         self.update_bass()
         self.update_pitch()
         self.update_wifi()
-        self.update_bluetooth()
+        self.update_bluetooth_icon()
 
     def update_wifi(self):
         self.ico_wifi.name = ft.icons.WIFI if wifi_helper.is_connected() else ft.icons.WIFI_OFF_ROUNDED
         self.ico_wifi.color = ft.colors.GREEN if wifi_helper.is_connected() else ft.colors.BLACK
         self.ico_wifi.update()
 
-    def update_bluetooth(self):
+    def update_bluetooth_icon(self):
         if bluetooth_helper.is_bluetooth_on():
             self.ico_bluetooth.name = ft.icons.BLUETOOTH_ROUNDED
             self.ico_bluetooth.color = ft.colors.BLACK
@@ -83,7 +83,7 @@ class Taskbar:
 
         self.ico_bluetooth.update()
 
-    def update_volume(self):
+    def update_volume_icon(self):
         self.ico_volume.name = ft.icons.VOLUME_OFF_ROUNDED if audio_helper.is_mute() else ft.icons.VOLUME_UP_ROUNDED
         self.ico_volume.color = ft.colors.RED if audio_helper.is_mute() else ft.colors.BLACK
         self.ico_volume.update()
@@ -99,5 +99,3 @@ class Taskbar:
         self.txt_pitch.update()
 
     def get(self): return self.taskbar
-    def get_wifi_dialog(self): return self.wifi_dialog
-    def get_wifi_connection_dialog(self): return self.wifi_connection_dialog

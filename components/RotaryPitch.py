@@ -2,7 +2,6 @@ import threading
 
 from pyky040 import pyky040
 
-from components.view.Taskbar import Taskbar
 from helper.AudioEffects import AudioEffects
 
 audio_effects = AudioEffects()
@@ -16,36 +15,35 @@ class RotaryPitch:
 
     taskbar = None
 
-    def __init__(self, taskbar: Taskbar):
-        self.taskbar = taskbar
+    def __init__(self, on_taskbar_update):
         rotary = pyky040.Encoder(CLK=self.CLK_PIN, DT=self.DT_PIN)
         rotary.setup(
-            inc_callback=lambda e: self.inc_pitch(),
-            dec_callback=lambda e: self.dec_pitch()
+            inc_callback=lambda e: self.inc_pitch(on_taskbar_update),
+            dec_callback=lambda e: self.dec_pitch(on_taskbar_update)
         )
         rotary_thread = threading.Thread(target=rotary.watch)
         rotary_thread.start()
 
-    def inc_pitch(self):
+    def inc_pitch(self, on_taskbar_update):
         if self.COUNTER % 2 == 0:
             value = audio_effects.get_pitch_value() + self.PITCH_STEP
             if -12 <= value <= 12:
-                self.update(value)
+                self.update(value, on_taskbar_update)
 
             if value > 12:
-                self.update(12)
+                self.update(12, on_taskbar_update)
         self.COUNTER += 1
 
-    def dec_pitch(self):
+    def dec_pitch(self, on_taskbar_update):
         if self.COUNTER % 2 == 0:
             value = audio_effects.get_pitch_value() - self.PITCH_STEP
             if -12 <= value <= 12:
-                self.update(value)
+                self.update(value, on_taskbar_update)
 
             if value < -12:
-                self.update(-12)
+                self.update(-12, on_taskbar_update)
         self.COUNTER -= 1
 
-    def update(self, value):
+    def update(self, value, on_taskbar_update):
         audio_effects.update_pitch(value)
-        self.taskbar.update()
+        on_taskbar_update()

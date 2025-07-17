@@ -2,7 +2,10 @@ import flet as ft
 import os
 import subprocess
 from multiprocessing import Process
+from helper.PageState import PageState
+from helper.SystemHelper import SystemHelper
 
+system_helper = SystemHelper()
 
 class BluetoothHelper:
 	discovery_on = False
@@ -15,13 +18,13 @@ class BluetoothHelper:
 	def is_discovery_on(self):
 		return self.discovery_on
 
-	def toggle_bluetooth_discovery(self, page: ft.Page):
+	def toggle_bluetooth_discovery(self):
 		if self.discovery_on:
 			self.bluetooth_discovery_off()
 		else:
 			self.bluetooth_discovery_on()
 
-		page.update()
+		PageState.page.update() #TODO - Update needed here?
 		return self.discovery_on
 
 	def turn_on(self):
@@ -50,14 +53,14 @@ class BluetoothHelper:
 
 	def get_device(self):
 		return subprocess.run(['bluetoothctl', 'devices', 'Connected'], stdout=subprocess.PIPE).stdout.decode('utf-8')
-	
+
 	def get_device_name(self):
 		result = self.get_device()
 		return result[25:].strip()
 
 	def is_connected(self):
 		return self.get_device_name() != ""
-	
+
 	def get_device_mac(self):
 		result = self.get_device()
 		return result[7:24]

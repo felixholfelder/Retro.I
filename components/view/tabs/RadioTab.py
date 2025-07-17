@@ -11,8 +11,8 @@ class RadioTab:
     radio_grid: RadioGrid = None
     song_info_row: SongInfoRow = None
 
-    def __init__(self, strip: Strip, theme):
-        self.radio_grid = RadioGrid(strip, theme)
+    def __init__(self, on_strip_run_color, on_theme_change_radio_station, on_theme_stop_radio_station):
+        self.radio_grid = RadioGrid(on_strip_run_color, on_theme_change_radio_station, on_theme_stop_radio_station)
         self.song_info_row = SongInfoRow(self.radio_grid)
 
         self.tab = ft.Container(
@@ -38,5 +38,3 @@ class RadioTab:
     def get(self): return self.tab
     def get_grid(self): return self.radio_grid
     def get_song_info(self): return self.song_info_row
-    def get_search_dialog(self): return self.song_info_row.get_search_dialog()
-    def get_station_add_dialog(self): return self.song_info_row.get_station_add_dialog()

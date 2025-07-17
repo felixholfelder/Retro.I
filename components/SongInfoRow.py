@@ -50,6 +50,3 @@ class SongInfoRow:
         self.update()
 
     def get(self): return self.row
-    def get_search_dialog(self): return self.radio_search_dialog
-    def get_station_add_dialog(self): return self.radio_search_dialog.get_station_add_dialog()
-    def get_duplicate_dialog(self): return self.radio_search_dialog.get_station_add_dialog().get_duplicate_dialog()

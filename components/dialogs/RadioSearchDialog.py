@@ -3,10 +3,11 @@ import flet as ft
 from components.RadioGrid import RadioGrid
 from components.dialogs.StationAddDialog import StationAddDialog
 from helper.Constants import Constants
+from helper.PageState import PageState
 from helper.RadioHelper import RadioHelper
-from helper.SystemHelper import System
+from helper.SystemHelper import SystemHelper
 
-system_helper = System()
+system_helper = SystemHelper()
 radio_helper = RadioHelper()
 constants = Constants()
 
@@ -57,6 +58,7 @@ class RadioSearchDialog:
                 ]
             )
         )
+        PageState.page.add(self.dialog)
 
     def open(self):
         self.dialog.open = True
@@ -105,8 +107,3 @@ class RadioSearchDialog:
 
         self.listview.visible = True
         self.listview.update()
-
-
-    def get(self): return self.dialog
-    def get_station_add_dialog(self): return self.station_add_dialog
-

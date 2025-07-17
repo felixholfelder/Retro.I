@@ -2,10 +2,11 @@ import flet as ft
 from PIL.ImageOps import expand
 
 from components.dialogs.WifiConnectionDialog import WifiConnectionDialog
-from helper.SystemHelper import System
+from helper.PageState import PageState
+from helper.SystemHelper import SystemHelper
 from helper.WifiHelper import WifiHelper
 
-system_helper = System()
+system_helper = SystemHelper()
 wifi_helper = WifiHelper()
 
 
@@ -35,6 +36,7 @@ class WifiDialog:
                 ],
             ),
         )
+        PageState.page.add(self.dialog)
 
     def open(self):
         self.listview.visible = False
@@ -80,5 +82,3 @@ class WifiDialog:
     def close(self):
         self.dialog.open = False
         self.dialog.update()
-
-    def get(self): return self.dialog

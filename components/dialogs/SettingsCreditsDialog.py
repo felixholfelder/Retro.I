@@ -1,5 +1,8 @@
 import flet as ft
 
+from helper.PageState import PageState
+
+
 class SettingsCreditsDialog:
     dialog = None
 
@@ -28,9 +31,8 @@ class SettingsCreditsDialog:
                 ]
             )
         )
+        PageState.page.add(self.dialog)
 
     def open(self):
         self.dialog.open = True
         self.dialog.update()
-
-    def get(self): return self.dialog

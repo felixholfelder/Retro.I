@@ -8,14 +8,14 @@ import socket
 from helper.Strip import Strip
 from helper.Audio import Audio
 from helper.Constants import Constants
-from helper.PageHelper import PageHelper
+from helper.PageState import PageState
 from datetime import datetime
 
 audio_helper = Audio()
-page_helper = PageHelper()
+page_helper = PageState()
 c = Constants()
 
-class System:
+class SystemHelper:
     strip = Strip()
     is_party = "0"
     
@@ -35,7 +35,7 @@ class System:
         os.system('sudo reboot')
     
     def stopp_app(self, _):
-        PageHelper.page.window_destroy()
+        PageState.page.window_destroy()
         time.sleep(0.5)
         print("Stop App..")
         os._exit(0)
@@ -73,16 +73,19 @@ class System:
     def get_default_interface(self):
         return netifaces.gateways()['default'][netifaces.AF_INET][1]
 
-    def get_ip_address(self, ifname):
+    def get_ip_address(self):
+        ifname = self.get_default_interface()
         return netifaces.ifaddresses(ifname)[netifaces.AF_INET][0]['addr']
     
     def get_hostname(self):
         return socket.gethostname()
 
-    def get_netmask(self, ifname):
+    def get_netmask(self):
+        ifname = self.get_default_interface()
         return netifaces.ifaddresses(ifname)[netifaces.AF_INET][0]['netmask']
 
-    def get_mac_address(self, ifname):
+    def get_mac_address(self):
+        ifname = self.get_default_interface()
         return netifaces.ifaddresses(ifname)[netifaces.AF_LINK][0]['addr']
 
     def get_gateway(self):
@@ -97,13 +100,11 @@ class System:
         return dns_servers
 
     def get_network_config(self):
-        interface = self.get_default_interface()
         config = {
-            "interface": interface,
-            "ip": self.get_ip_address(interface),
+            "ip": self.get_ip_address(),
             "hostname": self.get_hostname(),
-            "subnetmask": self.get_netmask(interface),
-            "mac": self.get_mac_address(interface),
+            "subnetmask": self.get_netmask(),
+            "mac": self.get_mac_address(),
             "gateway": self.get_gateway(),
             "dns": self.get_dns_servers()
         }

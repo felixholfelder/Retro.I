@@ -1,4 +1,6 @@
 import flet as ft
+
+from helper.PageState import PageState
 from helper.Strip import Strip
 
 strip = Strip()
@@ -34,9 +36,8 @@ class SettingsLedDialog:
                 ]
             )
         )
+        PageState.page.add(self.dialog)
 
     def open(self):
         self.dialog.open = True
         self.dialog.update()
-
-    def get(self): return self.dialog

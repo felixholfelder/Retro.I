@@ -111,7 +111,7 @@ class Strip:
 		if not self.is_strip_active():
 			self.pixels.fill(color)
 
-	def run(self, color):
+	def run_color(self, color):
 		proc = threading.Thread(target=self.update_strip(color))
 		proc.start()
 

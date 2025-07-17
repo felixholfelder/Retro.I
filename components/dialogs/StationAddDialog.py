@@ -3,6 +3,7 @@ import flet as ft
 from components.RadioGrid import RadioGrid
 from components.dialogs.DuplicateDialog import DuplicateDialog
 from helper.Constants import Constants
+from helper.PageState import PageState
 from helper.Stations import Stations
 
 constants = Constants()
@@ -41,6 +42,7 @@ class StationAddDialog:
             ],
             actions_alignment=ft.MainAxisAlignment.SPACE_BETWEEN
         )
+        PageState.page.add(self.dialog)
 
     def play(self):
         self.close()
@@ -74,6 +76,3 @@ class StationAddDialog:
         self.text.value = element["name"]
         self.dialog.open = True
         self.dialog.update()
-
-    def get(self): return self.dialog
-    def get_duplicate_dialog(self): return self.duplicate_dialog
