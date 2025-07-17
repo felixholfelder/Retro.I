@@ -5,8 +5,11 @@ import subprocess
 
 class WifiHelper:
     def is_connected(self):
-        ip = subprocess.run(['hostname', '-I'], stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
+        ip = self.get_current_ip()
         return ip != ""
+    
+    def get_current_ip(self):
+        return subprocess.run(['hostname', '-I'], stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
     
     def get_current_ssid(self):
         ssid = subprocess.run(['iwgetid', '-r'], stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
