@@ -1,4 +1,5 @@
 import os
+import sys
 import time
 import subprocess
 import keyboard
@@ -7,9 +8,11 @@ import socket
 from helper.Strip import Strip
 from helper.Audio import Audio
 from helper.Constants import Constants
+from helper.PageHelper import PageHelper
 from datetime import datetime
 
 audio_helper = Audio()
+page_helper = PageHelper()
 c = Constants()
 
 class System:
@@ -32,7 +35,10 @@ class System:
         os.system('sudo reboot')
     
     def stopp_app(self, _):
-        keyboard.send('alt', 'F4')
+        PageHelper.page.window_destroy()
+        time.sleep(0.5)
+        print("Stop App..")
+        os._exit(0)
     
     def get_cpu_temp(self):
         line = subprocess.run(['vcgencmd', 'measure_temp'], stdout=subprocess.PIPE).stdout.decode('utf-8')

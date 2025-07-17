@@ -21,6 +21,7 @@ from helper.Strip import Strip
 from helper.SystemHelper import System
 from helper.WifiHelper import WifiHelper
 from helper.Audio import Audio
+from helper.PageHelper import PageHelper
 
 wifi_helper = WifiHelper()
 radio_helper = RadioHelper()
@@ -30,8 +31,8 @@ stations_helper = Stations()
 constants = Constants()
 sounds = Sounds()
 audio_helper = Audio()
+page_helper = PageHelper()
 audio_effects = AudioEffects()
-
 
 def main(page: ft.Page):
     strip = Strip()
@@ -64,6 +65,8 @@ def main(page: ft.Page):
     page.add(ft.Column(theme.get_tabs()))
     theme.get_radio_tab().get_grid().reload()
     page.update()
+
+    PageHelper.page = page
 
     RotaryVolume(taskbar, strip)
     RotaryBass(taskbar)

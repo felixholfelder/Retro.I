@@ -22,6 +22,8 @@ class Audio:
 		self.update_sound(30)
 
 	def mixer(self):
+		with open("/home/pi/mixers.txt", "w") as f:
+			f.write(str(a.mixers()))
 		return a.Mixer()
 
 	def update_sound(self, value):

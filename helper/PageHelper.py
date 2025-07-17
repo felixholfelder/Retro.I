@@ -1,0 +1,3 @@
+
+class PageHelper:
+	page = None
