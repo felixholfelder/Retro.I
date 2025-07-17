@@ -21,10 +21,11 @@ class StationAddDialog:
 
     radio_grid: RadioGrid = None
 
-    duplicate_dialog = DuplicateDialog()
+    duplicate_dialog: DuplicateDialog = None
 
     def __init__(self, radio_grid: RadioGrid):
         self.radio_grid = radio_grid
+        self.duplicateDialog = DuplicateDialog()
         
         self.btn_play = ft.FilledButton("Abspielen", on_click=lambda e: self.play(), disabled=False)
         self.btn_add = ft.FilledButton("Zu Liste hinzufügen", on_click=lambda e: self.add_to_list(), disabled=False)

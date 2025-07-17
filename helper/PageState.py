@@ -1,3 +1,4 @@
+import flet as ft
 
 class PageState:
-	page = None
+	page: ft.Page = None

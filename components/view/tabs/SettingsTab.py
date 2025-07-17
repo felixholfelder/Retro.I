@@ -13,12 +13,17 @@ sounds = Sounds()
 class SettingsTab:
     tab = None
 
-    shutdown_dialog = SettingsShutdownDialog()
-    led_dialog = SettingsLedDialog()
-    info_dialog = SettingsInfoDialog()
-    credits_dialog = SettingsCreditsDialog()
+    shutdown_dialog: SettingsShutdownDialog = None
+    led_dialog: SettingsLedDialog = None
+    info_dialog: SettingsInfoDialog = None
+    credits_dialog: SettingsCreditsDialog = None
 
     def __init__(self):
+        self.shutdown_dialog = SettingsShutdownDialog()
+        self.led_dialog = SettingsLedDialog()
+        self.info_dialog = SettingsInfoDialog()
+        self.credits_dialog = SettingsCreditsDialog()
+        
         self.tab = ft.Container(
             content=ft.Column(
                 controls=[

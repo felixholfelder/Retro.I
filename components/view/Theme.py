@@ -30,7 +30,7 @@ class Theme:
     navbar = None
     page = PageState.page
 
-    def __init__(self, taskbar: Taskbar, on_strip_run_color):
+    def __init__(self, taskbar: Taskbar, on_strip_run_color):        
         self.taskbar = taskbar
 
         self.theme = ft.Theme(
