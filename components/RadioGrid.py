@@ -75,12 +75,15 @@ class RadioGrid:
         stations_helper.delete_station(Constants.current_station_index_to_delete)
         self.reload()
 
-    def change_radio_station(self, station, on_theme_change_radio_station, index=-1):
+    def change_radio_station(self, station, on_theme_change_radio_station=None, index=-1):
         color = station["color"]
         Constants.current_radio_station = station
 
         self.toggle_indicator(index)
-        on_theme_change_radio_station(color)
+
+        if on_theme_change_radio_station is not None:
+            on_theme_change_radio_station(color)
+
         audio_helper.play_src(station["src"])
 
         self.on_strip_run_color(color)

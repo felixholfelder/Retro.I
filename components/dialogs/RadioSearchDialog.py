@@ -18,7 +18,7 @@ class RadioSearchDialog:
 
     loading = ft.ProgressRing(visible=False)
     not_found_text = ft.Text("Kein Radiosender gefunden!", visible=False)
-    listview = ft.ListView(spacing=10, padding=20, expand=True, visible=False)
+    listview = ft.ListView(spacing=10, expand=True, visible=False)
     search_textfield = ft.TextField(
         label="Radiosender",
         expand=True,
@@ -54,7 +54,7 @@ class RadioSearchDialog:
                         ],
                         expand=True,
                         alignment=ft.MainAxisAlignment.CENTER
-                    ),
+                    )
                 ]
             )
         )
@@ -90,16 +90,23 @@ class RadioSearchDialog:
 
         self.listview.controls = []
         for el in stations:
-            img = ft.Container(ft.Icon(ft.icons.MUSIC_NOTE), width=60, height=60) if el["logo"] == "" else ft.Image(
-                el["logo"], fit=ft.ImageFit.SCALE_DOWN, border_radius=ft.border_radius.all(10), width=50, height=50)
+            img = ft.Container(ft.Icon(ft.icons.MUSIC_NOTE), width=60, height=60)
+            if el["logo"] != "":
+                img = ft.Image(el["logo"], fit=ft.ImageFit.SCALE_DOWN, border_radius=ft.border_radius.all(10), width=50, height=50)
+
             element = ft.Container(
-                ft.Row([
-                    img,
-                    ft.Column([
-                        ft.Text(el["name"], weight=ft.FontWeight.BOLD),
-                        ft.Text(el["src"])
-                    ])
-                ]),
+                content=ft.Row(
+                    controls=[
+                        img,
+                        ft.Column(
+                            expand=True,
+                            controls=[
+                                ft.Text(el["name"], weight=ft.FontWeight.BOLD),
+                                ft.Text(el["src"])
+                            ]
+                        )
+                    ]
+                ),
                 on_click=lambda e, item=el: self.station_add_dialog.open(item)
             )
 
