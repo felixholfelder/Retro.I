@@ -4,6 +4,7 @@ import time
 
 from components.BluetoothDeviceConnected import BluetoothDeviceConnected, bluetooth_helper
 from components.BluetoothDiscoveryToggle import BluetoothDiscoveryToggle
+from components.dialogs.BluetoothDeviceEditDialog import BluetoothDeviceEditDialog
 from components.view.Taskbar import Taskbar
 
 
@@ -16,8 +17,10 @@ class BluetoothTab:
 
     listview_paired_devices = ft.ListView(spacing=10, expand=True)
     paired_devices = []
+    bluetooth_device_edit_dialog: BluetoothDeviceEditDialog = None
 
     def __init__(self, taskbar: Taskbar):
+        self.bluetooth_device_edit_dialog = BluetoothDeviceEditDialog()
         self.taskbar = taskbar
         self.btn_toggle_discovery = BluetoothDiscoveryToggle()
         self.device_connected = BluetoothDeviceConnected(taskbar, self.btn_toggle_discovery.disable_discovery)
@@ -31,7 +34,7 @@ class BluetoothTab:
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                 controls=[
                     self.btn_toggle_discovery.get(),
-                    self.device_connected.get(),
+                    ft.Text("Gekoppelte Geräte:", size=20, weight=ft.FontWeight.BOLD),
                     self.listview_paired_devices
                 ]
             ),
@@ -60,16 +63,18 @@ class BluetoothTab:
             for device in devices:
                 ico = ft.Icon(ft.icons.DONE, visible=False)
                 btn = ft.TextButton(
-                    content=ft.Row([
-                        ico,
-                        ft.Column(
-                            controls=[
-                                ft.Text(device["name"], size=18, weight=ft.FontWeight.BOLD),
-                                ft.Text(device["mac_address"], size=14)
-                            ]
-                        ),
-                        #on_click=lambda e, name=device["name"]: self.connection_dialog.open(name),
-                    ])
+                    content=ft.Container(
+                        content=ft.Row([
+                            ico,
+                            ft.Column(
+                                controls=[
+                                    ft.Text(device["name"], size=18, weight=ft.FontWeight.BOLD),
+                                    ft.Text(device["mac_address"], size=14)
+                                ]
+                            ),
+                        ]),
+                        on_click=lambda e, name=device: self.on_device_click(name),
+                    )
                 )
 
                 if bluetooth_helper.get_connected_device_mac().upper() == device["mac_address"].upper():
@@ -80,6 +85,26 @@ class BluetoothTab:
             self.listview_paired_devices.update()
                 
             time.sleep(0.5)
+
+    def on_device_click(self, device):
+        if bluetooth_helper.get_connected_device_mac().upper() == device["mac_address"].upper():
+            self.bluetooth_device_edit_dialog.open(
+                device_name=device["name"],
+                on_remove=lambda e, address=device["mac_address"]: self.on_device_remove(address),
+                on_disconnect=self.on_device_disconnect
+            )
+        else:
+            bluetooth_helper.connect(device["mac_address"])
+
+    def on_device_remove(self, address):
+        bluetooth_helper.remove_paired_device(address)
+        self.update_device_connection = True
+        self.process_bluetooth_connection()
+
+    def on_device_disconnect(self):
+        bluetooth_helper.disconnect()
+        self.update_device_connection = True
+        self.process_bluetooth_connection()
 
     def process_bluetooth_connection(self):
         process = threading.Thread(target=self.update_connected_device)
