@@ -48,8 +48,7 @@ class BluetoothHelper:
 		self.discovery_on = False
 
 	def connect(self, mac_address):
-		process = Process(target=lambda: os.system(f'bluetoothctl connect {mac_address}'))
-		process.start()
+		subprocess.run(['bluetoothctl', 'connect', mac_address])
 		print("Device connected")
 
 	def disconnect(self, address=None):

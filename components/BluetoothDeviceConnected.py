@@ -13,45 +13,20 @@ class BluetoothDeviceConnected:
     taskbar = None
     paired_devices = []
     bluetooth_device_edit_dialog: BluetoothDeviceEditDialog = None
-
-    ico_device_connected = ft.Icon(ft.icons.PHONELINK_OFF)
-    txt_device_connected = ft.Text("", style=ft.TextStyle(size=20))
+    on_connected = None
 
     def __init__(self, taskbar: Taskbar, on_connected):
         self.taskbar = taskbar
         self.bluetooth_device_edit_dialog = BluetoothDeviceEditDialog()
-        self.reset_connected_device()
+        self.on_connected = on_connected
 
-        self.listview = ft.TextButton(
-            content=ft.Row(
-                alignment=ft.MainAxisAlignment.CENTER,
-                controls=[
-                    self.ico_device_connected,
-                    self.txt_device_connected
-                ],
-            ),
-            width=500,
-            height=80,
-            on_click=lambda e: self.update_connected_device(on_connected),
-        )
-
-    def reset_connected_device(self):
-        self.txt_device_connected.value = "Kein Gerät verbunden"
-        self.ico_device_connected.name = ft.icons.PHONELINK_OFF
-
-    def update_connected_device(self, on_connected):
+    def update_connected_device(self):
         name = bluetooth_helper.get_connected_device_name()
         if name != "":
-            self.txt_device_connected.value = f"Verbunden mit: {name}"
-            self.ico_device_connected.name = ft.icons.PHONELINK
-            
             audio_helper.bluetooth_connected()
-            on_connected()
-        else:
-            self.reset_connected_device()
+            self.on_connected()
 
-        self.ico_device_connected.update()
-        self.txt_device_connected.update()
+        self.reload_devices()
         self.taskbar.update()
         
         return name != ""
@@ -88,10 +63,9 @@ class BluetoothDeviceConnected:
         if bluetooth_helper.get_connected_device_mac().upper() == device["mac_address"].upper():
             bluetooth_helper.disconnect(device["mac_address"])
         else:
-            # TODO - disable listview
-            self.listview.disabled = True
             bluetooth_helper.connect(device["mac_address"])
-            self.listview.disabled = False
+            self.on_connected()
+        
         self.reload_devices()
 
     def on_device_long_click(self, device):

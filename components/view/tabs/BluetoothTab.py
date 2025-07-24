@@ -30,8 +30,8 @@ class BluetoothTab:
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                 controls=[
                     self.btn_toggle_discovery.get(),
-                    self.device_connected.get(),
                     ft.Text("Gekoppelte Geräte:", size=20, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.LEFT, expand=True),
+                    self.device_connected.get(),
                 ]
             ),
             visible=False,
@@ -52,8 +52,8 @@ class BluetoothTab:
         self.update()
 
     def update_connected_device(self):
-        while self.update_device_connection and not bluetooth_helper.is_connected():
-            connected = self.device_connected.update_connected_device(self.get_btn_toggle().disable_discovery)
+        while self.update_device_connection:
+            connected = self.device_connected.update_connected_device()
             if connected:
                 self.update_device_connection = False
             self.device_connected.reload_devices()

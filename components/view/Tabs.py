@@ -61,7 +61,6 @@ class Tabs:
         time.sleep(0.2)
         bluetooth_helper.turn_off()
 
-        self.bluetooth_tab.device_connected.reset_connected_device()
         self.radio_tab.show()
         self.radio_tab.update()
         self.taskbar.update()
@@ -74,7 +73,6 @@ class Tabs:
 
         self.taskbar.update()
 
-        self.bluetooth_tab.get_device_connected().reset_connected_device()
         self.bluetooth_tab.show()
 
         self.radio_tab.get_grid().disable_indicator()
