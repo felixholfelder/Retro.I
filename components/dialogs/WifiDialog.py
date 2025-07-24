@@ -64,7 +64,7 @@ class WifiDialog:
                 on_click=lambda e, name=n: self.connection_dialog.open(name),
             )
 
-            if (curr_ssid == n):
+            if curr_ssid == n:
                 ico.visible = True
 
             self.listview.controls.append(btn)

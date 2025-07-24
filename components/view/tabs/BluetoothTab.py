@@ -60,13 +60,16 @@ class BluetoothTab:
             for device in devices:
                 ico = ft.Icon(ft.icons.DONE, visible=False)
                 btn = ft.TextButton(
-                    content=ft.Column(
-                        controls=[
-                            ft.Text(device["name"], size=18, weight=ft.FontWeight.BOLD),
-                            ft.Text(device["mac_address"], size=14)
-                        ]
-                    ),
-                    #on_click=lambda e, name=device["name"]: self.connection_dialog.open(name),
+                    content=ft.Row([
+                        ico,
+                        ft.Column(
+                            controls=[
+                                ft.Text(device["name"], size=18, weight=ft.FontWeight.BOLD),
+                                ft.Text(device["mac_address"], size=14)
+                            ]
+                        ),
+                        #on_click=lambda e, name=device["name"]: self.connection_dialog.open(name),
+                    ])
                 )
 
                 if bluetooth_helper.get_connected_device_mac().upper() == device["mac_address"].upper():
