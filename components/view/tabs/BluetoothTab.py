@@ -88,11 +88,13 @@ class BluetoothTab:
 
     def on_device_click(self, device):
         def on_device_remove():
+            print(device["mac_address"])
             bluetooth_helper.remove_paired_device(device["mac_address"])
             self.update_device_connection = True
             self.process_bluetooth_connection()
 
         def on_device_disconnect():
+            print(device["mac_address"])
             bluetooth_helper.disconnect(device["mac_address"])
             self.update_device_connection = True
             self.process_bluetooth_connection()
