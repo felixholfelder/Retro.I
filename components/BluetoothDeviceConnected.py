@@ -1,5 +1,7 @@
 import flet as ft
 
+import time
+
 from components.dialogs.BluetoothDeviceEditDialog import BluetoothDeviceEditDialog
 from components.view.Taskbar import Taskbar
 from helper.BluetoothHelper import BluetoothHelper
@@ -25,8 +27,10 @@ class BluetoothDeviceConnected:
         if name != "":
             audio_helper.bluetooth_connected()
             self.on_connected()
+            while not any(obj["name"] == name for obj in self.paired_devices):
+                self.reload_devices()
+                time.sleep(1)
 
-        self.reload_devices()
         self.taskbar.update()
         
         return name != ""
