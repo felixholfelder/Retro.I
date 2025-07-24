@@ -63,6 +63,22 @@ class BluetoothTab:
                 self.paired_devices = devices
                 self.listview_paired_devices.controls = []
                 for device in devices:
+                    ico = ft.Icon(ft.icons.DONE, visible=False)
+                    btn = ft.TextButton(
+                        content=ft.Column(
+                            controls=[
+                                ft.Text(device["name"]),
+                                ft.Text(device["mac_address"])
+                            ]
+                        ),
+                        #on_click=lambda e, name=device["name"]: self.connection_dialog.open(name),
+                    )
+
+                    if (bluetooth_helper.get_connected_device_mac() == device["mac_address"]):
+                        ico.visible = True
+
+                    self.listview_paired_devices.controls.append(btn)
+
                     self.listview_paired_devices.controls.append(
                         ft.Column(
                             controls=[
