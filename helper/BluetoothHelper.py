@@ -1,6 +1,8 @@
 import flet as ft
 import os
 import subprocess
+import json
+import re
 from multiprocessing import Process
 from helper.PageState import PageState
 from helper.SystemHelper import SystemHelper
@@ -46,25 +48,49 @@ class BluetoothHelper:
 		self.discovery_on = False
 
 	def disconnect(self):
-		address = self.get_device_mac()
+		address = self.get_connected_device_mac()
 		process = Process(target=lambda: os.system(f'bluetoothctl disconnect {address}'))
 		process.start()
 		print("Device disconnected")
 
-	def get_device(self):
+	def get_paired_devices(self):
+		output = subprocess.check_output(["bluetoothctl", "devices", "Paired"], text=True)
+
+		# Each line typically looks like: "Device XX:XX:XX:XX:XX:XX Device_Name"
+		devices = []
+		for line in output.strip().split('\n'):
+			match = re.match(r'Device ([0-9A-F:]+) (.+)', line)
+			if match:
+				mac_address, name = match.groups()
+				devices.append({
+					"name": name,
+					"mac_address": mac_address
+				})
+
+		return devices
+
+	def remove_paired_device(self, mac_address):
+		connected_device = self.get_connected_device_mac()
+		if mac_address == connected_device:
+			return
+
+		os.system(f'bluetoothctl remove {mac_address}')
+
+
+	def get_connected_device(self):
 		return subprocess.run(['bluetoothctl', 'devices', 'Connected'], stdout=subprocess.PIPE).stdout.decode('utf-8')
 
-	def get_device_name(self):
-		result = self.get_device()
+	def get_connected_device_name(self):
+		result = self.get_connected_device()
 		return result[25:].strip()
 
 	def is_connected(self):
-		return self.get_device_name() != ""
+		return self.get_connected_device_name() != ""
 
-	def get_device_mac(self):
-		result = self.get_device()
+	def get_connected_device_mac(self):
+		result = self.get_connected_device()
 		return result[7:24]
 
 	def is_device_connected(self):
-		result = self.get_device()
+		result = self.get_connected_device()
 		return result is not None

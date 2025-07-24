@@ -57,7 +57,7 @@ class SettingsInfoDialog:
         self.ip_text.text = ip_config["ip"]
         self.hostname_text.text = ip_config["hostname"]
         self.subnetmask_text.text = ip_config["subnetmask"]
-        self.mac_text.text = ip_config["mac"]
+        self.mac_text.text = ip_config["mac_address"]
         self.gateway_text.text = ip_config["gateway"]
         self.dns_pri_text.text = ip_config["dns"][0]
         self.dns_sec_text.text = ip_config["dns"][1]

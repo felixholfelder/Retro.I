@@ -104,7 +104,7 @@ class SystemHelper:
             "ip": self.get_ip_address(),
             "hostname": self.get_hostname(),
             "subnetmask": self.get_netmask(),
-            "mac": self.get_mac_address(),
+            "mac_address": self.get_mac_address(),
             "gateway": self.get_gateway(),
             "dns": self.get_dns_servers()
         }

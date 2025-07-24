@@ -36,7 +36,7 @@ class BluetoothDeviceConnected:
         self.ico_device_connected.name = ft.icons.PHONELINK_OFF
 
     def update_connected_device(self, on_connected):
-        name = bluetooth_helper.get_device_name()
+        name = bluetooth_helper.get_connected_device_name()
         if name != "":
             self.txt_device_connected.value = f"Verbunden mit: {name}"
             self.ico_device_connected.name = ft.icons.PHONELINK

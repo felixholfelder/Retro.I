@@ -2,7 +2,7 @@ import flet as ft
 import threading
 import time
 
-from components.BluetoothDeviceConnected import BluetoothDeviceConnected
+from components.BluetoothDeviceConnected import BluetoothDeviceConnected, bluetooth_helper
 from components.BluetoothDiscoveryToggle import BluetoothDiscoveryToggle
 from components.view.Taskbar import Taskbar
 
@@ -13,6 +13,10 @@ class BluetoothTab:
     btn_toggle_discovery = None
     device_connected = None
     update_device_connection = False
+    update_device_pairing = False
+
+    listview_paired_devices = ft.ListView(spacing=10, expand=True)
+    paired_devices = []
 
     def __init__(self, taskbar: Taskbar):
         self.taskbar = taskbar
@@ -28,7 +32,8 @@ class BluetoothTab:
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                 controls=[
                     self.btn_toggle_discovery.get(),
-                    self.device_connected.get()
+                    self.device_connected.get(),
+                    self.listview_paired_devices
                 ]
             ),
             visible=False,
@@ -40,13 +45,36 @@ class BluetoothTab:
     def show(self):
         self.tab.visible = True
         self.update_device_connection = True
+        self.update_device_pairing = True
         self.process_bluetooth_connection()
+        self.process_bluetooth_device_pairing()
         self.update()
 
     def hide(self):
         self.tab.visible = False
         self.update_device_connection = False
+        self.update_device_pairing = False
         self.update()
+
+    def update_paired_devices(self):
+        while self.update_device_pairing:
+            devices = bluetooth_helper.get_paired_devices()
+            if devices != self.paired_devices:
+                self.paired_devices = devices
+                self.listview_paired_devices.controls = []
+                for device in devices:
+                    self.listview_paired_devices.controls.append(
+                        ft.Column(
+                            controls=[
+                                ft.Text(device["name"]),
+                                ft.Text(device["mac_address"])
+                            ]
+                        )
+                    )
+                self.listview_paired_devices.update()
+
+            time.sleep(2)
+
         
     def update_connected_device(self):
         while self.update_device_connection:
@@ -58,6 +86,10 @@ class BluetoothTab:
 
     def process_bluetooth_connection(self):
         process = threading.Thread(target=self.update_connected_device)
+        process.start()
+
+    def process_bluetooth_device_pairing(self):
+        process = threading.Thread(target=self.update_paired_devices)
         process.start()
 
     def get(self): return self.tab
