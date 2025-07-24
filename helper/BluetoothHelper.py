@@ -55,8 +55,8 @@ class BluetoothHelper:
 	def disconnect(self, address=None):
 		if address is None:
 			address = self.get_connected_device_mac()
-		process = Process(target=lambda: os.system(f'bluetoothctl disconnect {address}'))
-		process.start()
+
+		subprocess.run(['bluetoothctl', 'disconnect', address])
 		print("Device disconnected")
 
 	def get_paired_devices(self):
@@ -75,13 +75,8 @@ class BluetoothHelper:
 
 		return devices
 
-	def remove_paired_device(self, mac_address):
-		connected_device = self.get_connected_device_mac()
-		if mac_address == connected_device:
-			return
-
-		os.system(f'bluetoothctl remove {mac_address}')
-
+	def remove_device(self, address):
+		subprocess.run(['bluetoothctl', 'remove', address])
 
 	def get_connected_device(self):
 		return subprocess.run(['bluetoothctl', 'devices', 'Connected'], stdout=subprocess.PIPE).stdout.decode('utf-8')

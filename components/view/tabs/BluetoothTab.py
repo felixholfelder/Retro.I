@@ -17,7 +17,7 @@ class BluetoothTab:
 
     listview_paired_devices = ft.ListView(spacing=10, expand=True)
     paired_devices = []
-    bluetooth_device_edit_dialog: BluetoothDeviceEditDialog = None
+    bluetooth_device_edit_dialog = None
 
     def __init__(self, taskbar: Taskbar):
         self.bluetooth_device_edit_dialog = BluetoothDeviceEditDialog()
@@ -34,7 +34,7 @@ class BluetoothTab:
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                 controls=[
                     self.btn_toggle_discovery.get(),
-                    ft.Text("Gekoppelte Geräte:", size=20, weight=ft.FontWeight.BOLD),
+                    ft.Text("Gekoppelte Geräte:", size=20, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.LEFT, expand=True),
                     self.listview_paired_devices
                 ]
             ),
@@ -54,62 +54,58 @@ class BluetoothTab:
         self.tab.visible = False
         self.update_device_connection = False
         self.update()
+    
+    def reload_devices(self):
+        devices = bluetooth_helper.get_paired_devices()
+        self.paired_devices = devices
+        self.listview_paired_devices.controls = []
+        for device in devices:
+            ico = ft.Icon(ft.icons.DONE, visible=False)
+            btn = ft.TextButton(
+                content=ft.Container(
+                    content=ft.Row([
+                        ico,
+                        ft.Column(
+                            controls=[
+                                ft.Text(device["name"], size=18, weight=ft.FontWeight.BOLD),
+                                ft.Text(device["mac_address"], size=14)
+                            ]
+                        ),
+                    ]),
+                    on_click=lambda e, name=device: self.on_device_click(name),
+                    on_long_press=lambda e, name=device: self.on_device_long_click(name)
+                )
+            )
+
+            if bluetooth_helper.get_connected_device_mac().upper() == device["mac_address"].upper():
+                ico.visible = True
+                self.update_device_connection = False
+
+            self.listview_paired_devices.controls.append(btn)
+        self.listview_paired_devices.update()
+                
 
     def update_connected_device(self):
         while self.update_device_connection:
-            devices = bluetooth_helper.get_paired_devices()
-            self.paired_devices = devices
-            self.listview_paired_devices.controls = []
-            for device in devices:
-                ico = ft.Icon(ft.icons.DONE, visible=False)
-                btn = ft.TextButton(
-                    content=ft.Container(
-                        content=ft.Row([
-                            ico,
-                            ft.Column(
-                                controls=[
-                                    ft.Text(device["name"], size=18, weight=ft.FontWeight.BOLD),
-                                    ft.Text(device["mac_address"], size=14)
-                                ]
-                            ),
-                        ]),
-                        on_click=lambda e, name=device: self.on_device_click(name),
-                    )
-                )
-
-                if bluetooth_helper.get_connected_device_mac().upper() == device["mac_address"].upper():
-                    ico.visible = True
-                    self.update_device_connection = False
-
-                self.listview_paired_devices.controls.append(btn)
-            self.listview_paired_devices.update()
-                
-            time.sleep(0.5)
+            self.reload_devices()
+            time.sleep(1)
 
     def on_device_click(self, device):
-        def on_device_remove():
-            print(device["mac_address"])
-            bluetooth_helper.remove_paired_device(device["mac_address"])
-            self.update_device_connection = True
-            self.process_bluetooth_connection()
-
-        def on_device_disconnect():
-            print(device["mac_address"])
-            bluetooth_helper.disconnect(device["mac_address"])
-            self.update_device_connection = True
-            self.process_bluetooth_connection()
-
         if bluetooth_helper.get_connected_device_mac().upper() == device["mac_address"].upper():
-            self.bluetooth_device_edit_dialog.open(
-                device_name=device["name"],
-                on_remove=on_device_remove,
-                on_disconnect=on_device_disconnect
-            )
+            bluetooth_helper.disconnect(device["mac_address"])
         else:
             # TODO - disable listview
             self.listview_paired_devices.disabled = True
             bluetooth_helper.connect(device["mac_address"])
             self.listview_paired_devices.disabled = False
+        self.reload_devices()
+
+    def on_device_long_click(self, device):
+        def on_device_remove():
+            bluetooth_helper.remove_device(device["mac_address"])
+            self.reload_devices()
+
+        self.bluetooth_device_edit_dialog.open(device["name"], on_device_remove)
 
     def process_bluetooth_connection(self):
         process = threading.Thread(target=self.update_connected_device)
