@@ -6,23 +6,23 @@ from helper.PageState import PageState
 class BluetoothDeviceEditDialog:
     text = ft.Text("")
     dialog = None
-    device_name = ""
     on_remove = None
     on_disconnect = None
 
     def __init__(self):
         self.dialog = ft.AlertDialog(
-            title=ft.Text(self.device_name),
+            title=self.text,
             actions=[
-                ft.FilledButton("Entfernen", on_click=lambda e: self.remove_device()),
-                ft.FilledButton("Verbindung trennen", on_click=lambda e: self.disconnect_device())
+                ft.FilledButton("Entfernen", on_click=lambda e, mac_address: self.remove_device(mac_address)),
+                ft.FilledButton("Verbindung trennen", on_click=lambda e: self.disconnect_device)
             ],
             actions_alignment=ft.MainAxisAlignment.END,
         )
         PageState.page.add(self.dialog)
 
     def open(self, device_name, on_remove, on_disconnect):
-        self.device_name = device_name
+        self.text.value = device_name
+        self.text.update()
         self.on_remove = on_remove
         self.on_disconnect = on_disconnect
         self.dialog.open = True

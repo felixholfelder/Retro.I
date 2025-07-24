@@ -87,24 +87,27 @@ class BluetoothTab:
             time.sleep(0.5)
 
     def on_device_click(self, device):
+        def on_device_remove():
+            bluetooth_helper.remove_paired_device(device["mac_address"])
+            self.update_device_connection = True
+            self.process_bluetooth_connection()
+
+        def on_device_disconnect():
+            bluetooth_helper.disconnect(device["mac_address"])
+            self.update_device_connection = True
+            self.process_bluetooth_connection()
+
         if bluetooth_helper.get_connected_device_mac().upper() == device["mac_address"].upper():
             self.bluetooth_device_edit_dialog.open(
                 device_name=device["name"],
-                on_remove=lambda e, address=device["mac_address"]: self.on_device_remove(address),
-                on_disconnect=self.on_device_disconnect
+                on_remove=on_device_remove,
+                on_disconnect=on_device_disconnect
             )
         else:
+            # TODO - disable listview
+            self.listview_paired_devices.disabled = True
             bluetooth_helper.connect(device["mac_address"])
-
-    def on_device_remove(self, address):
-        bluetooth_helper.remove_paired_device(address)
-        self.update_device_connection = True
-        self.process_bluetooth_connection()
-
-    def on_device_disconnect(self):
-        bluetooth_helper.disconnect()
-        self.update_device_connection = True
-        self.process_bluetooth_connection()
+            self.listview_paired_devices.disabled = False
 
     def process_bluetooth_connection(self):
         process = threading.Thread(target=self.update_connected_device)
