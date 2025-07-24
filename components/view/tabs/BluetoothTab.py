@@ -87,6 +87,9 @@ class BluetoothTab:
 
     def update_connected_device(self):
         while self.update_device_connection:
+            connected = self.device_connected.update_connected_device(self.get_btn_toggle().disable_discovery)
+            if connected:
+                self.update_device_connection = False
             self.reload_devices()
             time.sleep(1)
 
