@@ -13,7 +13,6 @@ class BluetoothTab:
     btn_toggle_discovery = None
     device_connected = None
     update_device_connection = False
-    update_device_pairing = False
 
     listview_paired_devices = ft.ListView(spacing=10, expand=True)
     paired_devices = []
@@ -45,67 +44,50 @@ class BluetoothTab:
     def show(self):
         self.tab.visible = True
         self.update_device_connection = True
-        self.update_device_pairing = True
         self.process_bluetooth_connection()
-        self.process_bluetooth_device_pairing()
         self.update()
 
     def hide(self):
         self.tab.visible = False
         self.update_device_connection = False
-        self.update_device_pairing = False
         self.update()
 
-    def update_paired_devices(self):
-        while self.update_device_pairing:
-            devices = bluetooth_helper.get_paired_devices()
-            if devices != self.paired_devices:
-                self.paired_devices = devices
-                self.listview_paired_devices.controls = []
-                for device in devices:
-                    ico = ft.Icon(ft.icons.DONE, visible=False)
-                    btn = ft.TextButton(
-                        content=ft.Column(
-                            controls=[
-                                ft.Text(device["name"]),
-                                ft.Text(device["mac_address"])
-                            ]
-                        ),
-                        #on_click=lambda e, name=device["name"]: self.connection_dialog.open(name),
-                    )
-
-                    if (bluetooth_helper.get_connected_device_mac() == device["mac_address"]):
-                        ico.visible = True
-
-                    self.listview_paired_devices.controls.append(btn)
-
-                    self.listview_paired_devices.controls.append(
-                        ft.Column(
-                            controls=[
-                                ft.Text(device["name"]),
-                                ft.Text(device["mac_address"])
-                            ]
-                        )
-                    )
-                self.listview_paired_devices.update()
-
-            time.sleep(2)
-
-        
     def update_connected_device(self):
         while self.update_device_connection:
-            connected = self.device_connected.update_connected_device(self.get_btn_toggle().disable_discovery)
-            if connected:
-                self.update_device_connection = False
+            devices = bluetooth_helper.get_paired_devices()
+            self.paired_devices = devices
+            self.listview_paired_devices.controls = []
+            for device in devices:
+                ico = ft.Icon(ft.icons.DONE, visible=False)
+                btn = ft.TextButton(
+                    content=ft.Column(
+                        controls=[
+                            ft.Text(device["name"], size=18, weight=ft.FontWeight.BOLD),
+                            ft.Text(device["mac_address"], size=14)
+                        ]
+                    ),
+                    #on_click=lambda e, name=device["name"]: self.connection_dialog.open(name),
+                )
+
+                if (bluetooth_helper.get_connected_device_mac() == device["mac_address"]):
+                    ico.visible = True
+
+                self.listview_paired_devices.controls.append(btn)
+
+                self.listview_paired_devices.controls.append(
+                    ft.Column(
+                        controls=[
+                            ft.Text(device["name"]),
+                            ft.Text(device["mac_address"])
+                        ]
+                    )
+                )
+            self.listview_paired_devices.update()
                 
             time.sleep(0.5)
 
     def process_bluetooth_connection(self):
         process = threading.Thread(target=self.update_connected_device)
-        process.start()
-
-    def process_bluetooth_device_pairing(self):
-        process = threading.Thread(target=self.update_paired_devices)
         process.start()
 
     def get(self): return self.tab
