@@ -12,13 +12,14 @@ class BluetoothDeviceConnected:
     listview = ft.ListView(spacing=10, expand=True)
     taskbar = None
     paired_devices = []
-    bluetooth_device_edit_dialog = BluetoothDeviceEditDialog()
+    bluetooth_device_edit_dialog: BluetoothDeviceEditDialog = None
 
     ico_device_connected = ft.Icon(ft.icons.PHONELINK_OFF)
     txt_device_connected = ft.Text("", style=ft.TextStyle(size=20))
 
     def __init__(self, taskbar: Taskbar, on_connected):
         self.taskbar = taskbar
+        self.bluetooth_device_edit_dialog = BluetoothDeviceEditDialog()
         self.reset_connected_device()
 
         self.listview = ft.TextButton(
