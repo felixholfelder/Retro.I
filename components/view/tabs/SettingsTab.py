@@ -39,7 +39,7 @@ class SettingsTab:
                         spacing=20,
                         run_spacing=50,
                         controls=[
-                            SettingsButton().get(ft.icons.POWER_SETTINGS_NEW, "Radio ausschalten", lambda e: self.shutdown_dialog.open()),
+                            SettingsButton().get(ft.icons.POWER_SETTINGS_NEW, "Ausschalten", lambda e: self.shutdown_dialog.open()),
                             SettingsButton().get(ft.icons.COLOR_LENS, "LED-Streifen", lambda e: self.led_dialog.open()),
                             SettingsButton().get(ft.icons.SETTINGS_DISPLAY_ROUNDED, "Helligkeit", lambda e: self.brightness_dialog.open()),
                             SettingsButton().get(ft.icons.INFO, "Info", lambda e: self.info_dialog.open()),

@@ -25,7 +25,8 @@ class SettingsCreditsDialog:
                             ft.Divider(),
                             ft.Text("Besonderen Dank an:", weight=ft.FontWeight.BOLD, size=22),
                             ft.Text("Goldschmiede und Uhren Gruhle", size=20),
-                            ft.Text("Klaus Schelter", size=20),
+                            ft.Text("Felix Diermeier", size=20),
+                            ft.Text("Thomas Holfelder", size=20),
                         ]
                     )
                 ]

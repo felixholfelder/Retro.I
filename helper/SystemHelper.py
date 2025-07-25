@@ -116,5 +116,8 @@ class SystemHelper:
     
     def get_curr_brightness(self):
         line = subprocess.run(['sudo', 'cat', '/sys/class/backlight/10-0045/brightness'], stdout=subprocess.PIPE).stdout.decode('utf-8')
-        value = int(line)
-        return value / 255 * 100
+        value = int(line) / 255 * 100
+        if value < 10:
+            return 10
+
+        return value
