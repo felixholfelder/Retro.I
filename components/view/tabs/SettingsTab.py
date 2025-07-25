@@ -31,17 +31,32 @@ class SettingsTab:
             content=ft.Column(
                 controls=[
                     ft.Text("Einstellungen", size=24),
-                    ft.ListView(
-                        [
+                    ft.GridView(
+                        expand=True,
+                        runs_count=5,
+                        max_extent=150,
+                        child_aspect_ratio=1.0,
+                        spacing=20,
+                        run_spacing=50,
+                        controls=[
                             SettingsButton().get(ft.icons.POWER_SETTINGS_NEW, "Radio ausschalten", lambda e: self.shutdown_dialog.open()),
                             SettingsButton().get(ft.icons.COLOR_LENS, "LED-Streifen", lambda e: self.led_dialog.open()),
                             SettingsButton().get(ft.icons.SETTINGS_DISPLAY_ROUNDED, "Helligkeit", lambda e: self.brightness_dialog.open()),
                             SettingsButton().get(ft.icons.INFO, "Info", lambda e: self.info_dialog.open()),
                             SettingsButton().get(ft.icons.STAR, "Credits", lambda e: self.credits_dialog.open()),
-                        ],
-                        spacing=10,
-                        padding=20,
-                    )
+                        ]
+                    ),
+                    # ft.ListView(
+                    #     [
+                    #         SettingsButton().get(ft.icons.POWER_SETTINGS_NEW, "Radio ausschalten", lambda e: self.shutdown_dialog.open()),
+                    #         SettingsButton().get(ft.icons.COLOR_LENS, "LED-Streifen", lambda e: self.led_dialog.open()),
+                    #         SettingsButton().get(ft.icons.SETTINGS_DISPLAY_ROUNDED, "Helligkeit", lambda e: self.brightness_dialog.open()),
+                    #         SettingsButton().get(ft.icons.INFO, "Info", lambda e: self.info_dialog.open()),
+                    #         SettingsButton().get(ft.icons.STAR, "Credits", lambda e: self.credits_dialog.open()),
+                    #     ],
+                    #     spacing=10,
+                    #     padding=20,
+                    # )
                 ]
             ),
             visible=False,
