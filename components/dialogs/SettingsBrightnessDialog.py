@@ -17,18 +17,28 @@ class SettingsBrightnessDialog:
                 width=500,
                 tight=True,
                 controls=[
-                    ft.Row([
-                        ft.Text("Helligkeit", style=ft.TextStyle(size=20)),
-                        ft.Slider(
-                            min=10, max=100, divisions=10, label="{value}%", on_change=self.slider_changed
-                        ),
-                    ])
+                    ft.Row(
+                        controls=[
+                            ft.Text("Helligkeit", style=ft.TextStyle(size=20)),
+                            ft.Slider(
+                                expand=True,
+                                min=10,
+                                max=100,
+                                divisions=19,
+                                label="{value}%",
+                                value=system_helper.get_curr_brightness(),
+                                on_change=self.slider_changed,
+                            ),
+                        ]
+                    )
                 ]
             )
         )
         PageState.page.add(self.dialog)
 
     def slider_changed(self, e):
+        self.text = e.control.value / 255 * 100
+        
         system_helper.change_screen_brightness(e.control.value)
 
     def open(self):
