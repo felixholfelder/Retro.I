@@ -111,5 +111,10 @@ class SystemHelper:
         return config
 
     def change_screen_brightness(self, value):
-        brightness = value / 100 * 255
+        brightness = int(value / 100 * 255)
         os.system(f"sudo echo {brightness} > /sys/class/backlight/10-0045/brightness")
+    
+    def get_curr_brightness(self):
+        line = subprocess.run(['sudo', 'cat', '/sys/class/backlight/10-0045/brightness'], stdout=subprocess.PIPE).stdout.decode('utf-8')
+        value = int(line)
+        return value / 255 * 100
