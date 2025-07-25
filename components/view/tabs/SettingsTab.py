@@ -1,6 +1,7 @@
 import flet as ft
 
 from components.SettingsButton import SettingsButton
+from components.dialogs.SettingsBrightnessDialog import SettingsBrightnessDialog
 from components.dialogs.SettingsCreditsDialog import SettingsCreditsDialog
 from components.dialogs.SettingsLedDialog import SettingsLedDialog
 from components.dialogs.SettingsInfoDialog import SettingsInfoDialog
@@ -15,12 +16,14 @@ class SettingsTab:
 
     shutdown_dialog: SettingsShutdownDialog = None
     led_dialog: SettingsLedDialog = None
+    brightness_dialog: SettingsBrightnessDialog = None
     info_dialog: SettingsInfoDialog = None
     credits_dialog: SettingsCreditsDialog = None
 
     def __init__(self):
         self.shutdown_dialog = SettingsShutdownDialog()
         self.led_dialog = SettingsLedDialog()
+        self.brightness_dialog = SettingsBrightnessDialog()
         self.info_dialog = SettingsInfoDialog()
         self.credits_dialog = SettingsCreditsDialog()
         
@@ -32,11 +35,13 @@ class SettingsTab:
                         [
                             SettingsButton().get(ft.icons.POWER_SETTINGS_NEW, "Radio ausschalten", lambda e: self.shutdown_dialog.open()),
                             SettingsButton().get(ft.icons.COLOR_LENS, "LED-Streifen", lambda e: self.led_dialog.open()),
+                            SettingsButton().get(ft.icons.SETTINGS_DISPLAY_ROUNDED, "Helligkeit", lambda e: self.brightness_dialog.open()),
                             SettingsButton().get(ft.icons.INFO, "Info", lambda e: self.info_dialog.open()),
                             SettingsButton().get(ft.icons.STAR, "Credits", lambda e: self.credits_dialog.open()),
                         ],
                         spacing=10,
-                        padding=20)
+                        padding=20,
+                    )
                 ]
             ),
             visible=False,

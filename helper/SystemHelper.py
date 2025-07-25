@@ -110,3 +110,6 @@ class SystemHelper:
         }
         return config
 
+    def change_screen_brightness(self, value):
+        brightness = value / 100 * 255
+        os.system(f"sudo echo {brightness} > /sys/class/backlight/10-0045/brightness")
