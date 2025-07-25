@@ -7,7 +7,7 @@ from helper.SystemHelper import SystemHelper
 strip = Strip()
 system_helper = SystemHelper()
 
-class SettingsLedDialog:
+class SettingsBrightnessDialog:
     dialog = None
 
     def __init__(self):
