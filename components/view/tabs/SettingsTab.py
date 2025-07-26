@@ -46,17 +46,6 @@ class SettingsTab:
                             SettingsButton().get(ft.icons.STAR, "Credits", lambda e: self.credits_dialog.open()),
                         ]
                     ),
-                    # ft.ListView(
-                    #     [
-                    #         SettingsButton().get(ft.icons.POWER_SETTINGS_NEW, "Radio ausschalten", lambda e: self.shutdown_dialog.open()),
-                    #         SettingsButton().get(ft.icons.COLOR_LENS, "LED-Streifen", lambda e: self.led_dialog.open()),
-                    #         SettingsButton().get(ft.icons.SETTINGS_DISPLAY_ROUNDED, "Helligkeit", lambda e: self.brightness_dialog.open()),
-                    #         SettingsButton().get(ft.icons.INFO, "Info", lambda e: self.info_dialog.open()),
-                    #         SettingsButton().get(ft.icons.STAR, "Credits", lambda e: self.credits_dialog.open()),
-                    #     ],
-                    #     spacing=10,
-                    #     padding=20,
-                    # )
                 ]
             ),
             visible=False,

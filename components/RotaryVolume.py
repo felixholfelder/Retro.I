@@ -29,7 +29,7 @@ class RotaryVolume:
         if self.COUNTER % 2 == 0:
             value = audio_helper.get_volume() + self.VOLUME_STEP
             if 0 <= value <= 100:
-                self.update(value, on_taskbar_update)
+                self.update(value, on_taskbar_update, on_strip_update_sound)
 
             if value > 100:
                 self.update(100, on_taskbar_update, on_strip_update_sound)
@@ -42,7 +42,7 @@ class RotaryVolume:
                 self.update(value, on_taskbar_update, on_strip_update_sound)
 
             if value < 0:
-                self.update(0, on_taskbar_update)
+                self.update(0, on_taskbar_update, on_strip_update_sound)
         self.COUNTER -= 1
 
     def toggle_mute(self, on_taskbar_update, on_strip_toggle_mute):
