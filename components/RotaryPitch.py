@@ -1,6 +1,6 @@
 import threading
 
-from pyky040 import pyky040
+import rotary_encoder
 
 from helper.AudioEffects import AudioEffects
 
@@ -16,13 +16,17 @@ class RotaryPitch:
     taskbar = None
 
     def __init__(self, on_taskbar_update):
-        rotary = pyky040.Encoder(CLK=self.CLK_PIN, DT=self.DT_PIN)
-        rotary.setup(
-            inc_callback=lambda e: self.inc_pitch(on_taskbar_update),
-            dec_callback=lambda e: self.dec_pitch(on_taskbar_update),
-            sw_callback=lambda: self.sw_callback,
-        )
-        rotary_thread = threading.Thread(target=rotary.watch)
+        # rotary = pyky040.Encoder(CLK=self.CLK_PIN, DT=self.DT_PIN)
+        # rotary.setup(
+        #     inc_callback=lambda e: self.inc_pitch(on_taskbar_update),
+        #     dec_callback=lambda e: self.dec_pitch(on_taskbar_update)
+        # )
+        rotary_thread = threading.Thread(target=rotary_encoder.connect(
+            clk_pin=self.CLK_PIN,                           # required
+            dt_pin=self.DT_PIN,                            # required
+            on_clockwise_turn=self.inc_pitch(on_taskbar_update),          # optional
+            on_counter_clockwise_turn=self.dec_pitch(on_taskbar_update),  # optional
+        ))
         rotary_thread.start()
 
     def inc_pitch(self, on_taskbar_update):
@@ -44,9 +48,6 @@ class RotaryPitch:
             if value < -12:
                 self.update(-12, on_taskbar_update)
         self.COUNTER -= 1
-
-    def sw_callback(self):
-        pass
 
     def update(self, value, on_taskbar_update):
         audio_effects.update_pitch(value)
