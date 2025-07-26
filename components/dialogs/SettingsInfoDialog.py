@@ -54,13 +54,13 @@ class SettingsInfoDialog:
     def update_ip_config(self):
         ip_config = system_helper.get_network_config()
         
-        self.ip_text.text = ip_config["ip"]
-        self.hostname_text.text = ip_config["hostname"]
-        self.subnetmask_text.text = ip_config["subnetmask"]
-        self.mac_text.text = ip_config["mac_address"]
-        self.gateway_text.text = ip_config["gateway"]
-        self.dns_pri_text.text = ip_config["dns"][0]
-        self.dns_sec_text.text = ip_config["dns"][1]
+        self.ip_text.text = ip_config["ip"] or ""
+        self.hostname_text.text = ip_config["hostname"] or ""
+        self.subnetmask_text.text = ip_config["subnetmask"] or ""
+        self.mac_text.text = ip_config["mac_address"] or ""
+        self.gateway_text.text = ip_config["gateway"] or ""
+        self.dns_pri_text.text = ip_config["dns"][0] or ""
+        self.dns_sec_text.text = ip_config["dns"][1] or ""
         
         self.ip_text.update()
         self.hostname_text.update()
