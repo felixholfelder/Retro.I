@@ -20,7 +20,7 @@ class RotaryPitch:
         rotary.setup(
             inc_callback=lambda e: self.inc_pitch(on_taskbar_update),
             dec_callback=lambda e: self.dec_pitch(on_taskbar_update),
-            sw_callback=lambda: None,
+            sw_callback=lambda: self.sw_callback,
         )
         rotary_thread = threading.Thread(target=rotary.watch)
         rotary_thread.start()
@@ -44,6 +44,9 @@ class RotaryPitch:
             if value < -12:
                 self.update(-12, on_taskbar_update)
         self.COUNTER -= 1
+
+    def sw_callback(self):
+        pass
 
     def update(self, value, on_taskbar_update):
         audio_effects.update_pitch(value)

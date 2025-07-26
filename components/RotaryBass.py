@@ -20,7 +20,7 @@ class RotaryBass:
         rotary.setup(
             inc_callback=lambda e: self.inc_bass_boost(on_taskbar_update),
             dec_callback=lambda e: self.dec_bass_boost(on_taskbar_update),
-            sw_callback=lambda: None,
+            sw_callback=lambda: self.sw_callback,
         )
         rotary_thread = threading.Thread(target=rotary.watch)
         rotary_thread.start()
@@ -36,6 +36,9 @@ class RotaryBass:
             value = audio_effects.get_bass_value() - self.BASS_STEP
             self.update(value, on_taskbar_update)
         self.COUNTER -= 1
+
+    def sw_callback(self):
+        pass
 
     def update(self, value, on_taskbar_update):
         audio_effects.update_bass(value)
