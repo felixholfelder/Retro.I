@@ -117,7 +117,7 @@ class SystemHelper:
                 "subnetmask": "",
                 "mac_address": "",
                 "gateway": "",
-                "dns": ""
+                "dns": ["", ""]
             }
 
     def change_screen_brightness(self, value):
