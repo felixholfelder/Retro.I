@@ -19,7 +19,8 @@ class RotaryPitch:
         rotary = pyky040.Encoder(CLK=self.CLK_PIN, DT=self.DT_PIN)
         rotary.setup(
             inc_callback=lambda e: self.inc_pitch(on_taskbar_update),
-            dec_callback=lambda e: self.dec_pitch(on_taskbar_update)
+            dec_callback=lambda e: self.dec_pitch(on_taskbar_update),
+            sw_callback=lambda: None,
         )
         rotary_thread = threading.Thread(target=rotary.watch)
         rotary_thread.start()
