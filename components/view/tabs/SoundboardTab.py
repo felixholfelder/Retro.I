@@ -15,19 +15,17 @@ class SoundboardTab:
             [ToastCard().get()],
             expand=True,
             runs_count=5,
+            run_spacing=50,
             max_extent=150,
             spacing=80,
-            run_spacing=50
+            padding=ft.padding.only(bottom=80),
         )
         for i in range(len(sounds.load_sounds())):
             sound = sounds.load_sounds()[i]
-            self.soundboard_grid.controls.append(SoundCard().get(sound))
+            self.soundboard_grid.controls.append(SoundCard(sound))
 
         self.tab = ft.Column(
-            [
-                ft.Text("Soundboard", size=24, weight=ft.FontWeight.BOLD),
-                self.soundboard_grid
-            ],
+            [self.soundboard_grid],
             expand=True,
             visible=False
         )
