@@ -67,7 +67,10 @@ class Theme:
         tabs.append(self.settings_tab.get())
 
         return tabs
-
+    
+    def get_radio_tab_items(self):
+        return ft.Column([self.radio_tab.get_song_info().get(), self.radio_tab.get_grid().get()], expand=True)
+    
     def get(self): return self.theme
     def get_radio_tab(self): return self.radio_tab
     def get_bluetooth_tab(self): return self.bluetooth_tab

@@ -15,12 +15,10 @@ class RadioTab:
         self.radio_grid = RadioGrid(on_strip_run_color, on_theme_change_radio_station, on_theme_stop_radio_station)
         self.song_info_row = SongInfoRow(self.radio_grid)
 
-        self.tab = ft.Container(
-            content=ft.Column([
-                self.song_info_row.get(),
-                ft.Row([self.radio_grid.get()])
-            ]),
-        )
+        self.tab = ft.Column([
+            self.song_info_row.get(),
+            self.radio_grid.get(),
+        ], expand=True)
 
     def update(self):
         self.song_info_row.reload()

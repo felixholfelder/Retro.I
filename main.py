@@ -47,14 +47,15 @@ def main(page: ft.Page):
     page.window.frameless = True
     page.spacing = 0
     page.theme = theme.get()
-    page.scroll = ft.ScrollMode.ADAPTIVE
     page.title = "Retro.I"
 
     button = GpioButton(21, audio_helper.play_toast)
     button.activate()
 
-    page.add(ft.Column(theme.get_tabs()))
-    theme.get_radio_tab().get_grid().reload()
+    for item in theme.get_tabs():
+        page.add(item)
+
+    theme.radio_tab.radio_grid.reload()
     page.update()
 
     RotaryVolume(

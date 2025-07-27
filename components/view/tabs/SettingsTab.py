@@ -27,28 +27,27 @@ class SettingsTab:
         self.info_dialog = SettingsInfoDialog()
         self.credits_dialog = SettingsCreditsDialog()
         
-        self.tab = ft.Container(
-            content=ft.Column(
-                controls=[
-                    ft.Text("Einstellungen", size=24),
-                    ft.GridView(
-                        expand=True,
-                        runs_count=5,
-                        max_extent=150,
-                        child_aspect_ratio=1.0,
-                        spacing=20,
-                        run_spacing=50,
-                        controls=[
-                            SettingsButton().get(ft.icons.POWER_SETTINGS_NEW, "Ausschalten", lambda e: self.shutdown_dialog.open()),
-                            SettingsButton().get(ft.icons.COLOR_LENS, "LED-Streifen", lambda e: self.led_dialog.open()),
-                            SettingsButton().get(ft.icons.SETTINGS_DISPLAY_ROUNDED, "Helligkeit", lambda e: self.brightness_dialog.open()),
-                            SettingsButton().get(ft.icons.INFO, "Info", lambda e: self.info_dialog.open()),
-                            SettingsButton().get(ft.icons.STAR, "Credits", lambda e: self.credits_dialog.open()),
-                        ]
-                    ),
-                ]
-            ),
+        self.tab = ft.Column(
+            controls=[
+                ft.Text("Einstellungen", size=24, weight=ft.FontWeight.BOLD),
+                ft.GridView(
+                    expand=True,
+                    runs_count=5,
+                    max_extent=150,
+                    child_aspect_ratio=1.0,
+                    spacing=20,
+                    run_spacing=50,
+                    controls=[
+                        SettingsButton().get(ft.icons.POWER_SETTINGS_NEW, "Ausschalten", lambda e: self.shutdown_dialog.open()),
+                        SettingsButton().get(ft.icons.COLOR_LENS, "LED-Streifen", lambda e: self.led_dialog.open()),
+                        SettingsButton().get(ft.icons.SETTINGS_DISPLAY_ROUNDED, "Helligkeit", lambda e: self.brightness_dialog.open()),
+                        SettingsButton().get(ft.icons.INFO, "Info", lambda e: self.info_dialog.open()),
+                        SettingsButton().get(ft.icons.STAR, "Credits", lambda e: self.credits_dialog.open()),
+                    ]
+                ),
+            ],
             visible=False,
+            expand=True
         )
 
     def update(self):

@@ -8,9 +8,10 @@ sounds = Sounds()
 
 class SoundboardTab:
     tab = None
+    soundboard_grid = None
 
     def __init__(self):
-        soundboard_grid = ft.GridView(
+        self.soundboard_grid = ft.GridView(
             [ToastCard().get()],
             expand=True,
             runs_count=5,
@@ -20,13 +21,15 @@ class SoundboardTab:
         )
         for i in range(len(sounds.load_sounds())):
             sound = sounds.load_sounds()[i]
-            soundboard_grid.controls.append(SoundCard().get(sound))
+            self.soundboard_grid.controls.append(SoundCard().get(sound))
 
-        self.tab = ft.Container(
-            # TODO - row necessary?
-            content=ft.Column([ft.Row([soundboard_grid])]),
-            visible=False,
-            margin=ft.margin.only(right=75, bottom=75),
+        self.tab = ft.Column(
+            [
+                ft.Text("Soundboard", size=24, weight=ft.FontWeight.BOLD),
+                self.soundboard_grid
+            ],
+            expand=True,
+            visible=False
         )
 
     def update(self):
