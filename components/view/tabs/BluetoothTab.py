@@ -22,16 +22,20 @@ class BluetoothTab:
         self.tab = ft.Container(
             alignment=ft.alignment.center,
             expand=True,
-            content=ft.Column(
-                spacing=50,
-                alignment=ft.MainAxisAlignment.CENTER,
-                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                controls=[
-                    self.btn_toggle_discovery.get(),
+            content=ft.Column([
+                ft.Row(
+                    spacing=50,
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    controls=[
+                        self.btn_toggle_discovery.get(),
+                    ]
+                ),
+                ft.Divider(),
+                ft.Column([
                     ft.Text("Gekoppelte Geräte:", size=20, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.LEFT, expand=True),
                     self.device_connected.get(),
-                ]
-            ),
+                ]),
+            ]),
             visible=False,
         )
 

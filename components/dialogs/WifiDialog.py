@@ -22,19 +22,20 @@ class WifiDialog:
         self.connection_dialog = connection_dialog
 
         self.dialog = ft.AlertDialog(
-            content=ft.Column(
-                width=500,
-                height=500,
-                tight=True,
-                alignment=ft.MainAxisAlignment.CENTER,
-                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                controls=[
-                    ft.Text("Verfügbare Netzwerke:"),
-                    self.loading,
-                    self.not_found,
-                    self.listview,
-                ],
-            ),
+            content=ft.Column([
+                ft.Text("Verfügbare Netzwerke:", size=20, weight=ft.FontWeight.BOLD),
+                ft.Column(
+                    width=500,
+                    expand=True,
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                    controls=[
+                        self.loading,
+                        self.not_found,
+                        self.listview,
+                    ],
+                ),
+            ]),
         )
         PageState.page.add(self.dialog)
 
