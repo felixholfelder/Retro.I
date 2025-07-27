@@ -66,9 +66,7 @@ class BluetoothDeviceConnected:
     def on_device_click(self, device):
         if bluetooth_helper.get_connected_device_mac().upper() == device["mac_address"].upper():
             bluetooth_helper.disconnect(device["mac_address"])
-        else:
-            bluetooth_helper.connect(device["mac_address"])
-            self.on_connected()
+            audio_helper.bluetooth_disconnected()
         
         self.reload_devices()
 

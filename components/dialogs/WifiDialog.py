@@ -1,5 +1,4 @@
 import flet as ft
-from PIL.ImageOps import expand
 
 from components.dialogs.WifiConnectionDialog import WifiConnectionDialog
 from helper.PageState import PageState
@@ -30,6 +29,7 @@ class WifiDialog:
                 alignment=ft.MainAxisAlignment.CENTER,
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                 controls=[
+                    ft.Text("Verfügbare Netzwerke:"),
                     self.loading,
                     self.not_found,
                     self.listview,

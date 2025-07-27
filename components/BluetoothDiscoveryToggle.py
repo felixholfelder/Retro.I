@@ -8,7 +8,13 @@ class BluetoothDiscoveryToggle:
     ico_discovery_status = ft.Icon(ft.icons.BLUETOOTH_DISABLED)
     txt_discovery_status = ft.Text("Bluetooth nicht sichtbar", style=ft.TextStyle(size=20))
 
-    def __init__(self):
+    on_discovery_enabled = None
+    on_discovery_disabled = None
+
+    def __init__(self, on_dicovery_enabled, on_dicovery_disabled):
+        self.on_discovery_enabled = on_dicovery_enabled
+        self.on_discovery_disabled = on_dicovery_disabled
+
         self.btn = ft.FilledButton(
             content=ft.Row(
                 alignment=ft.MainAxisAlignment.CENTER,
@@ -35,6 +41,7 @@ class BluetoothDiscoveryToggle:
         self.ico_discovery_status.update()
         self.btn.update()
 
+        self.on_discovery_enabled()
 
     def disable_discovery(self):
         bluetooth_helper.bluetooth_discovery_off()
@@ -46,6 +53,7 @@ class BluetoothDiscoveryToggle:
         self.ico_discovery_status.update()
         self.btn.update()
 
+        self.on_discovery_disabled()
 
     def toggle_bluetooth_discovery(self):
         discovery_on = bluetooth_helper.is_discovery_on()

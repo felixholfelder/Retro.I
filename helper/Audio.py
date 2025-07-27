@@ -77,6 +77,9 @@ class Audio:
 	def bluetooth_connected(self):
 		self.play_sound(f"{c.system_sound_path()}/bluetooth_connected.mp3")
 
+	def bluetooth_disconnected(self):
+		self.play_sound(f"{c.system_sound_path()}/bluetooth_disconnected.mp3")
+
 	def play_toast(self):
 		toast_src = sounds.get_random_toast()
 		if not self.toast_playing:

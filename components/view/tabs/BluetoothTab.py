@@ -2,11 +2,9 @@ import flet as ft
 import threading
 import time
 
-from components.BluetoothDeviceConnected import BluetoothDeviceConnected, bluetooth_helper
+from components.BluetoothDeviceConnected import BluetoothDeviceConnected
 from components.BluetoothDiscoveryToggle import BluetoothDiscoveryToggle
-from components.dialogs.BluetoothDeviceEditDialog import BluetoothDeviceEditDialog
 from components.view.Taskbar import Taskbar
-
 
 class BluetoothTab:
     tab = None
@@ -18,7 +16,7 @@ class BluetoothTab:
 
     def __init__(self, taskbar: Taskbar):
         self.taskbar = taskbar
-        self.btn_toggle_discovery = BluetoothDiscoveryToggle()
+        self.btn_toggle_discovery = BluetoothDiscoveryToggle(self.start_bluetooth_update_process, self.stop_bluetooth_update_process)
         self.device_connected = BluetoothDeviceConnected(taskbar, self.btn_toggle_discovery.disable_discovery)
 
         self.tab = ft.Container(
@@ -58,6 +56,13 @@ class BluetoothTab:
                 self.update_device_connection = False
             self.device_connected.reload_devices()
             time.sleep(1)
+
+    def start_bluetooth_update_process(self):
+        self.update_device_connection = True
+        self.process_bluetooth_connection()
+
+    def stop_bluetooth_update_process(self):
+        self.update_device_connection = False
 
     def process_bluetooth_connection(self):
         process = threading.Thread(target=self.update_connected_device)
