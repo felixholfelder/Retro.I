@@ -20,7 +20,7 @@ class AudioEffects:
 		subprocess.run(command, stdout=subprocess.DEVNULL)
 
 	def get_config(self):
-		f = open(f"{self.effects_path}.json")
+		f = open(self.effects_path)
 		data = json.load(f)
 		f.close()
 		return data
