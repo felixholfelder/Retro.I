@@ -38,7 +38,6 @@ class SystemHelper:
     def stopp_app(self, _):
         PageState.page.window_destroy()
         time.sleep(0.5)
-        print("Stop App..")
         os._exit(0)
 
     def get_cpu_temp(self):
@@ -66,7 +65,7 @@ class SystemHelper:
 
     def open_keyboard(self):
         self.close_keyboard()
-        os.system("wvkbd-mobintl -L 300")
+        os.system("wvkbd-mobintl -L 230")
 
     def close_keyboard(self):
         os.system("pkill wvkbd-mobintl")

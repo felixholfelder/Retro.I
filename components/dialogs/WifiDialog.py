@@ -59,9 +59,9 @@ class WifiDialog:
         networks = wifi_helper.get_networks()
 
         for n in networks:
-            ico = ft.Icon(ft.icons.DONE, visible=False)
+            ico = ft.Icon(ft.icons.DONE, size=28, visible=False)
             btn = ft.TextButton(
-                content=ft.Container(content=ft.Row(controls=[ico, ft.Text(n)])),
+                content=ft.Container(content=ft.Row(controls=[ico, ft.Text(n, size=16)])),
                 on_click=lambda e, name=n: self.connection_dialog.open(name),
             )
 
