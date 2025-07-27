@@ -5,13 +5,13 @@ from helper.Constants import Constants
 c = Constants()
 
 class AudioEffects:
-	effects_path = f"{c.pwd()}/assets/effects/effects"
+	effects_path = f"{c.pwd()}/assets/effects/effects.json"
 
 	def __init__(self):
 		pass
 
 	def start(self):
-		self.update_effects()
+		self.load_base_effects()
 		command = ['easyeffects', '--gapplication-service']
 		subprocess.run(command, stdout=subprocess.DEVNULL)
 
@@ -38,20 +38,25 @@ class AudioEffects:
 		config['output']['bass_enhancer#0']['amount'] = value
 
 		self.write_config(config)
-		self.update_effects()
+		self.load_effects()
 
 	def update_pitch(self, value):
 		config = self.get_config()
 		config['output']['pitch#0']['semitones'] = value
 
 		self.write_config(config)
-		self.update_effects()
+		self.load_effects()
 
 	def write_config(self, config):
-		with open(f"{self.effects_path}.json", "w") as file:
+		with open(self.effects_path, "w") as file:
 			file_data = config
 			json.dump(file_data, file, indent=4)
 
-	def update_effects(self):
+	def load_base_effects(self):
+		self.update_bass(0)
+		self.update_pitch(0)
+		self.load_effects()
+
+	def load_effects(self):
 		command = ['easyeffects', '-l', self.effects_path]
 		subprocess.run(command, stdout=subprocess.DEVNULL)

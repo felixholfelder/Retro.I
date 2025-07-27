@@ -65,10 +65,10 @@ def main(page: ft.Page):
     RotaryBass(on_taskbar_update=taskbar.update)
     RotaryPitch(on_taskbar_update=taskbar.update)
 
+    audio_effects.start()
     audio_helper.startup_sound()
     
     def background_processes():
-        audio_effects.start()
         while True:
             taskbar.update()
             theme.get_radio_tab().update()
