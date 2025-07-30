@@ -9,27 +9,37 @@ color_helper = ColorHelper()
 
 ICON_SIZE = 28
 
-class NavigationBar:
-    bar = None
+
+class NavigationBar(ft.NavigationBar):
     icon_color = ft.colors.BLACK
 
     def __init__(self, tabs: Tabs):
-        destinations = []
-        destinations.append(
+        super().__init__()
+
+        self.bgcolor = "green"
+        self.on_change = tabs.change_tab
+        self.selected_index = 0
+        self.destinations = self.get_destinations()
+
+    def update_color(self, color):
+        self.bgcolor = color
+        self.icon_color = color_helper.get_navbar_icon_color(color)
+        self.update()
+        for i in self.destinations:
+            i.update()
+
+    def get_destinations(self):
+        destinations = [
             ft.NavigationDestination(
                 label="Radiosender",
                 icon_content=ft.Icon(ft.icons.RADIO_OUTLINED, size=ICON_SIZE, color=self.icon_color),
                 selected_icon_content=ft.Icon(ft.icons.RADIO, size=ICON_SIZE)
-            )
-        )
-
-        destinations.append(
-            ft.NavigationDestination(
+            ), ft.NavigationDestination(
                 label="Bluetooth",
                 icon_content=ft.Icon(ft.icons.BLUETOOTH_OUTLINED, size=ICON_SIZE, color=self.icon_color),
                 selected_icon_content=ft.Icon(ft.icons.BLUETOOTH, size=ICON_SIZE)
             )
-        )
+        ]
 
         if system_helper.is_party_mode():
             destinations.append(
@@ -48,21 +58,4 @@ class NavigationBar:
             )
         )
 
-        self.bar = ft.NavigationBar(
-            bgcolor="green",
-            on_change=tabs.change_tab,
-            selected_index=0,
-            destinations=destinations
-        )
-
-    def update(self, color):
-        self.bar.bgcolor = color
-        self.icon_color = color_helper.get_navbar_icon_color(color)
-        self.bar.update()
-        for i in self.bar.destinations:
-            i.update()
-    
-    def get_bgcolor(self):
-        return self.bar.bgcolor
-
-    def get(self): return self.bar
+        return destinations

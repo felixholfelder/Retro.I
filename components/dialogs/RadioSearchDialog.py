@@ -12,9 +12,8 @@ radio_helper = RadioHelper()
 constants = Constants()
 
 
-class RadioSearchDialog:
+class RadioSearchDialog(ft.AlertDialog):
     text = ft.Text("")
-    dialog = None
 
     loading = ft.ProgressRing(visible=False)
     not_found_text = ft.Text("Kein Radiosender gefunden!", visible=False)
@@ -29,44 +28,45 @@ class RadioSearchDialog:
     station_add_dialog: StationAddDialog = None
 
     def __init__(self, radio_grid: RadioGrid):
+        super().__init__()
+
         self.station_add_dialog = StationAddDialog(radio_grid)
 
-        self.dialog = ft.AlertDialog(
-            content=ft.Column(
-                width=600,
-                expand=True,
-                tight=True,
-                alignment=ft.MainAxisAlignment.CENTER,
-                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                controls=[
-                    ft.Row(
-                        [
-                            self.search_textfield,
-                            ft.FilledButton("Suchen", on_click=lambda e: self.search_stations()),
-                        ],
-                        spacing=ft.MainAxisAlignment.SPACE_BETWEEN
-                    ),
-                    ft.Column(
-                        controls=[
-                            self.loading,
-                            self.not_found_text,
-                            self.listview
-                        ],
-                        expand=True,
-                        alignment=ft.MainAxisAlignment.CENTER
-                    )
-                ]
-            )
+        self.content = ft.Column(
+            width=600,
+            expand=True,
+            tight=True,
+            alignment=ft.MainAxisAlignment.CENTER,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+            controls=[
+                ft.Row(
+                    [
+                        self.search_textfield,
+                        ft.FilledButton("Suchen", on_click=lambda e: self.search_stations()),
+                    ],
+                    spacing=ft.MainAxisAlignment.SPACE_BETWEEN
+                ),
+                ft.Column(
+                    controls=[
+                        self.loading,
+                        self.not_found_text,
+                        self.listview
+                    ],
+                    expand=True,
+                    alignment=ft.MainAxisAlignment.CENTER
+                )
+            ]
         )
-        PageState.page.add(self.dialog)
 
-    def open(self):
-        self.dialog.open = True
-        self.dialog.update()
+        PageState.page.add(self)
+
+    def open_dialog(self):
+        self.open = True
+        self.update()
 
     def close(self):
-        self.dialog.open = False
-        self.dialog.update()
+        self.open = False
+        self.update()
 
     def search_stations(self):
         self.listview.visible = False
@@ -92,7 +92,8 @@ class RadioSearchDialog:
         for el in stations:
             img = ft.Container(ft.Icon(ft.icons.MUSIC_NOTE), width=60, height=60)
             if el["logo"] != "":
-                img = ft.Image(el["logo"], fit=ft.ImageFit.SCALE_DOWN, border_radius=ft.border_radius.all(10), width=50, height=50)
+                img = ft.Image(el["logo"], fit=ft.ImageFit.SCALE_DOWN, border_radius=ft.border_radius.all(10), width=50,
+                               height=50)
 
             element = ft.Container(
                 content=ft.Row(

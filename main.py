@@ -41,8 +41,8 @@ def main(page: ft.Page):
     taskbar = Taskbar()
     theme = Theme(taskbar, strip.run_color)
 
-    page.navigation_bar = theme.get_navbar().get()
-    page.appbar = taskbar.get()
+    page.navigation_bar = theme.navbar
+    page.appbar = taskbar
     page.window.maximized = True
     page.window.frameless = True
     page.spacing = 0
@@ -72,7 +72,7 @@ def main(page: ft.Page):
     def background_processes():
         while True:
             taskbar.update()
-            theme.get_radio_tab().update()
+            theme.get_radio_tab().update_color()
             time.sleep(5)
 
     process = threading.Thread(target=background_processes)

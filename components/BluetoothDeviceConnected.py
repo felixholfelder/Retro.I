@@ -75,6 +75,6 @@ class BluetoothDeviceConnected:
             bluetooth_helper.remove_device(device["mac_address"])
             self.reload_devices()
 
-        self.bluetooth_device_edit_dialog.open(device["name"], on_device_remove)
+        self.bluetooth_device_edit_dialog.open_dialog(device["name"], on_device_remove)
 
     def get(self): return self.listview

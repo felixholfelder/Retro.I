@@ -12,9 +12,7 @@ audio_effects = AudioEffects()
 wifi_helper = WifiHelper()
 bluetooth_helper = BluetoothHelper()
 
-class Taskbar:
-    taskbar = None
-    
+class Taskbar(ft.AppBar):
     wifi_connection_dialog: WifiConnectionDialog = None
     wifi_dialog: WifiDialog = None
 
@@ -31,25 +29,25 @@ class Taskbar:
     txt_pitch = ft.Text(audio_effects.get_pitch_value(), size=18)
 
     def __init__(self):
-        self.taskbar = ft.AppBar(
-            leading=ft.Row([
+        super().__init__()
+
+        self.leading=ft.Row([
                 ft.Row([self.ico_volume, self.txt_volume]),
                 ft.VerticalDivider(),
                 ft.Row([self.ico_bass, self.txt_bass]),
                 ft.VerticalDivider(),
                 ft.Row([self.ico_pitch, self.txt_pitch]),
                 ft.VerticalDivider(),
-            ]),
-            title=ft.Text("Retro.I"),
-            center_title=True,
-            bgcolor=ft.colors.SURFACE_VARIANT,
-            toolbar_height=40,
-            actions=[self.ico_wifi, self.ico_bluetooth],
-        )
+            ])
+        self.title=ft.Text("Retro.I")
+        self.center_title=True
+        self.bgcolor=ft.colors.SURFACE_VARIANT
+        self.toolbar_height=40
+        self.actions=[self.ico_wifi, self.ico_bluetooth]
 
         self.wifi_connection_dialog = WifiConnectionDialog(self.update)
         self.wifi_dialog = WifiDialog(self.wifi_connection_dialog)
-        self.ico_wifi.on_click = lambda e: self.wifi_dialog.open()
+        self.ico_wifi.on_click = lambda e: self.wifi_dialog.open_dialog()
 
     def update(self):
         self.update_volume_icon()
@@ -57,6 +55,7 @@ class Taskbar:
         self.update_pitch()
         self.update_wifi()
         self.update_bluetooth_icon()
+        super().update()
 
     def update_wifi(self):
         self.ico_wifi.name = ft.icons.WIFI if wifi_helper.is_connected() else ft.icons.WIFI_OFF_ROUNDED
@@ -97,5 +96,3 @@ class Taskbar:
     def update_pitch(self):
         self.txt_pitch.value = audio_effects.get_pitch_value()
         self.txt_pitch.update()
-
-    def get(self): return self.taskbar

@@ -9,9 +9,7 @@ system_helper = SystemHelper()
 wifi_helper = WifiHelper()
 
 
-class WifiDialog:
-    dialog = None
-
+class WifiDialog(ft.AlertDialog):
     loading = ft.ProgressRing(visible=False)
     not_found = ft.Text("Keine Netzwerke gefunden", visible=False)
     listview = ft.ListView(spacing=10, padding=20, expand=True, visible=False)
@@ -19,30 +17,30 @@ class WifiDialog:
     connection_dialog: WifiConnectionDialog = None
 
     def __init__(self, connection_dialog: WifiConnectionDialog):
+        super().__init__()
+
         self.connection_dialog = connection_dialog
 
-        self.dialog = ft.AlertDialog(
-            content=ft.Column([
-                ft.Text("Verfügbare Netzwerke:", size=20, weight=ft.FontWeight.BOLD),
-                ft.Column(
-                    width=500,
-                    expand=True,
-                    alignment=ft.MainAxisAlignment.CENTER,
-                    horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                    controls=[
-                        self.loading,
-                        self.not_found,
-                        self.listview,
-                    ],
-                ),
-            ]),
-        )
-        PageState.page.add(self.dialog)
+        self.content = ft.Column([
+            ft.Text("Verfügbare Netzwerke:", size=20, weight=ft.FontWeight.BOLD),
+            ft.Column(
+                width=500,
+                expand=True,
+                alignment=ft.MainAxisAlignment.CENTER,
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                controls=[
+                    self.loading,
+                    self.not_found,
+                    self.listview,
+                ]
+            )
+        ])
+        PageState.page.add(self)
 
-    def open(self):
+    def open_dialog(self):
         self.listview.visible = False
         self.listview.update()
-        
+
         self.not_found.visible = False
         self.not_found.update()
 
@@ -52,8 +50,8 @@ class WifiDialog:
         self.listview.controls = []
         self.listview.update()
 
-        self.dialog.open = True
-        self.dialog.update()
+        self.open = True
+        self.update()
 
         curr_ssid = wifi_helper.get_current_ssid()
         networks = wifi_helper.get_networks()
@@ -62,7 +60,7 @@ class WifiDialog:
             ico = ft.Icon(ft.icons.DONE, size=28, visible=False)
             btn = ft.TextButton(
                 content=ft.Container(content=ft.Row(controls=[ico, ft.Text(n, size=16)])),
-                on_click=lambda e, name=n: self.connection_dialog.open(name),
+                on_click=lambda e, name=n: self.connection_dialog.open_dialog(name),
             )
 
             if curr_ssid == n:
@@ -81,5 +79,5 @@ class WifiDialog:
         self.listview.update()
 
     def close(self):
-        self.dialog.open = False
-        self.dialog.update()
+        self.open = False
+        self.update()

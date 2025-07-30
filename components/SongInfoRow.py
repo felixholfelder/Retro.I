@@ -9,7 +9,7 @@ constants = Constants()
 radio_helper = RadioHelper()
 
 
-class SongInfoRow:
+class SongInfoRow(ft.Container):
     song_info_station = ft.Text("Kein Radiosender ausgewählt", weight=ft.FontWeight.BOLD, size=16)
     song_info_title = ft.Text("", size=16, overflow=ft.TextOverflow.ELLIPSIS, expand=True)
 
@@ -17,24 +17,24 @@ class SongInfoRow:
     radio_search_dialog: RadioSearchDialog = None
 
     def __init__(self, radio_grid: RadioGrid):
+        super().__init__()
+
         self.radio_search_dialog = RadioSearchDialog(radio_grid)
-        self.row = ft.Container(
-            ft.Row([
-                ft.Icon(ft.icons.MUSIC_NOTE, size=28),
-                self.song_info_station,
-                self.song_info_title,
-                ft.TextButton(
-                    "Sendersuche",
-                    icon=ft.icons.SEARCH,
-                    on_click=lambda e: self.radio_search_dialog.open(),
-                    #style=ft.ButtonStyle(
-                    #    text_style=ft.TextStyle(size=16)
-                    #)
-                )
-            ]),
-            border=ft.border.only(bottom=ft.border.BorderSide(1, "gray")),
-            padding=ft.padding.only(bottom=10)
-        )
+        self.content = [
+            ft.Icon(ft.icons.MUSIC_NOTE, size=28),
+            self.song_info_station,
+            self.song_info_title,
+            ft.TextButton(
+                "Sendersuche",
+                icon=ft.icons.SEARCH,
+                on_click=lambda e: self.radio_search_dialog.open_dialog(),
+                # style=ft.ButtonStyle(
+                #    text_style=ft.TextStyle(size=16)
+                # )
+            )
+        ]
+        self.border = ft.border.only(bottom=ft.border.BorderSide(1, "gray")),
+        self.padding = ft.padding.only(bottom=10)
 
     def reload(self):
         try:
@@ -54,10 +54,9 @@ class SongInfoRow:
     def update(self):
         self.song_info_station.update()
         self.song_info_title.update()
+        super().update()
 
     def reset(self):
         self.song_info_station.value = "Kein Radiosender ausgewählt"
         self.song_info_title.value = ""
         self.update()
-
-    def get(self): return self.row
