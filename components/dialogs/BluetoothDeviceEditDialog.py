@@ -11,8 +11,8 @@ class BluetoothDeviceEditDialog(ft.AlertDialog):
         self.title = self.text
         self.actions = [
             ft.FilledButton("Entfernen", on_click=lambda e: self.remove_device())
-        ],
-        self.actions_alignment = ft.MainAxisAlignment.END,
+        ]
+        self.actions_alignment = ft.MainAxisAlignment.END
 
 
     def open_dialog(self, device_name, on_remove):

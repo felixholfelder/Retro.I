@@ -37,12 +37,12 @@ class StationAddDialog(ft.AlertDialog):
             width=500,
             tight=True,
             alignment=ft.MainAxisAlignment.CENTER
-        ),
-        self.title = self.text,
+        )
+        self.title = self.text
         self.actions = [
             self.btn_play,
             self.btn_add,
-        ],
+        ]
         self.actions_alignment = ft.MainAxisAlignment.SPACE_BETWEEN
 
         PageState.page.add(self)
