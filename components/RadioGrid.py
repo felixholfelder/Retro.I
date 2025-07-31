@@ -3,6 +3,7 @@ import flet as ft
 from components.dialogs.StationDeleteDialog import StationDeleteDialog
 from helper.Audio import Audio
 from helper.Constants import Constants
+from helper.PageState import PageState
 from helper.RadioHelper import RadioHelper
 from helper.Stations import Stations
 from helper.Strip import Strip
@@ -27,6 +28,8 @@ class RadioGrid(ft.GridView):
         self.on_strip_run_color = on_strip_run_color
         self.on_theme_change_radio_station = on_theme_change_radio_station
         self.on_theme_stop_radio_station = on_theme_stop_radio_station
+
+        PageState.radio_grid = self.delete_dialog
 
         # Gridview attributes
         self.expand=True,
