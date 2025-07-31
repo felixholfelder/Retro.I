@@ -40,7 +40,7 @@ def main(page: ft.Page):
 
     delete_dialog = StationDeleteDialog()
 
-    PageState.page.add(delete_dialog)
+    page.add(delete_dialog)
 
     strip = Strip()
     taskbar = Taskbar()
