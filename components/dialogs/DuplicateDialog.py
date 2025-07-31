@@ -1,7 +1,5 @@
 import flet as ft
 
-from helper.PageState import PageState
-
 
 class DuplicateDialog(ft.AlertDialog):
     text = ft.Text("")

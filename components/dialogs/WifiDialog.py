@@ -1,7 +1,6 @@
 import flet as ft
 
 from components.dialogs.WifiConnectionDialog import WifiConnectionDialog
-from helper.PageState import PageState
 from helper.SystemHelper import SystemHelper
 from helper.WifiHelper import WifiHelper
 
