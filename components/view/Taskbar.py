@@ -4,6 +4,7 @@ from components.dialogs.WifiConnectionDialog import WifiConnectionDialog
 from components.dialogs.WifiDialog import WifiDialog
 from helper.Audio import Audio
 from helper.AudioEffects import AudioEffects
+from helper.PageState import PageState
 from helper.WifiHelper import WifiHelper
 from helper.BluetoothHelper import BluetoothHelper
 
@@ -48,6 +49,9 @@ class Taskbar(ft.AppBar):
         self.wifi_connection_dialog = WifiConnectionDialog(self.update)
         self.wifi_dialog = WifiDialog(self.wifi_connection_dialog)
         self.ico_wifi.on_click = lambda e: self.wifi_dialog.open_dialog()
+
+        PageState.page.add(self.wifi_connection_dialog)
+        PageState.page.add(self.wifi_dialog)
 
     def update(self):
         self.update_volume_icon()

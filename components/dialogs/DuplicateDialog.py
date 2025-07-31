@@ -15,8 +15,6 @@ class DuplicateDialog(ft.AlertDialog):
         ],
         self.actions_alignment = ft.MainAxisAlignment.END,
 
-        PageState.page.add(self)
-
     def open_dialog(self, name):
         self.text.value = name
         self.text.update()

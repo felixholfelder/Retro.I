@@ -16,8 +16,6 @@ class BluetoothDeviceEditDialog(ft.AlertDialog):
         ],
         self.actions_alignment = ft.MainAxisAlignment.END,
 
-        PageState.page.add(self)
-
 
     def open_dialog(self, device_name, on_remove):
         self.text.value = device_name

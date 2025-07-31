@@ -35,7 +35,6 @@ class WifiConnectionDialog(ft.AlertDialog):
                 ft.Row([ft.Text("Passwort:", size=18), self.password]),
             ]
         )
-        PageState.page.add(self)
 
     def open_dialog(self, name):
         self.ssid.value = name

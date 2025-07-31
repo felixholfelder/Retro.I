@@ -32,7 +32,6 @@ class SettingsBrightnessDialog(ft.AlertDialog):
                 )
             ]
         )
-        PageState.page.add(self)
 
     def slider_changed(self, e):
         system_helper.change_screen_brightness(e.control.value)

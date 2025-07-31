@@ -28,6 +28,7 @@ class StationAddDialog(ft.AlertDialog):
 
         self.radio_grid = radio_grid
         self.duplicateDialog = DuplicateDialog()
+        PageState.page.add(self.duplicateDialog)
 
         self.btn_play = ft.FilledButton("Abspielen", on_click=lambda e: self.play(), disabled=False)
         self.btn_add = ft.FilledButton("Zu Liste hinzufügen", on_click=lambda e: self.add_to_list(), disabled=False)
