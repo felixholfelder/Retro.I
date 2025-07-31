@@ -1,6 +1,5 @@
 import flet as ft
 
-from helper.PageState import PageState
 from helper.Strip import Strip
 
 strip = Strip()

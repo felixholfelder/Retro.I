@@ -1,8 +1,5 @@
 import flet as ft
 
-from helper.PageState import PageState
-
-
 class SettingsCreditsDialog(ft.AlertDialog):
     def __init__(self):
         super().__init__()
