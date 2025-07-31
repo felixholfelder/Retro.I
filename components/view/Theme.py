@@ -30,7 +30,7 @@ class Theme:
     navbar = None
     page: ft.Page = None
 
-    def __init__(self, taskbar: Taskbar, on_strip_run_color, delete_dialog):
+    def __init__(self, taskbar: Taskbar, on_strip_run_color):
         self.page = PageState.page
         self.taskbar = taskbar
 
@@ -42,7 +42,7 @@ class Theme:
             )
         )
 
-        self.radio_tab = RadioTab(on_strip_run_color, self.on_updated_radio_station, self.update, delete_dialog)
+        self.radio_tab = RadioTab(on_strip_run_color, self.on_updated_radio_station, self.update)
         self.bluetooth_tab = BluetoothTab(self.taskbar)
         self.soundboard_tab = SoundboardTab()
         self.settings_tab = SettingsTab()

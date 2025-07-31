@@ -9,10 +9,10 @@ class RadioTab(ft.Column):
     radio_grid: RadioGrid = None
     song_info_row: SongInfoRow = None
 
-    def __init__(self, on_strip_run_color, on_theme_change_radio_station, on_theme_stop_radio_station, delete_dialog):
+    def __init__(self, on_strip_run_color, on_theme_change_radio_station, on_theme_stop_radio_station):
         super().__init__()
 
-        self.radio_grid = RadioGrid(on_strip_run_color, on_theme_change_radio_station, on_theme_stop_radio_station, delete_dialog)
+        self.radio_grid = RadioGrid(on_strip_run_color, on_theme_change_radio_station, on_theme_stop_radio_station)
         self.song_info_row = SongInfoRow(self.radio_grid)
 
         self.controls=[

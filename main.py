@@ -38,13 +38,9 @@ audio_effects = AudioEffects()
 def main(page: ft.Page):
     PageState.page = page
 
-    delete_dialog = StationDeleteDialog()
-
-    page.add(delete_dialog)
-
     strip = Strip()
     taskbar = Taskbar()
-    theme = Theme(taskbar, strip.run_color, delete_dialog)
+    theme = Theme(taskbar, strip.run_color)
 
     page.navigation_bar = theme.navbar
     page.appbar = taskbar
@@ -56,14 +52,9 @@ def main(page: ft.Page):
 
     button = GpioButton(21, audio_helper.play_toast)
     button.activate()
-    
-    page.add(theme.get_tabs()[0])
-    page.add(theme.get_tabs()[1])
-    page.add(theme.get_tabs()[2])
-    page.add(theme.get_tabs()[3])
 
-    #for item in theme.get_tabs():
-    #    page.add(item)
+    for item in theme.get_tabs():
+       page.add(item)
 
     theme.radio_tab.radio_grid.reload()
     page.update()

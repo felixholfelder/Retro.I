@@ -22,13 +22,15 @@ class RadioGrid(ft.GridView):
     on_theme_change_radio_station = None
     on_theme_stop_radio_station = None
 
-    def __init__(self, on_strip_run_color, on_theme_change_radio_station, on_theme_stop_radio_station, delete_dialog: StationDeleteDialog = None):
+    def __init__(self, on_strip_run_color, on_theme_change_radio_station, on_theme_stop_radio_station):
         super().__init__()
 
+        self.delete_dialog = StationDeleteDialog()
         self.on_strip_run_color = on_strip_run_color
         self.on_theme_change_radio_station = on_theme_change_radio_station
         self.on_theme_stop_radio_station = on_theme_stop_radio_station
-        self.delete_dialog = delete_dialog
+
+        PageState.page.add(self.delete_dialog)
 
         # Gridview attributes
         self.expand=True
