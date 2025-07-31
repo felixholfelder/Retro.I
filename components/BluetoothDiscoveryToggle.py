@@ -23,12 +23,12 @@ class BluetoothDiscoveryToggle(ft.FilledButton):
             controls=[
                 self.ico_discovery_status,
                 self.txt_discovery_status
-            ],
+            ]
         )
-        self.style = ft.ButtonStyle(bgcolor=ft.colors.RED),
-        self.width = 500,
-        self.height = 80,
-        self.on_click = lambda e: self.toggle_bluetooth_discovery(),
+        self.style = ft.ButtonStyle(bgcolor=ft.colors.RED)
+        self.width = 500
+        self.height = 80
+        self.on_click = lambda e: self.toggle_bluetooth_discovery()
 
     def enable_discovery(self):
         bluetooth_helper.bluetooth_discovery_on()

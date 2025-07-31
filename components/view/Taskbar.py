@@ -4,14 +4,15 @@ from components.dialogs.WifiConnectionDialog import WifiConnectionDialog
 from components.dialogs.WifiDialog import WifiDialog
 from helper.Audio import Audio
 from helper.AudioEffects import AudioEffects
+from helper.BluetoothHelper import BluetoothHelper
 from helper.PageState import PageState
 from helper.WifiHelper import WifiHelper
-from helper.BluetoothHelper import BluetoothHelper
 
 audio_helper = Audio()
 audio_effects = AudioEffects()
 wifi_helper = WifiHelper()
 bluetooth_helper = BluetoothHelper()
+
 
 class Taskbar(ft.AppBar):
     wifi_connection_dialog: WifiConnectionDialog = None
@@ -19,32 +20,32 @@ class Taskbar(ft.AppBar):
 
     ico_wifi = ft.IconButton(icon=ft.icons.WIFI, icon_size=25, icon_color=ft.colors.GREEN)
     ico_bluetooth = ft.Icon(name=ft.icons.BLUETOOTH, size=25)
-    
+
     ico_volume = ft.Icon(name=ft.icons.VOLUME_UP_ROUNDED, size=25)
     txt_volume = ft.Text(f"{audio_helper.get_volume()}%", size=18)
-    
+
     ico_bass = ft.Icon(name=ft.icons.SURROUND_SOUND, size=25)
     txt_bass = ft.Text(f"+{audio_effects.get_bass_value()} dB", size=18)
-    
+
     ico_pitch = ft.Icon(name=ft.icons.HEIGHT, size=25)
     txt_pitch = ft.Text(audio_effects.get_pitch_value(), size=18)
 
     def __init__(self):
         super().__init__()
 
-        self.leading=ft.Row([
-                ft.Row([self.ico_volume, self.txt_volume]),
-                ft.VerticalDivider(),
-                ft.Row([self.ico_bass, self.txt_bass]),
-                ft.VerticalDivider(),
-                ft.Row([self.ico_pitch, self.txt_pitch]),
-                ft.VerticalDivider(),
-            ])
-        self.title=ft.Text("Retro.I")
-        self.center_title=True
-        self.bgcolor=ft.colors.SURFACE_VARIANT
-        self.toolbar_height=40
-        self.actions=[self.ico_wifi, self.ico_bluetooth]
+        self.leading = ft.Row([
+            ft.Row([self.ico_volume, self.txt_volume]),
+            ft.VerticalDivider(),
+            ft.Row([self.ico_bass, self.txt_bass]),
+            ft.VerticalDivider(),
+            ft.Row([self.ico_pitch, self.txt_pitch]),
+            ft.VerticalDivider(),
+        ])
+        self.title = ft.Text("Retro.I")
+        self.center_title = True
+        self.bgcolor = ft.colors.SURFACE_VARIANT
+        self.toolbar_height = 40
+        self.actions = [self.ico_wifi, self.ico_bluetooth]
 
         self.wifi_connection_dialog = WifiConnectionDialog(self.update)
         self.wifi_dialog = WifiDialog(self.wifi_connection_dialog)
