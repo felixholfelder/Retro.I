@@ -8,6 +8,7 @@ from components.GpioButton import GpioButton
 from components.RotaryBass import RotaryBass
 from components.RotaryPitch import RotaryPitch
 from components.RotaryVolume import RotaryVolume
+from components.dialogs.StationDeleteDialog import StationDeleteDialog
 from components.view.Taskbar import Taskbar
 from components.view.Theme import Theme
 from helper.Audio import Audio
@@ -37,9 +38,13 @@ audio_effects = AudioEffects()
 def main(page: ft.Page):
     PageState.page = page
 
+    delete_dialog = StationDeleteDialog()
+
+    PageState.page.add(delete_dialog)
+
     strip = Strip()
     taskbar = Taskbar()
-    theme = Theme(taskbar, strip.run_color)
+    theme = Theme(taskbar, strip.run_color, delete_dialog)
 
     page.navigation_bar = theme.navbar
     page.appbar = taskbar
