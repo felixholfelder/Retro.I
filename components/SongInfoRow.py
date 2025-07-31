@@ -14,14 +14,13 @@ class SongInfoRow(ft.Container):
     song_info_station = ft.Text("Kein Radiosender ausgewählt", weight=ft.FontWeight.BOLD, size=16)
     song_info_title = ft.Text("", size=16, overflow=ft.TextOverflow.ELLIPSIS, expand=True)
 
-    row = None
     radio_search_dialog: RadioSearchDialog = None
 
     def __init__(self, radio_grid: RadioGrid):
         super().__init__()
 
         self.radio_search_dialog = RadioSearchDialog(radio_grid)
-        self.content = [
+        self.content = ft.Row([
             ft.Icon(ft.icons.MUSIC_NOTE, size=28),
             self.song_info_station,
             self.song_info_title,
@@ -33,7 +32,7 @@ class SongInfoRow(ft.Container):
                 #    text_style=ft.TextStyle(size=16)
                 # )
             )
-        ]
+        ])
         self.border = ft.border.only(bottom=ft.border.BorderSide(1, "gray"))
         self.padding = ft.padding.only(bottom=10)
 

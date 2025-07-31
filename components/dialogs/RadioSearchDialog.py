@@ -38,8 +38,7 @@ class RadioSearchDialog(ft.AlertDialog):
             alignment=ft.MainAxisAlignment.CENTER,
             horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             controls=[
-                ft.Row(
-                    [
+                ft.Row([
                         self.search_textfield,
                         ft.FilledButton("Suchen", on_click=lambda e: self.search_stations()),
                     ],
