@@ -1,8 +1,5 @@
 import flet as ft
 
-from helper.PageState import PageState
-
-
 class StationDeleteDialog(ft.AlertDialog):
 
     def __init__(self, submit_callback):
@@ -14,9 +11,6 @@ class StationDeleteDialog(ft.AlertDialog):
             ft.TextButton("Abbrechen", on_click=lambda e: self.close()),
             ft.FilledButton("Löschen", on_click=lambda e: self.submit(submit_callback))
         ]
-
-        PageState.page.add(self)
-
 
     def submit(self, submit_callback):
         submit_callback()
