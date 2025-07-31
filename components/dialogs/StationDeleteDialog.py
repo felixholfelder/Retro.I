@@ -22,7 +22,7 @@ class StationDeleteDialog(ft.AlertDialog):
         submit_callback()
         self.close()
 
-    def open(self):
+    def open_dialog(self):
         self.open = True # TODO - test with "self.open(True)" or remove function
         self.update()
 
