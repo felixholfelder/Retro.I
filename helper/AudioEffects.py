@@ -1,23 +1,26 @@
 import subprocess
 import json
+import os
 from helper.Constants import Constants
 
 c = Constants()
 
 class AudioEffects:
-	effects_path = f"{c.pwd()}/assets/effects/effects.json"
+	effects_path = f"/home/pi/.config/easyeffects/output/retroi.json"
 
 	def __init__(self):
 		pass
 
 	def start(self):
-		self.load_base_effects()
+		self.stop()
+		self.load_start_effects()
 		command = ['easyeffects', '--gapplication-service']
 		subprocess.run(command, stdout=subprocess.DEVNULL)
 
 	def stop(self):
-		command = ['pkill', 'easyeffects']
+		command = ['pkill', '-f', 'easyeffects']
 		subprocess.run(command, stdout=subprocess.DEVNULL)
+		self.load_start_effects()
 
 	def get_config(self):
 		f = open(self.effects_path)
@@ -52,11 +55,11 @@ class AudioEffects:
 			file_data = config
 			json.dump(file_data, file, indent=4)
 
-	def load_base_effects(self):
+	def load_start_effects(self):
 		self.update_bass(0)
 		self.update_pitch(0)
 		self.load_effects()
 
 	def load_effects(self):
-		command = ['easyeffects', '-l', self.effects_path]
+		command = ['easyeffects', '-l', 'retroi']
 		subprocess.run(command, stdout=subprocess.DEVNULL)

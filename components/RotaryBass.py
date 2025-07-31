@@ -11,7 +11,7 @@ audio_effects = AudioEffects()
 
 class RotaryBass:
     COUNTER = 0
-    BASS_STEP = 1
+    BASS_STEP = 2
     
     CLK_PIN = 4  # PIN 7
     DT_PIN = 14  # PIN 8
@@ -44,9 +44,6 @@ class RotaryBass:
             if value < -20:
                 self.update(-20, on_taskbar_update)
         self.COUNTER -= 1
-
-    def sw_callback(self):
-        pass
 
     def update(self, value, on_taskbar_update):
         audio_effects.update_bass(value)
