@@ -38,7 +38,7 @@ class RadioGrid(ft.GridView):
 
     def open_delete_station_dialog(self, index):
         Constants.current_station_index_to_delete = index
-        self.delete_dialog.open()
+        self.delete_dialog.open_dialog()
 
     def reload(self):
         self.controls.clear()
