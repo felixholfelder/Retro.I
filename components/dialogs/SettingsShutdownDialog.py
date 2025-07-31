@@ -44,8 +44,6 @@ class SettingsShutdownDialog(ft.AlertDialog):
             ]
         )
 
-        PageState.page.add(self)
-
     def open_dialog(self):
         self.open = True
         self.update()

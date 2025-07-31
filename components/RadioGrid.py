@@ -29,7 +29,7 @@ class RadioGrid(ft.GridView):
         self.on_theme_change_radio_station = on_theme_change_radio_station
         self.on_theme_stop_radio_station = on_theme_stop_radio_station
 
-        PageState.radio_grid = self.delete_dialog
+        PageState.page.add(self.delete_dialog)
 
         # Gridview attributes
         self.expand=True,

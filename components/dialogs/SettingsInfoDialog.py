@@ -38,7 +38,6 @@ class SettingsInfoDialog(ft.AlertDialog):
                 ]
             )
         )
-        PageState.page.add(self)
 
     def open_dialog(self):
         self.cpu_temp_text.text = system_helper.get_cpu_temp()

@@ -6,6 +6,7 @@ from components.dialogs.BluetoothDeviceEditDialog import BluetoothDeviceEditDial
 from components.view.Taskbar import Taskbar
 from helper.BluetoothHelper import BluetoothHelper
 from helper.Audio import Audio
+from helper.PageState import PageState
 
 bluetooth_helper = BluetoothHelper()
 audio_helper = Audio()
@@ -21,6 +22,8 @@ class BluetoothDeviceConnected:
         self.taskbar = taskbar
         self.bluetooth_device_edit_dialog = BluetoothDeviceEditDialog()
         self.on_connected = on_connected
+
+        PageState.page.add(self.bluetooth_device_edit_dialog)
 
     def update_connected_device(self):
         name = bluetooth_helper.get_connected_device_name()

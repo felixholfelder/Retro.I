@@ -6,6 +6,7 @@ from components.dialogs.SettingsCreditsDialog import SettingsCreditsDialog
 from components.dialogs.SettingsInfoDialog import SettingsInfoDialog
 from components.dialogs.SettingsLedDialog import SettingsLedDialog
 from components.dialogs.SettingsShutdownDialog import SettingsShutdownDialog
+from helper.PageState import PageState
 from helper.Sounds import Sounds
 
 sounds = Sounds()
@@ -47,6 +48,12 @@ class SettingsTab(ft.Column):
                 ]
             ),
         ]
+
+        PageState.page.add(self.shutdown_dialog)
+        PageState.page.add(self.led_dialog)
+        PageState.page.add(self.brightness_dialog)
+        PageState.page.add(self.info_dialog)
+        PageState.page.add(self.credits_dialog)
 
     def show(self):
         self.visible = True
