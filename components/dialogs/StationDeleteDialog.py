@@ -6,7 +6,7 @@ class StationDeleteDialog(ft.AlertDialog):
     def __init__(self):
         super().__init__()
 
-        self.title = ft.Text(f'Sender löschen?'),
+        self.title = ft.Text("Sender löschen?"),
         self.actions_alignment = ft.MainAxisAlignment.SPACE_BETWEEN,
         self.actions = [
             ft.TextButton("Abbrechen", on_click=lambda e: self.close()),
