@@ -10,7 +10,8 @@ audio_helper = Audio()
 class ToastCard(ft.Column):
     def __init__(self):
         super().__init__()
-        self.width=300,
+
+        self.width=300
         self.controls = [
             ft.Container(
                 alignment=ft.alignment.bottom_center,

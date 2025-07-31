@@ -35,7 +35,7 @@ class BluetoothTab(ft.Container):
             ft.Column([
                 ft.Text("Gekoppelte Geräte:", size=20, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.LEFT, expand=True),
                 self.device_connected.get(),
-            ]),
+            ])
         ])
 
     def show(self):

@@ -31,11 +31,11 @@ class RadioGrid(ft.GridView):
         self.delete_dialog = delete_dialog
 
         # Gridview attributes
-        self.expand=True,
-        self.runs_count=5,
-        self.max_extent=150,
-        self.child_aspect_ratio=1.0,
-        self.spacing=20,
+        self.expand=True
+        self.runs_count=5
+        self.max_extent=150
+        self.child_aspect_ratio=1.0
+        self.spacing=20
         self.run_spacing=50
 
     def open_delete_station_dialog(self, index):

@@ -34,7 +34,7 @@ class SongInfoRow(ft.Container):
                 # )
             )
         ]
-        self.border = ft.border.only(bottom=ft.border.BorderSide(1, "gray")),
+        self.border = ft.border.only(bottom=ft.border.BorderSide(1, "gray"))
         self.padding = ft.padding.only(bottom=10)
 
         PageState.page.add(self.radio_search_dialog)

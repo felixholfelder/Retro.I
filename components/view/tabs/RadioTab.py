@@ -15,10 +15,10 @@ class RadioTab(ft.Column):
         self.radio_grid = RadioGrid(on_strip_run_color, on_theme_change_radio_station, on_theme_stop_radio_station, delete_dialog)
         self.song_info_row = SongInfoRow(self.radio_grid)
 
-        self.controls=([
+        self.controls=[
             self.song_info_row,
             self.radio_grid,
-        ])
+        ]
         self.expand=True
 
     def update(self):

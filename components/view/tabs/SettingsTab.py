@@ -46,7 +46,7 @@ class SettingsTab(ft.Column):
                     SettingsButton(ft.icons.INFO, "Info", lambda e: self.info_dialog.open_dialog()),
                     SettingsButton(ft.icons.STAR, "Credits", lambda e: self.credits_dialog.open_dialog()),
                 ]
-            ),
+            )
         ]
 
         PageState.page.add(self.shutdown_dialog)

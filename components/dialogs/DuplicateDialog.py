@@ -7,7 +7,7 @@ class DuplicateDialog(ft.AlertDialog):
     def __init__(self):
         super().__init__()
 
-        self.title = self.text,
+        self.title = self.text
         self.actions = [
             ft.FilledButton("Ok", on_click=lambda e: self.close_dialog())
         ]
