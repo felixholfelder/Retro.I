@@ -36,8 +36,6 @@ class WifiDialog(ft.AlertDialog):
             )
         ])
 
-        PageState.page.add(self)
-
     def open_dialog(self):
         self.listview.visible = False
         self.listview.update()
