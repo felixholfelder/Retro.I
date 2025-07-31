@@ -8,9 +8,7 @@ system_helper = SystemHelper()
 wifi_helper = WifiHelper()
 
 
-class WifiConnectionDialog:
-    dialog = None
-
+class WifiConnectionDialog(ft.AlertDialog):
     ssid = ft.Text("", size=24, weight=ft.FontWeight.BOLD)
     password = ft.TextField(password=True, autofocus=True,
                             on_focus=lambda e: system_helper.open_keyboard(),
@@ -23,31 +21,31 @@ class WifiConnectionDialog:
     )
 
     def __init__(self, on_connect):
+        super().__init__()
+
         self.btn_connect.on_click = lambda e: self.connect(on_connect)
 
-        self.dialog = ft.AlertDialog(
-            content=ft.Column(
-                width=400,
-                tight=True,
-                alignment=ft.MainAxisAlignment.CENTER,
-                controls=[
-                    self.ssid,
-                    ft.Row([ft.Text("Passwort:", size=18), self.password]),
-                ]
-            ),
-            actions=[self.btn_connect]
+        self.actions = [self.btn_connect]
+        self.content = ft.Column(
+            width=400,
+            tight=True,
+            alignment=ft.MainAxisAlignment.CENTER,
+            controls=[
+                self.ssid,
+                ft.Row([ft.Text("Passwort:", size=18), self.password]),
+            ]
         )
-        PageState.page.add(self.dialog)
+        PageState.page.add(self)
 
-    def open(self, name):
+    def open_dialog(self, name):
         self.ssid.value = name
         self.ssid.update()
-        self.dialog.open = True
-        self.dialog.update()
+        self.open = True
+        self.update()
 
     def close(self):
-        self.dialog.open = False
-        self.dialog.update()
+        self.open = False
+        self.update()
 
     def connect(self, on_connect):
         self.btn_connect.disabled = True

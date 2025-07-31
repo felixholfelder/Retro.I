@@ -54,26 +54,21 @@ class Theme:
 
     def on_updated_radio_station(self, color):
         self.theme.color_scheme_seed = color
-        self.navbar.update(color)
+        self.navbar.update_color(color)
         self.radio_tab.update()
         self.page.update()
 
     def get_tabs(self):
-        tabs = [self.radio_tab.get(), self.bluetooth_tab.get()]
+        tabs = []
+        tabs.append(self.radio_tab)
+        tabs.append(self.bluetooth_tab)
 
         if system_helper.is_party_mode():
-            tabs.append(self.soundboard_tab.get())
+            tabs.append(self.soundboard_tab)
 
-        tabs.append(self.settings_tab.get())
+        tabs.append(self.settings_tab)
 
         return tabs
     
-    def get_radio_tab_items(self):
-        return ft.Column([self.radio_tab.get_song_info().get(), self.radio_tab.get_grid().get()], expand=True)
-    
     def get(self): return self.theme
     def get_radio_tab(self): return self.radio_tab
-    def get_bluetooth_tab(self): return self.bluetooth_tab
-    def get_soundboard_tab(self): return self.soundboard_tab
-    def get_settings_tab(self): return self.settings_tab
-    def get_navbar(self): return self.navbar

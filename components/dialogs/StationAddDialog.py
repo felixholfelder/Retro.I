@@ -59,7 +59,7 @@ class StationAddDialog:
         for el in stations_list:
             if el["name"] == self.station["name"]:
                 found = True
-                self.duplicate_dialog.open(self.station["name"])
+                self.duplicate_dialog.open_dialog(self.station["name"])
                 break
 
         if not found:

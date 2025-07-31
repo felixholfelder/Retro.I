@@ -19,13 +19,16 @@ class SoundCard(ft.Container):
                     ft.Container(
                         alignment=ft.alignment.bottom_center,
                         on_click=lambda e, src=file_name: audio_helper.play_sound_board(src),
-                        content=ft.Image(src=c.get_button_img(), border_radius=ft.border_radius.all(4), fit=ft.ImageFit.FIT_WIDTH),
+                        content=ft.Image(
+                            src=c.get_button_img(),
+                            border_radius=ft.border_radius.all(4),
+                            fit=ft.ImageFit.FIT_WIDTH),
                         height=130,
                     ),
                     ft.Container(
                         ft.Text(name, size=20, text_align=ft.TextAlign.CENTER),
                         width=300,
                     )
-                ],
-            ),
+                ]
+            )
         )

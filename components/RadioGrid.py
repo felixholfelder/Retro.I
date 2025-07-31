@@ -15,38 +15,38 @@ audio_helper = Audio()
 radio_helper = RadioHelper()
 
 
-class RadioGrid:
-    grid = ft.GridView(
-        expand=True,
-        runs_count=5,
-        max_extent=150,
-        child_aspect_ratio=1.0,
-        spacing=20,
-        run_spacing=50
-    )
+class RadioGrid(ft.GridView):
     delete_dialog: StationDeleteDialog = None
-
     on_strip_run_color = None
     on_theme_change_radio_station = None
     on_theme_stop_radio_station = None
 
     def __init__(self, on_strip_run_color, on_theme_change_radio_station, on_theme_stop_radio_station):
+        super().__init__()
         self.delete_dialog = StationDeleteDialog(self.delete_station)
         self.on_strip_run_color = on_strip_run_color
         self.on_theme_change_radio_station = on_theme_change_radio_station
         self.on_theme_stop_radio_station = on_theme_stop_radio_station
+
+        # Gridview attributes
+        self.expand=True,
+        self.runs_count=5,
+        self.max_extent=150,
+        self.child_aspect_ratio=1.0,
+        self.spacing=20,
+        self.run_spacing=50
 
     def open_delete_station_dialog(self, index):
         Constants.current_station_index_to_delete = index
         self.delete_dialog.open()
 
     def reload(self):
-        self.grid.controls.clear()
+        self.controls.clear()
         Constants.indicator_refs = []
 
         for i, station in enumerate(stations_helper.load_radio_stations()):
             Constants.indicator_refs.append(ft.Ref[ft.Container]())
-            self.grid.controls.append(
+            self.controls.append(
                 ft.Stack(
                     alignment=ft.alignment.center,
                     fit=ft.StackFit.EXPAND,
@@ -69,7 +69,7 @@ class RadioGrid:
                     ]
                 )
             )
-        self.grid.update()
+        self.update()
 
     def delete_station(self):
         stations_helper.delete_station(Constants.current_station_index_to_delete)
@@ -115,5 +115,3 @@ class RadioGrid:
             return self.get_logo(station)
 
         return self.get_text(station)
-
-    def get(self): return self.grid

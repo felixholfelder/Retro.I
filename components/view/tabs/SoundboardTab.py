@@ -6,13 +6,14 @@ from helper.Sounds import Sounds
 
 sounds = Sounds()
 
-class SoundboardTab:
-    tab = None
+class SoundboardTab(ft.Column):
     soundboard_grid = None
 
     def __init__(self):
+        super().__init__()
+
         self.soundboard_grid = ft.GridView(
-            [ToastCard().get()],
+            [ToastCard()],
             expand=True,
             runs_count=5,
             run_spacing=50,
@@ -24,21 +25,14 @@ class SoundboardTab:
             sound = sounds.load_sounds()[i]
             self.soundboard_grid.controls.append(SoundCard(sound))
 
-        self.tab = ft.Column(
-            [self.soundboard_grid],
-            expand=True,
-            visible=False
-        )
-
-    def update(self):
-        self.tab.update()
+        self.expand=True
+        self.visible=False
+        self.controls=[self.soundboard_grid]
 
     def show(self):
-        self.tab.visible = True
+        self.visible = True
         self.update()
 
     def hide(self):
-        self.tab.visible = False
+        self.visible = False
         self.update()
-
-    def get(self): return self.tab
