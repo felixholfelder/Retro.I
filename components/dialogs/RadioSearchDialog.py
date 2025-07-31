@@ -108,7 +108,7 @@ class RadioSearchDialog(ft.AlertDialog):
                         )
                     ]
                 ),
-                on_click=lambda e, item=el: self.station_add_dialog.open(item)
+                on_click=lambda e, item=el: self.station_add_dialog.open_dialog(item)
             )
 
             self.listview.controls.append(element)
