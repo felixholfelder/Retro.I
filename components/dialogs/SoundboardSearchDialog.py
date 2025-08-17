@@ -85,31 +85,31 @@ class SoundboardSearchDialog(ft.AlertDialog):
 
         self.listview.controls = []
         for el in sounds:
-        img = ft.Image(f"{constants.pwd()}/assets/buttons/SB_green.png", fit=ft.ImageFit.SCALE_DOWN, border_radius=ft.border_radius.all(10), width=50, height=50)
-        element = ft.Container(
-            content=ft.Row(
-                controls=[
-                    img,
-                    ft.Column(
-                        expand=True,
-                        controls=[
-                            ft.Text(el["title"], weight=ft.FontWeight.BOLD, expand=True),
-                            ft.SubmenuButton(
-                                content=ft.IconButton(icon=ft.icons.MORE_VERT, icon_size=40),
-                                controls=[
-                                    ft.MenuItemButton(
-                                        content=ft.Text("Zu Favoriten hinzufügen"),
-                                        leading=ft.Icon(ft.icons.STAR),
-                                        on_click=lambda e, item=el: self.on_favorite_add(item),
-                                    ),
-                                ],
-                            ),
-                        ]
-                    )
-                ]
-            ),
-            on_click=lambda e, item=el: self.play_sound(item)
-        )
+            img = ft.Image(f"{constants.pwd()}/assets/buttons/SB_green.png", fit=ft.ImageFit.SCALE_DOWN, border_radius=ft.border_radius.all(10), width=50, height=50)
+            element = ft.Container(
+                content=ft.Row(
+                    controls=[
+                        img,
+                        ft.Column(
+                            expand=True,
+                            controls=[
+                                ft.Text(el["title"], weight=ft.FontWeight.BOLD, expand=True),
+                                ft.SubmenuButton(
+                                    content=ft.IconButton(icon=ft.icons.MORE_VERT, icon_size=40),
+                                    controls=[
+                                        ft.MenuItemButton(
+                                            content=ft.Text("Zu Favoriten hinzufügen"),
+                                            leading=ft.Icon(ft.icons.STAR),
+                                            on_click=lambda e, item=el: self.on_favorite_add(item),
+                                        ),
+                                    ],
+                                ),
+                            ]
+                        )
+                    ]
+                ),
+                on_click=lambda e, item=el: self.play_sound(item)
+            )
 
         self.listview.controls.append(element)
 
