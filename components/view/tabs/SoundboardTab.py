@@ -1,6 +1,7 @@
 import flet as ft
 
 from components.SoundCard import SoundCard
+from components.SoundboardSearchBar import SoundboardSearchBar
 from components.ToastCard import ToastCard
 from helper.Sounds import Sounds
 
@@ -25,9 +26,14 @@ class SoundboardTab(ft.Column):
             sound = sounds.load_favorite_sounds()[i]
             self.soundboard_grid.controls.append(SoundCard(sound))
 
+        self.soundboard_search_bar = SoundboardSearchBar(self.soundboard_grid)
+
         self.expand=True
         self.visible=False
-        self.controls=[self.soundboard_grid]
+        self.controls=[
+            self.soundboard_grid,
+            self.soundboard_search_bar,
+        ]
 
     def show(self):
         self.visible = True
