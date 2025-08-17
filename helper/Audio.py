@@ -92,7 +92,10 @@ class Audio:
 			self.toast_playing = False
 	
 	def play_sound_board(self, src):
-		playsound(f"{c.sound_path()}/{src}")
+		if src.startswith("http"):
+			playsound(src)
+		else:
+			playsound(f"{c.sound_path()}/{src}")
 
 	def wait(self):
 		time.sleep(0.5)

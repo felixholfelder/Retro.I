@@ -2,17 +2,26 @@ import json
 import os
 import random
 
+import requests
+
 from helper.Constants import Constants
 
 c = Constants()
 
 class Sounds:
 	last_toast = ""
-	
-	def load_sounds(self):
-		directory = c.sound_path()
-		files = sorted([f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))])
-		return files
+
+	def search_sounds(self, query):
+		response = requests.get(f"https://myinstants-api.vercel.app/search?q={query}")
+		if response.status == 200:
+			return response.data
+
+		return []
+
+	def load_favorite_sounds(self):
+		with open(f"{c.pwd()}/assets/favorite_sounds.json") as file:
+			data = json.load(file)
+			return data
 
 	def load_toasts(self):
 		directory = c.toast_path()

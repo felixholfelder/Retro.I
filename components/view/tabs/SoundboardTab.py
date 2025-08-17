@@ -21,8 +21,8 @@ class SoundboardTab(ft.Column):
             spacing=80,
             padding=ft.padding.only(bottom=80),
         )
-        for i in range(len(sounds.load_sounds())):
-            sound = sounds.load_sounds()[i]
+        for i in range(len(sounds.load_favorite_sounds())):
+            sound = sounds.load_favorite_sounds()[i]
             self.soundboard_grid.controls.append(SoundCard(sound))
 
         self.expand=True
