@@ -1,6 +1,5 @@
 import flet as ft
 
-from components.dialogs.SoundAddDialog import SoundAddDialog
 from helper.Audio import Audio
 from helper.Constants import Constants
 from helper.Sounds import Sounds
