@@ -36,7 +36,8 @@ class SoundboardSearchDialog(ft.AlertDialog):
             alignment=ft.MainAxisAlignment.CENTER,
             horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             controls=[
-                ft.Row([
+                ft.Row(
+                    [
                         self.search_textfield,
                         ft.FilledButton("Suchen", on_click=lambda e: self.search_sounds()),
                     ],
@@ -84,33 +85,38 @@ class SoundboardSearchDialog(ft.AlertDialog):
 
         self.listview.controls = []
         for el in sounds:
-            img = ft.Image(f"{constants.pwd()}/assets/buttons/SB_green.png", fit=ft.ImageFit.SCALE_DOWN, border_radius=ft.border_radius.all(10), width=50, height=50)
-            element = ft.Container(
-                content=ft.Row(
-                    controls=[
-                        img,
-                        ft.Column(
-                            expand=True,
-                            controls=[
-                                ft.Text(el["title"], weight=ft.FontWeight.BOLD, expand=True),
-                                ft.SubmenuButton(
-                                    content=ft.IconButton(icon=ft.icons.MORE_VERT, icon_size=40),
-                                    controls=[
-                                        ft.MenuItemButton(
-                                            content=ft.Text("Zu Favoriten hinzufügen"),
-                                            leading=ft.Icon(ft.icons.STAR),
-                                            on_click=lambda e, item=el: self.on_favorite_add(item),
-                                        ),
-                                    ],
-                                ),
-                            ]
-                        )
-                    ]
-                ),
-                on_click=lambda e, item=el: self.play_sound(item)
+            fav_btn = ft.IconButton(
+                icon=ft.icons.STAR_BORDER,
+                on_click=lambda e, item=el: on_add(item)
             )
+            
+            def on_add(item):
+                #sounds_helper.add_favorite_sound(item)
+                #self.soundboard_grid.update()
+                fav_btn.icon=ft.icons.STAR
+                fav_btn.update()
+                
 
-        self.listview.controls.append(element)
+            img = ft.Image(
+                f"{constants.pwd()}/assets/buttons/SB_Green.png",
+                fit=ft.ImageFit.SCALE_DOWN,
+                border_radius=ft.border_radius.all(10),
+                width=66,
+                height=66
+            )
+            element = ft.Row([
+                ft.Container(
+                    content=ft.Row([
+                        img,
+                        ft.Text(el["title"], weight=ft.FontWeight.BOLD, size=20, expand=True),
+                    ]),
+                    on_click=lambda e, item=el: self.play_sound(item),
+                    expand=True,
+                ),
+                fav_btn
+            ])
+
+            self.listview.controls.append(element)
 
         self.listview.visible = True
         self.listview.update()

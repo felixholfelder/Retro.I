@@ -6,7 +6,7 @@ from components.BluetoothDeviceConnected import BluetoothDeviceConnected
 from components.BluetoothDiscoveryToggle import BluetoothDiscoveryToggle
 from components.view.Taskbar import Taskbar
 
-class BluetoothTab(ft.Container):
+class BluetoothTab(ft.Column):
     taskbar: Taskbar = None
     btn_toggle_discovery = None
     device_connected = None
@@ -23,7 +23,7 @@ class BluetoothTab(ft.Container):
         self.alignment=ft.alignment.center
         self.expand=True
         self.visible=False
-        self.content=ft.Column([
+        self.controls=[
             ft.Row(
                 spacing=50,
                 alignment=ft.MainAxisAlignment.CENTER,
@@ -32,11 +32,9 @@ class BluetoothTab(ft.Container):
                 ]
             ),
             ft.Divider(),
-            ft.Column([
-                ft.Text("Gekoppelte Geräte:", size=20, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.LEFT, expand=True),
-                self.device_connected.get(),
-            ])
-        ])
+            ft.Text("Gekoppelte Geräte:", size=20, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.LEFT),
+            self.device_connected.get(),
+        ]
 
     def show(self):
         self.visible = True

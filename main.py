@@ -34,7 +34,6 @@ audio_helper = Audio()
 page_helper = PageState()
 audio_effects = AudioEffects()
 
-
 def main(page: ft.Page):
     PageState.page = page
 

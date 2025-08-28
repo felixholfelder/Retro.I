@@ -12,10 +12,10 @@ class Sounds:
 	last_toast = ""
 
 	def search_sounds(self, query):
-		response = requests.get(f"https://myinstants-api.vercel.app/search?q={query}")
-		if response.status == 200:
-			return response.data
-
+		response = requests.get(f"https://myinstants-api.vercel.app/search?q={query}").json()
+		if response["status"] == "200":
+			return response["data"]
+		
 		return []
 
 	def add_favorite_sound(self, item):
@@ -24,6 +24,11 @@ class Sounds:
 			file_data.append(item)
 			file.seek(0)
 			json.dump(file_data, file, indent=4)
+	
+	def delete_favorite_sound(self, item):
+		with open(f"{c.pwd()}/assets/favorite_sounds.json", "r+") as file:
+			file_data = json.load(file)
+			file_data.pop(file_data.index(item))
 
 	def load_favorite_sounds(self):
 		with open(f"{c.pwd()}/assets/favorite_sounds.json") as file:

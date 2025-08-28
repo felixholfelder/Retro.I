@@ -31,8 +31,8 @@ class SoundboardTab(ft.Column):
         self.expand=True
         self.visible=False
         self.controls=[
-            self.soundboard_grid,
             self.soundboard_search_bar,
+            self.soundboard_grid,
         ]
 
     def show(self):

@@ -18,6 +18,7 @@ class SoundCard(ft.Container):
                     ft.Container(
                         alignment=ft.alignment.bottom_center,
                         on_click=lambda e, src=sound["mp3"]: audio_helper.play_sound_board(src),
+                        #on_long_press=lambda e, sound=sound: self.delete_favorite_sound(sound),
                         content=ft.Image(
                             src=c.get_button_img(),
                             border_radius=ft.border_radius.all(4),
