@@ -25,12 +25,9 @@ class SongInfoRow(ft.Container):
             self.song_info_station,
             self.song_info_title,
             ft.TextButton(
-                "Sendersuche",
+                text="Sendersuche",
                 icon=ft.icons.SEARCH,
-                on_click=lambda e: self.radio_search_dialog.open_dialog(),
-                # style=ft.ButtonStyle(
-                #    text_style=ft.TextStyle(size=16)
-                # )
+                on_click=lambda e: self.radio_search_dialog.open_dialog()
             )
         ])
         self.border = ft.border.only(bottom=ft.border.BorderSide(1, "gray"))
