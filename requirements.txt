@@ -1,4 +1,4 @@
-flet
+flet==0.24.1
 RPi.GPIO
 pyky040
 adafruit-circuitpython-neopixel
@@ -6,3 +6,12 @@ adafruit-circuitpython-led-animation
 #pybluez
 scikit-learn
 playsound
+python-vlc==3.0.21203
+gpiozero==2.0.1
+pyalsaaudio==0.11.0
+pillow==11.3.0
+CairoSVG==2.8.2
+requests==2.32.5
+playsound3==3.2.6
+netifaces==0.11.0
+rpi-ws281x==5.0.0
