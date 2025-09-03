@@ -1,5 +1,9 @@
 #!/bin/sh
 
+success() {
+  printf "\033[0;32m%s\033[0m\n" "$1"
+}
+
 # System-Einrichtung
 
 # TODO - cooles ASCII-Art zu Beginn :D
@@ -7,7 +11,7 @@
 # Splashscreen entfernen
 printf "Entferne Splashscreen... "
 
-fireware_config_path=/boot/firmware/config.txt
+fireware_config_path="/boot/firmware/config.txt"
 disable_splash_command="disable_splash=1"
 
 firware_config=$(grep "^$disable_splash_command$" "$firmware_config_path")
@@ -17,33 +21,38 @@ if [ "$firmware_config" != "$disable_splash_command" ]; then
   sudo sh -c "echo '$disable_splash' >> fireware_config_path"
 fi
 
-printf "ERFOLGREICH\n"
+success "ERFOLGREICH"
 
 # Plymouth: Bild beim Systemstart ändern (in eigene Datei)
 printf "Plymouth Bild bei Systemstart ändern... "
 
-cp -rf /home/pi/Documents/Retro.I/assets/splashscreen/splash.png /usr/share/plymouth/themes/pix/splash.png
+sudo cp -rf /home/pi/Documents/Retro.I/assets/splashscreen/splash.png /usr/share/plymouth/themes/pix/splash.png
 sudo update-initramfs -u
 
-printf "ERFOLGREICH\n"
+success "ERFOLGREICH"
 
 # Plymouth - Bild beim Shutdown anzeigen
 printf "Plymouth Bild bei Shutdown zeigen... "
 
-sed 's/ExecStart=\/usr\/sbin\/plymouthd --mode=shutdown --attach-to-session/ExecStart=\/usr\/sbin\/plymouthd --mode=reboot --attach-to-session/' /usr/lib/systemd/system/plymouth-poweroff.service
+sed 's/ExecStart=\/usr\/sbin\/plymouthd --mode=shutdown --attach-to-session/ExecStart=\/usr\/sbin\/plymouthd --mode=reboot --attach-to-session/' '/usr/lib/systemd/system/plymouth-poweroff.service'
 
-printf "ERFOLGREICH\n"
+success "ERFOLGREICH"
 
 # Autostart-Datei erstellen
 printf "Erstelle Autostart-Datei... "
+autostart_path="/etc/xdg/autostart/retroi.desktop"
 
-sudo echo "[Desktop Entry]" > /etc/xdg/autostart/retroi.desktop
-sudo echo "Name=Retro.I" >> /etc/xdg/autostart/retroi.desktop
-sudo echo "Type=Application" >> /etc/xdg/autostart/retroi.desktop
-sudo echo "Exec=sh /home/pi/Documents/Retro.I/scripts/start.sh" >> /etc/xdg/autostart/retroi.desktop
-sudo echo "Terminal=true" >> /etc/xdg/autostart/retroi.desktop
+if [ ! -e "$autostart_path" ]; then
+  sudo touch "$autostart_path"
 
-printf "ERFOLGREICH\n"
+  sudo echo "[Desktop Entry]" > $autostart_path
+  sudo echo "Name=Retro.I" >> $autostart_path
+  sudo echo "Type=Application" >> $autostart_path
+  sudo echo "Exec=sh /home/pi/Documents/Retro.I/scripts/start.sh" >> $autostart_path
+  sudo echo "Terminal=true" >> $autostart_path
+fi
+
+success "ERFOLGREICH"
 
 # Taskbar ausblenden
 printf "Taskbar ausblenden... "
@@ -57,28 +66,28 @@ if [ "$wf_panel_config" != "autohide_true" ]; then
   echo "autohide_duration=500" >> wf_panel_path
 fi
 
-printf "ERFOLGREICH\n"
+success "ERFOLGREICH"
 
 # TODO - Hintergrund entfernen
 
 # SSH aktivieren
 printf "Aktiviere SSH... "
 sudo raspi-config nonint do_ssh 0
-printf "ERFOLGREICH\n"
+success "ERFOLGREICH"
 
 # VNC aktivieren
 printf "Aktiviere VNC... "
 sudo raspi-config nonint do_vnc 0
-printf "ERFOLGREICH\n"
+success "ERFOLGREICH"
 
 # SPI aktivieren
 printf "Aktiviere SPI... "
 sudo raspi-config nonint do_spi 0
-printf "ERFOLGREICH\n"
+success "ERFOLGREICH"
 
 # easyeffects installieren
 printf "Installiere easyeffects... "
-sudo apt-get install easyeffects -y
+sudo apt-get install easyeffects -y -qqq
 
 # Fehlenden config order erstellen
 mkdir -p /home/pi/.config/easyeffects/output
@@ -86,14 +95,15 @@ mkdir -p /home/pi/.config/easyeffects/output
 # TODO - easyeffects config nach /home/pi/.config/easyeffects/output/retroi.json kopieren
 sudo cp /home/pi/Documents/Retro.I/assets/effects/effects.json /home/pi/.config/easyeffects/output/retroi.json
 
-printf "ERFOLGREICH\n"
+success "ERFOLGREICH"
 
 # Bildschirm-Tastatur installieren
 printf "Installiere Bildschirmtastatur... "
-sudo apt install wvkbd
-printf "ERFOLGREICH\n"
+sudo apt-get install wvkbd -qq
+success "ERFOLGREICH"
 
-printf "Systemeinrichtung abgeschlossen! Weiter mit App-Einrichtung... "
+success "Systemeinrichtung abgeschlossen!"
+printf "\nWeiter mit App-Einrichtung...\n"
 
 # System-Einrichtung abgeschlossen!
 
@@ -113,33 +123,33 @@ if [ "$bashrc_config" != "autohide_true" ]; then
   echo "source .venv/bin/activate" >> bashrc_path
 fi
 
-printf "ERFOLGREICH\n"
+success "ERFOLGREICH"
 
 # Pakete für alsaaudio installieren
 printf "Installiere Pakete für alsaaudio... "
-sudo apt-get install libasound2-dev -y
-printf "ERFOLGREICH\n"
+sudo apt-get install libasound2-dev -y -qqq
+success "ERFOLGREICH"
 
 # Pakete für flet-ui installieren
 printf "Installiere Pakete für flet-ui... "
 
-sudo apt install libmpv-dev mpv -y
+sudo apt install libmpv-dev mpv -y -qqq
 
 # Symlink erstellen - für flet-ui
-sudo ln -s /usr/lib/aarchlinux-gnu/libmpv.so /usr/lib/aarchlinux-gnu/libmpv.so.1
+sudo ln -s -f /usr/lib/aarch64-linux-gnu/libmpv.so /usr/lib/aarch64-linux-gnu/libmpv.so.1
 
-printf "ERFOLGREICH\n"
+success "ERFOLGREICH"
 
 # TODO - User fragen, wie viele LED's sein LED-Streifen hat
 # -> Mit Hinweis "Wichtig für Animation der Lautstärke"
 
 # pip install -r requirements.txt
 printf "Installiere Python-Pakete... "
-pip install -r requirements.txt
+pip install -r requirements.txt -q
 
-printf "ERFOLGREICH\n"
+success "ERFOLGREICH"
 
-printf "Setup erfolgreich abgeschlossen!"
+success "Setup erfolgreich abgeschlossen!\n"
 
 # TODO - cooles ASCII-Art zum Ende :D
 
