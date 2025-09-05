@@ -5,11 +5,11 @@ RED="\033[0;31m"
 NC="\033[0m"
 
 success() {
-  echo -e "${GREEN}$1${NC}"
+  echo "${GREEN}$1${NC}"
 }
 
 error() {
-  echo -e "${RED}$1${NC}"
+  echo "${RED}$1${NC}"
 }
 
 run_step() {
