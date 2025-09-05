@@ -19,10 +19,15 @@ run_step() {
 
   echo -n "$DESCRIPTION ... "
 
-  if $COMMAND > /dev/null 2>&1; then
+  # Capture output and exit code
+  OUTPUT=$($COMMAND 2>&1)
+  STATUS=$?
+
+  if [ $STATUS -eq 0 ]; then
     success "ERFOLGREICH"
   else
     error "FEHLGESCHLAGEN"
+    echo "↳ $OUTPUT" >&2
   fi
 }
 
@@ -82,9 +87,10 @@ hide_taskbar() {
 
   sudo tee "$wf_panel_path" > /dev/null <<EOF
 # Hide taskbar
+[panel]
 autohide=true
 autohide_duration=500
-
+heightwhenhidden=0
 EOF
 
   # Verify creation
@@ -100,26 +106,66 @@ remove_background_image() {
 }
 
 install_easyeffects() {
+  project_preset="/home/pi/Documents/Retro.I/assets/effects/effects.json"
+  preset="/home/pi/.config/easyeffects/output/retro.json"
+
   sudo apt-get install easyeffects -y -qqq
 
   # Fehlenden config order erstellen
   mkdir -p /home/pi/.config/easyeffects/output
 
-  # TODO - easyeffects config nach /home/pi/.config/easyeffects/output/retroi.json kopieren
-  sudo cp /home/pi/Documents/Retro.I/assets/effects/effects.json /home/pi/.config/easyeffects/output/retroi.json
+  sudo cp "$project_preset" "$preset"
+  sudo chmod 644 "$preset"
+
+  # Verify installation and preset copy
+  if [ ! -f "$preset" ]; then
+    echo "Preset file not found" >&2
+    return 1
+  fi
+
+  if easyeffects -l retroi >/dev/null 2>&1; then
+    echo "Preset retroi detected"
+  else
+    echo "Warning: preset retroi not yet recognized by easyeffects" >&2
+    # Don’t fail the whole step
+  fi
+}
+
+install_screen_keyboard() {
+  sudo apt-get install wvkbd -y -qqq
+
+  # Verify installation
+  wvkbd-mobintl -L 1&
+  pkill wvkbd-mobintl
 }
 
 setup_venv() {
-  python -m venv /home/pi/Documents/Retro.I/.venv
+  VENV_PATH="/home/pi/Documents/Retro.I/.venv"
+  BASHRC_PATH="/home/pi/.bashrc"
 
-  # ~.bashrc anpassen, dass bei jedem Terminalstart .venv gestartet wird
-  bashrc_path=/home/pi/.bashrc
-  bashrc_config=$(grep "^.venv/bin/activate" "$wf_panel_path")
+  # Create virtual environment
+  python -m venv "$VENV_PATH"
 
-  if [ "$bashrc_config" != "autohide_true" ]; then
-    echo "#Activate venv" >> bashrc_path
-    echo "cd /home/pi/Documents/Retro.I" >> bashrc_path
-    echo "source .venv/bin/activate" >> bashrc_path
+  # Ensure the .venv directory exists
+  if [ ! -d "$VENV_PATH" ]; then
+    echo "Virtual environment creation failed!" >&2
+    return 1
+  fi
+
+  # Append venv activation to .bashrc if not already present
+  if ! grep -q "source $VENV_PATH/bin/activate" "$BASHRC_PATH"; then
+    cat <<'EOF' >> "$BASHRC_PATH"
+
+# venv for Retro.I
+cd /home/pi/Documents/Retro.I
+source /home/pi/Documents/Retro.I/.venv/bin/activate
+EOF
+  fi
+
+  # Verify that the snippet was added
+  if ! grep -q "source $VENV_PATH/bin/activate" "$BASHRC_PATH"; then
+    echo "Activating venv in .bashrc failed!" >&2
+    return 1
   fi
 }
 
@@ -143,13 +189,13 @@ install_python_packages() {
 #run_step "Entferne Splashscreen" remove_splashscreen
 #run_step "Plymouth Bild bei Systemstart ändern" change_plymouth_pic
 #run_step "Erstelle Autostart-Datei" create_autostart_file
-run_step "Taskbar ausblenden" hide_taskbar
+#run_step "Taskbar ausblenden" hide_taskbar
 #run_step "Hintergrund entfernen" remove_background_image
 #run_step "Aktiviere SSH" sudo raspi-config nonint do_ssh 0
 #run_step "Aktiviere VNC" sudo raspi-config nonint do_vnc 0
 #run_step "Aktiviere SPI" sudo raspi-config nonint do_spi 0
 #run_step "Installiere easyeffects" install_easyeffects
-#run_step "Installiere Bildschirmtastatur" sudo apt-get install wvkbd -qq#
+#run_step "Installiere Bildschirmtastatur" install_screen_keyboard
 
 success "Systemeinrichtung abgeschlossen!"
 printf "\nWeiter mit App-Einrichtung...\n"
@@ -161,7 +207,7 @@ printf "\nWeiter mit App-Einrichtung...\n"
 # TODO - User fragen, wie viele LED's sein LED-Streifen hat
 # -> Mit Hinweis "Wichtig für Animation der Lautstärke"
 
-#run_step "Installiere Python-Pakete" install_python_packages
+run_step "Installiere Python-Pakete" install_python_packages
 
 success "Setup erfolgreich abgeschlossen!\n"
 
