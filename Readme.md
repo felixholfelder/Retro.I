@@ -1,11 +1,11 @@
 # Retro.I
 Ein Projekt der FWI1 des BSZ-Wiesau\
-Einem Radio aus den 1950er/1960er Jahren wird neues Leben eingehaucht!\
+Einem **Grundig Type 5088**, Baujahr **1957/1958**, wird neues Leben eingehaucht!\
 Dazu werden folgende Technologien verwendet:
 * Raspberry PI 4 (4GB)
 * Python
-* Circuitpython
 * Flet
+* easyeffects
 
 Folgende Hardware wurde verwendet:
 * WS2812B LED-Streifen
@@ -13,10 +13,16 @@ Folgende Hardware wurde verwendet:
 * 4 Passiv-Lautsprecher
 * Touch-Display
 
-## How to
-Der Radio wurde zu einem Internetradio umgebaut. Die Auswahl der Radiosender erfolgt über ein Touch-Display, welches oben auf dem Radio eingelassen wurde.
+## Setup
+Zum Aufsetzen des Radio's einfach das:
+### Projekt klonen
+```commandline
+git clone https://github.com/felixholfelder/Retro.I.git
+```
 
-## Konfigurationen
+### `Setup.sh` ausführen
+
+
 ## Retro.I Image beim Start
 Für ein eigenes Bild wird die Bibliothek `Plymouth` verwendet!
 Beim Start wird ein Bild angezeigt. Das Bild liegt unter `/usr/share/plymouth/themes/pix/splash.png` und hat die exakte Größe für das Touch Display.

@@ -1,15 +1,15 @@
-#!/bin/sh
+#!/bin/bash
 
 GREEN="\033[0;32m"
 RED="\033[0;31m"
 NC="\033[0m"
 
 success() {
-  echo "${GREEN}$1${NC}"
+  echo -e "${GREEN}$1${NC}"
 }
 
 error() {
-  echo "${RED}$1${NC}"
+  echo -e "${RED}$1${NC}"
 }
 
 run_step() {
@@ -48,24 +48,8 @@ remove_splashscreen() {
   fi
 }
 
-change_plymouth_pic() {
-  plymouth_shutdown_file="/usr/lib/systemd/system/plymouth-poweroff.service"
-  replacement="--mode=reboot"
-
-  sudo cp -rf /home/pi/Documents/Retro.I/assets/splashscreen/splash.png /usr/share/plymouth/themes/pix/splash.png
-  sudo update-initramfs -u
-
-  sudo sed -i "s/--mode=shutdown/$replacement/" "$plymouth_shutdown_file" > /dev/null 2>&1
-
-  if ! grep -- "$replacement" "$plymouth_shutdown_file"; then
-    echo "Shutdown-Bild konnte nicht ausgetauscht werden!" >&2
-    return 1
-  fi
-}
-
 create_autostart_file() {
   autostart_path="/etc/xdg/autostart/retroi.desktop"
-  header="[Desktop Entry]"
 
   sudo tee "$autostart_path" > /dev/null <<EOF
 [Desktop Entry]
@@ -102,6 +86,24 @@ EOF
 
 remove_background_image() {
   pcmanfm --set-wallpaper "" --wallpaper-mode=color
+
+  CONFIG_FILES=$(find ~/.config/pcmanfm -type f -name "desktop-items-*.conf" 2>/dev/null)
+
+  if [ -z "$CONFIG_FILES" ]; then
+    echo "No pcmanfm desktop config files found." >&2
+    return 1
+  fi
+
+  for CONFIG_FILE in $CONFIG_FILES; do
+    # Set background color to black
+    if grep -q "^desktop_bg=" "$CONFIG_FILE"; then
+      sed -i 's/^desktop_bg=.*/desktop_bg=#000000/' "$CONFIG_FILE"
+    else
+      echo "desktop_bg=#000000" >> "$CONFIG_FILE"
+    fi
+  done
+
+  pcmanfm --reconfigure
 }
 
 remove_trash_basket() {
@@ -134,19 +136,19 @@ remove_trash_basket() {
     fi
   done
 
-    # Reload pcmanfm so changes take effect
-    if command -v pcmanfm >/dev/null 2>&1; then
-      pcmanfm --reconfigure || {
-        echo "Warning: Could not reload pcmanfm automatically" >&2
-      }
-    fi
+  # Reload pcmanfm so changes take effect
+  if command -v pcmanfm >/dev/null 2>&1; then
+    pcmanfm --reconfigure || {
+      echo "Warning: Could not reload pcmanfm automatically" >&2
+    }
+  fi
 
-  return 0
+  pcmanfm --reconfigure
 }
 
 install_easyeffects() {
   project_preset="/home/pi/Documents/Retro.I/assets/effects/effects.json"
-  preset="/home/pi/.config/easyeffects/output/retro.json"
+  preset="/home/pi/.config/easyeffects/output/retroi.json"
 
   sudo apt-get install easyeffects -y -qqq
 
@@ -154,7 +156,7 @@ install_easyeffects() {
   mkdir -p /home/pi/.config/easyeffects/output
 
   sudo cp "$project_preset" "$preset"
-  sudo chmod 644 "$preset"
+  sudo chmod 777 "$preset"
 
   # Verify installation and preset copy
   if [ ! -f "$preset" ]; then
@@ -220,37 +222,75 @@ setup_fletui() {
 }
 
 install_python_packages() {
-  pip install -r requirements.txt -q
+  source /home/pi/Documents/Retro.I/.venv/bin/activate && pip install -r requirements.txt -q
 }
 
-# TODO - cooles ASCII-Art zu Beginn :D
+print_ascii_art() {
+  echo "
+ _______  _______ _________ _______  _______    _________
+(  ____ )(  ____ \\__   __/(  ____ )(  ___  )   \__   __/
+| (    )|| (    \/   ) (   | (    )|| (   ) |      ) (
+| (____)|| (__       | |   | (____)|| |   | |      | |
+|     __)|  __)      | |   |     __)| |   | |      | |
+| (\ (   | (         | |   | (\ (   | |   | |      | |
+| ) \ \__| (____/\   | |   | ) \ \__| (___) | _ ___) (___
+|/   \__/(_______/   )_(   |/   \__/(_______)(_)\_______/
+                                                                 "
+}
 
-#run_step "Entferne Splashscreen" remove_splashscreen
-#run_step "Plymouth Bild bei Systemstart ändern" change_plymouth_pic
-#run_step "Erstelle Autostart-Datei" create_autostart_file
-#run_step "Taskbar ausblenden" hide_taskbar
-#run_step "Hintergrund entfernen" remove_background_image
+clear
+
+print_ascii_art
+echo -e "Sollte dieses Setup-Script bei einem Schritt fehlschlagen, kannst du im Projekt in der SETUP.md nachschlagen.\n\n"
+read -p "Drücke <ENTER> um das Setup zu beginnen..."
+
+run_step "Entferne Splashscreen" remove_splashscreen
+run_step "System-Splashscreen ändern" ./update-system-splash.sh
+run_step "Erstelle Autostart-Datei" create_autostart_file
+run_step "Taskbar ausblenden" hide_taskbar
+run_step "Hintergrund entfernen" remove_background_image
 run_step "Mülleimer entfernen" remove_trash_basket
-#run_step "Aktiviere SSH" sudo raspi-config nonint do_ssh 0
-#run_step "Aktiviere VNC" sudo raspi-config nonint do_vnc 0
-#run_step "Aktiviere SPI" sudo raspi-config nonint do_spi 0
-#run_step "Installiere easyeffects" install_easyeffects
-#run_step "Installiere Bildschirmtastatur" install_screen_keyboard
+run_step "Aktiviere SSH" sudo raspi-config nonint do_ssh 0
+run_step "Aktiviere VNC" sudo raspi-config nonint do_vnc 0
+run_step "Aktiviere SPI" sudo raspi-config nonint do_spi 0
+run_step "Installiere easyeffects" install_easyeffects
+run_step "Installiere Bildschirmtastatur" install_screen_keyboard
 
 success "Systemeinrichtung abgeschlossen!"
 printf "\nWeiter mit App-Einrichtung...\n"
 
-#run_step "VENV einrichten" setup_venv
-#run_step "Installiere Pakete für alsaaudio" setup_alsaaudio
-#run_step "Installiere Pakete für flet-ui" setup_fletui
+run_step "VENV einrichten" setup_venv
+run_step "Installiere Pakete für alsaaudio" setup_alsaaudio
+run_step "Installiere Pakete für flet-ui" setup_fletui
 
 # TODO - User fragen, wie viele LED's sein LED-Streifen hat
 # -> Mit Hinweis "Wichtig für Animation der Lautstärke"
 
 run_step "Installiere Python-Pakete" install_python_packages
 
-success "Setup erfolgreich abgeschlossen!\n"
+success "Setup erfolgreich abgeschlossen!\n\n"
 
-# TODO - cooles ASCII-Art zum Ende :D
+print_ascii_art
+
+
+echo "Retro.I neustarten, um Setup abzuschließen..."
+
+while true; do
+  read -p "Retro.I neustarten? [J]a, [N]ein: " choice
+  case "$choice" in
+    j|J )
+      sudo reboot
+      break
+      ;;
+    n|N )
+      echo "Kein Neustart."
+      break
+      ;;
+    * )
+      echo "Bitte gib entweder \"J\" oder \"N\" ein!"
+      ;;
+  esac
+done
+
 
 # App-Einrichtung abgeschlossen!
