@@ -101,8 +101,47 @@ EOF
 }
 
 remove_background_image() {
-  # TODO - Hintergrund entfernen
-  echo ""
+  pcmanfm --set-wallpaper "" --wallpaper-mode=color
+}
+
+remove_trash_basket() {
+  CONFIG_FILES=$(find ~/.config/pcmanfm -type f -name "desktop-items-*.conf" 2>/dev/null)
+
+  if [ -z "$CONFIG_FILES" ]; then
+    echo "No pcmanfm desktop config files found." >&2
+    return 1
+  fi
+
+  for CONFIG_FILE in $CONFIG_FILES; do
+    echo "Processing $CONFIG_FILE"
+
+    # Make a backup first
+    cp "$CONFIG_FILE" "$CONFIG_FILE.bak"
+
+    # Ensure section exists and disable trash
+    for key in show_trash show_home show_documents show_mounts; do
+      if grep -q "^$key=" "$CONFIG_FILE"; then
+        sed -i "s/^$key=.*/$key=0/" "$CONFIG_FILE"
+      else
+        echo "$key=0" >> "$CONFIG_FILE"
+      fi
+    done
+
+    # Verify the change
+    if ! grep -q "^show_trash=0" "$CONFIG_FILE"; then
+      echo "Failed to update $CONFIG_FILE" >&2
+      return 1
+    fi
+  done
+
+    # Reload pcmanfm so changes take effect
+    if command -v pcmanfm >/dev/null 2>&1; then
+      pcmanfm --reconfigure || {
+        echo "Warning: Could not reload pcmanfm automatically" >&2
+      }
+    fi
+
+  return 0
 }
 
 install_easyeffects() {
@@ -191,6 +230,7 @@ install_python_packages() {
 #run_step "Erstelle Autostart-Datei" create_autostart_file
 #run_step "Taskbar ausblenden" hide_taskbar
 #run_step "Hintergrund entfernen" remove_background_image
+run_step "Mülleimer entfernen" remove_trash_basket
 #run_step "Aktiviere SSH" sudo raspi-config nonint do_ssh 0
 #run_step "Aktiviere VNC" sudo raspi-config nonint do_vnc 0
 #run_step "Aktiviere SPI" sudo raspi-config nonint do_spi 0
