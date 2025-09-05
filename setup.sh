@@ -28,46 +28,69 @@ run_step() {
 
 # System-Einrichtung
 remove_splashscreen() {
-  fireware_config_path="/boot/firmware/config.txt"
+  firmware_config_path="/boot/firmware/config.txt"
   disable_splash_command="disable_splash=1"
 
-  if ! grep -qxF "$disable_splash_command" "$firmware_config_path"; then
-    sudo sh -c "echo '# Disable splashscreen' >> '$fireware_config_path'"
-    sudo sh -c "echo '$disable_splash_command' >> '$fireware_config_path'"
+  # Check if file exists
+  if [ ! -f "$firmware_config_path" ]; then
+    echo "Config file not found: $firmware_config_path" >&2
+    return 1
+  fi
+
+  if ! grep -- "$disable_splash_command" "$firmware_config_path"; then
+    sudo sh -c "echo '# Disable splashscreen' >> '$firmware_config_path'"
+    sudo sh -c "echo '$disable_splash_command' >> '$firmware_config_path'"
   fi
 }
 
 change_plymouth_pic() {
+  plymouth_shutdown_file="/usr/lib/systemd/system/plymouth-poweroff.service"
+  replacement="--mode=reboot"
+
   sudo cp -rf /home/pi/Documents/Retro.I/assets/splashscreen/splash.png /usr/share/plymouth/themes/pix/splash.png
   sudo update-initramfs -u
-}
 
-show_plymouth_pic_on_shutdown() {
-  sudo sed -i 's/--mode=shutdown/--mode=reboot/' /usr/lib/systemd/system/plymouth-poweroff.service > /dev/null 2>&1
+  sudo sed -i "s/--mode=shutdown/$replacement/" "$plymouth_shutdown_file" > /dev/null 2>&1
+
+  if ! grep -- "$replacement" "$plymouth_shutdown_file"; then
+    echo "Shutdown-Bild konnte nicht ausgetauscht werden!" >&2
+    return 1
+  fi
 }
 
 create_autostart_file() {
   autostart_path="/etc/xdg/autostart/retroi.desktop"
+  header="[Desktop Entry]"
 
-  if [ ! -e "$autostart_path" ]; then
-    sudo touch "$autostart_path"
+  sudo tee "$autostart_path" > /dev/null <<EOF
+[Desktop Entry]
+Name=Retro.I
+Type=Application
+Exec=sh -c '/home/pi/Documents/Retro.I/scripts/start.sh >> /home/pi/autostart.log 2>&1'
+Terminal=true
+EOF
 
-    sudo echo "[Desktop Entry]" > $autostart_path
-    sudo echo "Name=Retro.I" >> $autostart_path
-    sudo echo "Type=Application" >> $autostart_path
-    sudo echo "Exec=sh /home/pi/Documents/Retro.I/scripts/start.sh" >> $autostart_path
-    sudo echo "Terminal=true" >> $autostart_path
+  # Verify creation
+  if ! grep -q -- "^\[Desktop Entry\]" "$autostart_path"; then
+    echo "Autostart file could not be created correctly!" >&2
+    return 1
   fi
 }
 
 hide_taskbar() {
   wf_panel_path=/home/pi/.config/wf-panel-pi.ini
-  wf_panel_config=$(grep "^autohide=true$" "$wf_panel_path")
 
-  if [ "$wf_panel_config" != "autohide_true" ]; then
-    echo "#Hide taskbar" >> wf_panel_path
-    echo "autohide=true" >> wf_panel_path
-    echo "autohide_duration=500" >> wf_panel_path
+  sudo tee "$wf_panel_path" > /dev/null <<EOF
+# Hide taskbar
+autohide=true
+autohide_duration=500
+
+EOF
+
+  # Verify creation
+  if ! grep -q -- "autohide=true" "$wf_panel_path"; then
+    echo "Hiding taskbar failed!" >&2
+    return 1
   fi
 }
 
@@ -117,58 +140,28 @@ install_python_packages() {
 
 # TODO - cooles ASCII-Art zu Beginn :D
 
-# Splashscreen entfernen
-run_step "Entferne Splashscreen" remove_splashscreen
-
-# Plymouth: Bild beim Systemstart ändern (in eigene Datei)
-run_step "Plymouth Bild bei Systemstart ändern" change_plymouth_pic
-
-# Plymouth - Bild beim Shutdown anzeigen
-run_step "Plymouth Bild bei Shutdown zeigen" show_plymouth_pic_on_shutdown
-
-# Autostart-Datei erstellen
-run_step "Erstelle Autostart-Datei" create_autostart_file
-
-# Taskbar ausblenden
+#run_step "Entferne Splashscreen" remove_splashscreen
+#run_step "Plymouth Bild bei Systemstart ändern" change_plymouth_pic
+#run_step "Erstelle Autostart-Datei" create_autostart_file
 run_step "Taskbar ausblenden" hide_taskbar
+#run_step "Hintergrund entfernen" remove_background_image
+#run_step "Aktiviere SSH" sudo raspi-config nonint do_ssh 0
+#run_step "Aktiviere VNC" sudo raspi-config nonint do_vnc 0
+#run_step "Aktiviere SPI" sudo raspi-config nonint do_spi 0
+#run_step "Installiere easyeffects" install_easyeffects
+#run_step "Installiere Bildschirmtastatur" sudo apt-get install wvkbd -qq#
 
-run_step "Hintergrund entfernen" remove_background_image
-
-# SSH aktivieren
-run_step "Aktiviere SSH" sudo raspi-config nonint do_ssh 0
-
-# VNC aktivieren
-run_step "Aktiviere VNC" sudo raspi-config nonint do_vnc 0
-
-# SPI aktivieren
-run_step "Aktiviere SPI" sudo raspi-config nonint do_spi 0
-
-# easyeffects installieren
-run_step "Installiere easyeffects" install_easyeffects
-
-# Bildschirm-Tastatur installieren
-run_step "Installiere Bildschirmtastatur" sudo apt-get install wvkbd -qq
-
-# System-Einrichtung abgeschlossen!
 success "Systemeinrichtung abgeschlossen!"
-
-# Weiter mit App-Einrichtung:
 printf "\nWeiter mit App-Einrichtung...\n"
 
-# .venv einrichten (python -m venv /home/pi/Documents/Retro.I/.venv)
-run_step "VENV einrichten" setup_venv
-
-# Pakete für alsaaudio installieren
-run_step "Installiere Pakete für alsaaudio" setup_alsaaudio
-
-# Pakete für flet-ui installieren
-run_step "Installiere Pakete für flet-ui" setup_fletui
+#run_step "VENV einrichten" setup_venv
+#run_step "Installiere Pakete für alsaaudio" setup_alsaaudio
+#run_step "Installiere Pakete für flet-ui" setup_fletui
 
 # TODO - User fragen, wie viele LED's sein LED-Streifen hat
 # -> Mit Hinweis "Wichtig für Animation der Lautstärke"
 
-# pip install -r requirements.txt
-run_step "Installiere Python-Pakete" install_python_packages
+#run_step "Installiere Python-Pakete" install_python_packages
 
 success "Setup erfolgreich abgeschlossen!\n"
 

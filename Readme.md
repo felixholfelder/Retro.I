@@ -36,7 +36,7 @@ Der Mode muss von `shutdown` zu `reboot` geändert werden!
 <hr>
 
 ## Taskbar ausblenden
-Um die Taskbar auszublenden müssen die folgenden Zeilen in der Datei `/home/pi/.config/wf-panel-pi.ini` hinzugefügt werden:\
+Um die Taskbar auszublenden müssen die folgenden Zeilen in der Datei `/home/pi/.config/wf-panel-pi.ini` hinzugefügt werden:
 ```
 autohide=true
 autohide_duration=500
