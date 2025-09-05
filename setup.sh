@@ -2,15 +2,14 @@
 
 GREEN="\033[0;32m"
 RED="\033[0;31m"
-CHECK_MARK="\xE2\x9C\x94"
-CROSS_MARK="\xE2\x9D\x8C"
+NC="\033[0m"
 
 success() {
-  printf "$GREEN $CHECK_MARK %s $GREEN" "$1"
+  echo -e "${GREEN}$1${NC}"
 }
 
 error() {
-  printf "$RED $CROSS_MARK %s $RED" "$1"
+  echo -e "${RED}$1${NC}"
 }
 
 run_step() {
