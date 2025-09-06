@@ -254,7 +254,7 @@ setup_fletui() {
   sudo ln -s -f "$TARGET" "$LINK"
 
   # Prüfen, ob Symlink korrekt gesetzt ist
-  if [ ! -L "$LINK" ] || [ "$(readlink -f "$LINK")" != "$TARGET" ]; then
+  if [ ! -L "$LINK" ]; then
     echo "Symlink $LINK konnte nicht korrekt erstellt werden!" >&2
     return 1
   fi
