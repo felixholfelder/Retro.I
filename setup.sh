@@ -12,20 +12,42 @@ error() {
   echo -e "${RED}$1${NC}"
 }
 
+spinner() {
+  local pid=$1
+  local delay=0.1
+  local spinstr='|/-\'
+  while kill -0 $pid 2>/dev/null; do
+    for i in $(seq 0 3); do
+      printf "\r%s ... (%c)" "$DESCRIPTION" "${spinstr:$i:1}"
+      sleep $delay
+    done
+  done
+  printf "\r%s ...     " "$DESCRIPTION"  # overwrite spinner with spaces
+}
+
 run_step() {
   DESCRIPTION="$1"
   shift
   COMMAND="$@"
 
-  echo -n "$DESCRIPTION ... "
+  # Run command in background, capture stdout+stderr
+  OUTPUT_FILE=$(mktemp)
+  ($COMMAND >"$OUTPUT_FILE" 2>&1) &
+  cmd_pid=$!
 
-  # Capture output and exit code
-  OUTPUT=$($COMMAND 2>&1)
+  # Show spinner while command runs
+  spinner $cmd_pid
+  wait $cmd_pid
   STATUS=$?
 
+  OUTPUT=$(cat "$OUTPUT_FILE")
+  rm "$OUTPUT_FILE"
+
   if [ $STATUS -eq 0 ]; then
+    printf "\r%s ... " "$DESCRIPTION"
     success "ERFOLGREICH"
   else
+    printf "\r%s ... " "$DESCRIPTION"
     error "FEHLGESCHLAGEN"
     echo "↳ $OUTPUT" >&2
   fi
@@ -215,10 +237,27 @@ setup_alsaaudio() {
 }
 
 setup_fletui() {
-  sudo apt install libmpv-dev mpv -y -qqq
+  if ! sudo apt-get install libmpv-dev mpv -y -qqq; then
+    echo "Installation von libmpv-dev/mpv fehlgeschlagen!" >&2
+    return 1
+  fi
 
-  # Symlink erstellen - für flet-ui
-  sudo ln -s -f /usr/lib/aarch64-linux-gnu/libmpv.so /usr/lib/aarch64-linux-gnu/libmpv.so.1
+  # Symlink erstellen
+  TARGET="/usr/lib/aarch64-linux-gnu/libmpv.so"
+  LINK="/usr/lib/aarch64-linux-gnu/libmpv.so.1"
+
+  if [ ! -f "$TARGET" ]; then
+    echo "Zielbibliothek $TARGET existiert nicht!" >&2
+    return 1
+  fi
+
+  sudo ln -s -f "$TARGET" "$LINK"
+
+  # Prüfen, ob Symlink korrekt gesetzt ist
+  if [ ! -L "$LINK" ] || [ "$(readlink -f "$LINK")" != "$TARGET" ]; then
+    echo "Symlink $LINK konnte nicht korrekt erstellt werden!" >&2
+    return 1
+  fi
 }
 
 install_python_packages() {
@@ -227,14 +266,14 @@ install_python_packages() {
 
 print_ascii_art() {
   echo "
- _______  _______ _________ _______  _______    _________
-(  ____ )(  ____ \\__   __/(  ____ )(  ___  )   \__   __/
-| (    )|| (    \/   ) (   | (    )|| (   ) |      ) (
-| (____)|| (__       | |   | (____)|| |   | |      | |
-|     __)|  __)      | |   |     __)| |   | |      | |
-| (\ (   | (         | |   | (\ (   | |   | |      | |
-| ) \ \__| (____/\   | |   | ) \ \__| (___) | _ ___) (___
-|/   \__/(_______/   )_(   |/   \__/(_______)(_)\_______/
+ _______  _______  _________ _______  _______    _________
+(  ____ )(  ____ \ \__   __/(  ____ )(  ___  )   \__   __/
+| (    )|| (    \/    ) (   | (    )|| (   ) |      ) (
+| (____)|| (__        | |   | (____)|| |   | |      | |
+|     __)|  __)       | |   |     __)| |   | |      | |
+| (\ (   | (          | |   | (\ (   | |   | |      | |
+| ) \ \__| (____/\    | |   | ) \ \__| (___) | _ ___) (___
+|/   \__/(_______/    )_(   |/   \__/(_______)(_)\_______/
                                                                  "
 }
 
@@ -256,7 +295,7 @@ run_step "Aktiviere SPI" sudo raspi-config nonint do_spi 0
 run_step "Installiere easyeffects" install_easyeffects
 run_step "Installiere Bildschirmtastatur" install_screen_keyboard
 
-success "Systemeinrichtung abgeschlossen!"
+success "\nSystemeinrichtung abgeschlossen!\n"
 printf "\nWeiter mit App-Einrichtung...\n"
 
 run_step "VENV einrichten" setup_venv
