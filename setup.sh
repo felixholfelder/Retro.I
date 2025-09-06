@@ -218,7 +218,6 @@ setup_venv() {
   # Append venv activation to .bashrc if not already present
   if ! grep -q "source $VENV_PATH/bin/activate" "$BASHRC_PATH"; then
     cat <<'EOF' >> "$BASHRC_PATH"
-
 # venv for Retro.I
 cd /home/pi/Documents/Retro.I
 source /home/pi/Documents/Retro.I/.venv/bin/activate
@@ -237,6 +236,8 @@ setup_alsaaudio() {
 }
 
 setup_fletui() {
+  sudo apt-get update
+
   if ! sudo apt-get install libmpv-dev mpv -y -qqq; then
     echo "Installation von libmpv-dev/mpv fehlgeschlagen!" >&2
     return 1

@@ -44,7 +44,7 @@ Wechsle in das Verzeichnis `/home/pi/Documents/Retro.I` und führe mit
 ./setup.sh
 ```
 das Setup-Skript aus.
-> Sollte ein Schritt in diesem Skript fehlschlagen, kannst du in der `SETUP.md` nachschlagen\
+> Sollte ein Schritt in diesem Skript fehlschlagen, kannst du in der [SETUP.md](SETUP.md) nachschlagen\
 > Dieses Skript ist wahrlich kein Hexenwerk, weswegen die einzelnen Command's auch per Hand ausgeführt werden können!
 
 <!--
