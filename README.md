@@ -1,4 +1,5 @@
 # Retro.I
+![Radio](./assets/splashscreen/splash.png)
 Ein Projekt der FWI1 des BSZ-Wiesau\
 Einem **Grundig Type 5088**, Baujahr **1957/1958**, wird neues Leben eingehaucht!\
 Dazu werden folgende Technologien verwendet:
@@ -12,13 +13,15 @@ Folgende Hardware wurde verwendet:
 * Rotary Drehregler
 * 4 Passiv-Lautsprecher
 * Touch-Display
+* Verstärker-Platine
+* 24V Schaltnetzteil
 
 ## Setup
 Zum Aufsetzen des Radio's wird ein vollautomatisches Setup-Skript verwendet!\
 Es sind dabei folgende Schritte zu beachten:
 
 ### Raspberry PI Image
-Das Setup-Skript wurde lediglich auf einem `Raspberry PI OS (64-bit) "Debian Bookworm"` Image getestet.\
+Das Setup-Skript wurde lediglich auf einem `Raspberry PI OS (64-bit) "Debian Bookworm"` Image getestet.
 > Dass das Setup-Skript auf anderen OS' funktioniert ist nicht ausgeschlossen, aber auch nicht garantiert!
 
 Dieses Image kann über den **offiziellen** Raspberry-PI-Imager heruntergeladen und auf einer SD-Karte installiert werden.
@@ -75,11 +78,13 @@ Jeder Radiosender verfügt über eine Farbe, welche den Radiosender repräsentie
 
 ## Features/Software
 ### Radio
+![Radio](./assets/doc/readme-images/radio_page.png)
 Auf dieser Seite können die voreingestellten Radiosender abgespielt, gelöscht und neu hinzugefügt werden.\
 Um einen Sender von der Favoriten-Seite zu entfernen, muss lange auf den Sender getippt werden.\
 Um neue Sender zu suchen und hinzuzufügen, muss nach diesem im Such-Dialog (oben rechts) gesucht werden\
 
 ### Bluetooth
+![Bluetooth](./assets/doc/readme-images/bluetooth_page.png)
 Möchte man den Radio als **Bluetooth-Box** verwendet werden, ist dies in diesem Tab möglich.\
 Dabei stoppt der aktuell spielende Radiosender und Bluetooth wird aktiviert.\
 Wechselt man wieder zurück zum Radio-Tab, werden alle Bluetooth-Verbindungen gekappt und Bluetooth systemweit deaktiviert. Das verhindert das ungewollte Verbinden, während des Radio-Betriebs!
@@ -87,10 +92,12 @@ Wechselt man wieder zurück zum Radio-Tab, werden alle Bluetooth-Verbindungen ge
 Wenn du ein neues Gerät mit dem Radio verbinden möchtest, musst du **Bluetooth-Discovery** aktivieren! (Bluetooth sichtbar/nicht sichbar)
 
 ### Soundboard
+![Soundboard](./assets/doc/readme-images/soundboard_page.png)
 Hier befindet sich ein komplett konfigurierbares Soundboard.
 Es kann nach Sounds gesucht und diese zum eigenen Soundboard hinzugefügt werden.
 
 ### Einstellungen
+![Einstellungen](./assets/doc/readme-images/settings_page.png)
 Über diese Seite kann der Radio unter folgenden Punkten konfiguriert werden:
 * Helligkeit des LED-Streifen bzw. generell leuchten/nicht leuchten
 * Helligkeit des Touch-Bildschirms
@@ -99,6 +106,14 @@ Zusätzlich können weitere Informationen wie z.B. WLAN-Konfiguration entnommen 
 
 Nicht zuletzt, werden die Personen aufgeführt, dank Ihnen dieses Projekt zu einem großen Erfolg wurde!
 
+
+### Auswahl WLAN-Netzwerk
+Ebenfalls ist über das WLAN-Icon in der oberen Taskleiste die Auswahl des WLAN-Netzwerks möglich:
+![WLAN](./assets/doc/readme-images/wifi_networks.png)
+
+### Aktuell spielender Radiosender
+Erkennbar ist der aktuell spielende Radiosender über ein passendes GIF ;D
+![Bluetooth](./assets/doc/readme-images/radio_playing.png)
 
 ## Verwendung der GPIO-Pin's
 ### Rotary Drehregler (Lautstärke)
