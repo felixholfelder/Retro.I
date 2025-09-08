@@ -86,19 +86,16 @@ class SoundboardSearchDialog(ft.AlertDialog):
         self.listview.controls = []
         for el in sounds:
             fav_btn = ft.IconButton(
-                icon=ft.icons.STAR_BORDER,
+                icon=ft.icons.PLAYLIST_ADD,
                 on_click=lambda e, item=el: on_add(item)
             )
             
             def on_add(item):
-                #sounds_helper.add_favorite_sound(item)
-                #self.soundboard_grid.update()
-                fav_btn.icon=ft.icons.STAR
-                fav_btn.update()
-                
+                sounds_helper.add_favorite_sound(item)
+                self.soundboard_grid.update()
 
             img = ft.Image(
-                f"{constants.pwd()}/assets/buttons/SB_Green.png",
+                constants.get_button_img(),
                 fit=ft.ImageFit.SCALE_DOWN,
                 border_radius=ft.border_radius.all(10),
                 width=66,

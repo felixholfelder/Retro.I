@@ -20,16 +20,25 @@ class Sounds:
 		return []
 
 	def add_favorite_sound(self, item):
+		sounds = self.load_favorite_sounds()
+		for sound in sounds:
+			if sound["id"] == item["id"]:
+				return
+
 		with open(self.fav_sounds_path, "r+") as file:
 			file_data = json.load(file)
 			file_data.append(item)
 			file.seek(0)
 			json.dump(file_data, file, indent=4)
-	
+
 	def delete_favorite_sound(self, item):
 		with open(self.fav_sounds_path, "r+") as file:
 			file_data = json.load(file)
-			file_data.pop(file_data.index(item))
+			index = next((i for i, station in enumerate(file_data) if station.get("id") == item.get("id")), None)
+			file_data.pop(index)
+			file.seek(0)
+			json.dump(file_data, file, indent=4)
+			file.truncate()
 
 	def load_favorite_sounds(self):
 		with open(self.fav_sounds_path) as file:

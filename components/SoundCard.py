@@ -10,7 +10,7 @@ sounds = Sounds()
 
 
 class SoundCard(ft.Container):
-    def __init__(self, sound):
+    def __init__(self, sound, on_delete_favorite_sound):
         super().__init__()
         self.content = ft.Container(
             ft.Column(
@@ -18,7 +18,7 @@ class SoundCard(ft.Container):
                     ft.Container(
                         alignment=ft.alignment.bottom_center,
                         on_click=lambda e, src=sound["mp3"]: audio_helper.play_sound_board(src),
-                        #on_long_press=lambda e, sound=sound: self.delete_favorite_sound(sound),
+                        on_long_press=lambda e, src=sound: on_delete_favorite_sound(src),
                         content=ft.Image(
                             src=c.get_button_img(),
                             border_radius=ft.border_radius.all(4),

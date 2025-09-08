@@ -3,18 +3,24 @@ import flet as ft
 from components.SoundCard import SoundCard
 from components.SoundboardSearchBar import SoundboardSearchBar
 from components.ToastCard import ToastCard
+from components.dialogs.SoundDeleteDialog import SoundDeleteDialog
+from helper.PageState import PageState
 from helper.Sounds import Sounds
 
 sounds = Sounds()
 
 class SoundboardTab(ft.Column):
     soundboard_grid = None
+    sound_delete_dialog = None
 
     def __init__(self):
         super().__init__()
 
+        self.sound_delete_dialog = SoundDeleteDialog()
+        PageState.page.add(self.sound_delete_dialog)
+
         self.soundboard_grid = ft.GridView(
-            [ToastCard()],
+            [],
             expand=True,
             runs_count=5,
             run_spacing=50,
@@ -22,9 +28,7 @@ class SoundboardTab(ft.Column):
             spacing=80,
             padding=ft.padding.only(bottom=80),
         )
-        for i in range(len(sounds.load_favorite_sounds())):
-            sound = sounds.load_favorite_sounds()[i]
-            self.soundboard_grid.controls.append(SoundCard(sound))
+        self.reload()
 
         self.soundboard_search_bar = SoundboardSearchBar(self.soundboard_grid)
 
@@ -34,6 +38,26 @@ class SoundboardTab(ft.Column):
             self.soundboard_search_bar,
             self.soundboard_grid,
         ]
+
+    def reload(self):
+        controls=[ToastCard()]
+
+        for i in range(len(sounds.load_favorite_sounds())):
+            sound = sounds.load_favorite_sounds()[i]
+            controls.append(SoundCard(sound, self.open_delete_dialog))
+
+        self.soundboard_grid.controls = controls
+
+    def open_delete_dialog(self, sound):
+        self.sound_delete_dialog.open_dialog(
+            submit_callback=lambda s=sound: self.on_delete_favorite_sound(s)
+        )
+
+    def on_delete_favorite_sound(self, sound):
+        sounds.delete_favorite_sound(sound)
+        self.reload()
+        self.soundboard_grid.update()
+        self.sound_delete_dialog.close()
 
     def show(self):
         self.visible = True
