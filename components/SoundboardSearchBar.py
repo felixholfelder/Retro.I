@@ -10,10 +10,10 @@ constants = Constants()
 class SoundboardSearchBar(ft.Container):
     soundboard_search_dialog: SoundboardSearchDialog = None
 
-    def __init__(self, soundboard_grid: ft.GridView):
+    def __init__(self, on_favorite_add):
         super().__init__()
 
-        self.soundboard_search_dialog = SoundboardSearchDialog(soundboard_grid)
+        self.soundboard_search_dialog = SoundboardSearchDialog(on_favorite_add)
         self.content = ft.Row([
             ft.Text("", expand=True),
             ft.TextButton(

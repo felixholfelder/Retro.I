@@ -24,10 +24,12 @@ class SoundboardSearchDialog(ft.AlertDialog):
         on_blur=lambda e: system_helper.close_keyboard()
     )
 
-    def __init__(self, soundboard_grid: ft.GridView):
+    on_favorite_add = None
+
+    def __init__(self, on_favorite_add):
         super().__init__()
 
-        self.soundboard_grid = soundboard_grid
+        self.on_favorite_add = on_favorite_add
 
         self.content = ft.Column(
             width=600,
@@ -91,8 +93,7 @@ class SoundboardSearchDialog(ft.AlertDialog):
             )
             
             def on_add(item):
-                sounds_helper.add_favorite_sound(item)
-                self.soundboard_grid.update()
+                self.on_favorite_add(item)
 
             img = ft.Image(
                 constants.get_button_img(),
@@ -120,7 +121,3 @@ class SoundboardSearchDialog(ft.AlertDialog):
 
     def play_sound(self, item):
         audio.play_sound_board(item["mp3"])
-
-    def on_favorite_add(self, item):
-        sounds_helper.add_favorite_sound(item)
-        self.soundboard_grid.update()
