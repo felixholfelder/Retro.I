@@ -23,8 +23,6 @@ class WifiDialog(ft.AlertDialog):
 
         self.content = ft.Column(
             width=500,
-            min_height=200,
-            tight=True,
             controls=[
                 ft.Text("Verfügbare Netzwerke:", size=20, weight=ft.FontWeight.BOLD),
                 ft.Column(
@@ -55,7 +53,7 @@ class WifiDialog(ft.AlertDialog):
         self.open = True
         self.update()
 
-        curr_ssid = wifi_helper.get_current_ssid()
+        curr_ssid = system_helper.get_current_ssid()
         networks = wifi_helper.get_networks()
 
         for n in networks:

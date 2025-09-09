@@ -7,6 +7,7 @@ system_helper = SystemHelper()
 
 class SettingsInfoDialog(ft.AlertDialog):
     cpu_temp_text = ft.TextSpan("")
+    ssid_text = ft.TextSpan("")
     ip_text = ft.TextSpan("")
     hostname_text = ft.TextSpan("")
     subnetmask_text = ft.TextSpan("")
@@ -28,6 +29,7 @@ class SettingsInfoDialog(ft.AlertDialog):
                         ft.Text(spans=[ft.TextSpan("CPU-Temperatur: "), self.cpu_temp_text], size=20),
                         ft.Divider(),
                         ft.Text("IP-Config", weight=ft.FontWeight.BOLD, size=28),
+                        ft.Text(spans=[ft.TextSpan("SSID: "), self.ip_text], size=20),
                         ft.Text(spans=[ft.TextSpan("IP-Adresse: "), self.ip_text], size=20),
                         ft.Text(spans=[ft.TextSpan("Hostname: "), self.hostname_text], size=20),
                         ft.Text(spans=[ft.TextSpan("Subnetzmaske: "), self.subnetmask_text], size=20),
@@ -50,6 +52,7 @@ class SettingsInfoDialog(ft.AlertDialog):
     def update_ip_config(self):
         ip_config = system_helper.get_network_config()
 
+        self.ssid_text.text = ip_config["ssid"] or ""
         self.ip_text.text = ip_config["ip"] or ""
         self.hostname_text.text = ip_config["hostname"] or ""
         self.subnetmask_text.text = ip_config["subnetmask"] or ""
@@ -58,6 +61,7 @@ class SettingsInfoDialog(ft.AlertDialog):
         self.dns_pri_text.text = ip_config["dns"][0] or ""
         self.dns_sec_text.text = ip_config["dns"][1] or ""
 
+        self.ssid_text.update()
         self.ip_text.update()
         self.hostname_text.update()
         self.subnetmask_text.update()

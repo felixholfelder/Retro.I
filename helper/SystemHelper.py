@@ -73,6 +73,10 @@ class SystemHelper:
     def get_default_interface(self):
         return netifaces.gateways()['default'][netifaces.AF_INET][1]
 
+    def get_current_ssid(self):
+        ssid = subprocess.run(['iwgetid', '-r'], stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
+        return ssid
+
     def get_ip_address(self):
         ifname = self.get_default_interface()
         return netifaces.ifaddresses(ifname)[netifaces.AF_INET][0]['addr']
@@ -102,6 +106,7 @@ class SystemHelper:
     def get_network_config(self):
         try:
             return {
+                "ssid": self.get_current_ssid(),
                 "ip": self.get_ip_address(),
                 "hostname": self.get_hostname(),
                 "subnetmask": self.get_netmask(),
