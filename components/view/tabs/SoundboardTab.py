@@ -54,7 +54,10 @@ class SoundboardTab(ft.Column):
         )
 
     def on_add_favorite_sound(self, sound):
-        sounds.add_favorite_sound(sound)
+        result = sounds.add_favorite_sound(sound)
+        if result == 1:
+            return
+
         self.soundboard_grid.controls.append(SoundCard(sound, self.open_delete_dialog))
         self.soundboard_grid.update()
 

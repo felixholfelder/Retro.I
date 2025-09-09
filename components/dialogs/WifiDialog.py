@@ -21,20 +21,23 @@ class WifiDialog(ft.AlertDialog):
 
         self.connection_dialog = connection_dialog
 
-        self.content = ft.Column([
-            ft.Text("Verfügbare Netzwerke:", size=20, weight=ft.FontWeight.BOLD),
-            ft.Column(
-                width=500,
-                expand=True,
-                alignment=ft.MainAxisAlignment.CENTER,
-                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                controls=[
-                    self.loading,
-                    self.not_found,
-                    self.listview,
-                ]
-            )
-        ])
+        self.content = ft.Column(
+            width=500,
+            min_height=200,
+            tight=True,
+            controls=[
+                ft.Text("Verfügbare Netzwerke:", size=20, weight=ft.FontWeight.BOLD),
+                ft.Column(
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                    controls=[
+                        self.loading,
+                        self.not_found,
+                        self.listview,
+                    ]
+                )
+            ]
+        )
 
     def open_dialog(self):
         self.listview.visible = False
