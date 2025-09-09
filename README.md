@@ -120,7 +120,7 @@ Ebenfalls ist über das WLAN-Icon in der oberen Taskleiste die Auswahl des WLAN-
 ![WLAN](./assets/doc/readme-images/wifi_networks.png)
 
 ### Aktuell spielender Radiosender
-Erkennbar ist der aktuell spielende Radiosender über ein passendes GIF ;D
+Erkennbar ist der aktuell spielende Radiosender über ein passendes [GIF](./assets/party.gif) ;D
 ![Bluetooth](./assets/doc/readme-images/radio_playing.png) \
 Jeder Radiosender wird auf dem LED-Streifen und in der Software mit einer entsprechenden Farbe dargestellt. \
 Wie im Beispiel zu sehen "Bayern 1" wird mit der Farbe Hellblau dargestellt.

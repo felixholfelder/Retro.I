@@ -57,6 +57,7 @@ run_step() {
 remove_splashscreen() {
   firmware_config_path="/boot/firmware/config.txt"
   disable_splash_command="disable_splash=1"
+  boot_delay_command="boot_delay=0"
 
   # Check if file exists
   if [ ! -f "$firmware_config_path" ]; then
@@ -67,6 +68,7 @@ remove_splashscreen() {
   if ! grep -- "$disable_splash_command" "$firmware_config_path"; then
     sudo sh -c "echo '# Disable splashscreen' >> '$firmware_config_path'"
     sudo sh -c "echo '$disable_splash_command' >> '$firmware_config_path'"
+    sudo sh -c "echo '$boot_delay_command' >> '$firmware_config_path'"
   fi
 }
 
