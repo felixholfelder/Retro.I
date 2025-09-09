@@ -25,7 +25,7 @@ class WifiDialog(ft.AlertDialog):
             ft.Text("Verfügbare Netzwerke:", size=20, weight=ft.FontWeight.BOLD),
             ft.Column(
                 width=500,
-                expand=True,
+                tight=True,
                 alignment=ft.MainAxisAlignment.CENTER,
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                 controls=[
