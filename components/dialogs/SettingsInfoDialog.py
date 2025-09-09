@@ -29,7 +29,7 @@ class SettingsInfoDialog(ft.AlertDialog):
                         ft.Text(spans=[ft.TextSpan("CPU-Temperatur: "), self.cpu_temp_text], size=20),
                         ft.Divider(),
                         ft.Text("IP-Config", weight=ft.FontWeight.BOLD, size=28),
-                        ft.Text(spans=[ft.TextSpan("SSID: "), self.ip_text], size=20),
+                        ft.Text(spans=[ft.TextSpan("SSID: "), self.ssid_text], size=20),
                         ft.Text(spans=[ft.TextSpan("IP-Adresse: "), self.ip_text], size=20),
                         ft.Text(spans=[ft.TextSpan("Hostname: "), self.hostname_text], size=20),
                         ft.Text(spans=[ft.TextSpan("Subnetzmaske: "), self.subnetmask_text], size=20),
