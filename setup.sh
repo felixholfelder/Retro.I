@@ -170,6 +170,13 @@ remove_trash_basket() {
   pcmanfm --reconfigure
 }
 
+deactivate_services() {
+  sudo systemctl disable NetworkManager-wait-online.service
+  sudo systemctl disable e2scrub_reap.service
+  sudo systemctl disable ModemManager.service
+  sudo systemctl disable rpi-eeprom-update.service
+}
+
 install_easyeffects() {
   project_preset="/home/pi/Documents/Retro.I/assets/effects/effects.json"
   preset="/home/pi/.config/easyeffects/output/retroi.json"
@@ -295,6 +302,7 @@ run_step "Mülleimer entfernen" remove_trash_basket
 run_step "Aktiviere SSH" sudo raspi-config nonint do_ssh 0
 run_step "Aktiviere VNC" sudo raspi-config nonint do_vnc 0
 run_step "Aktiviere SPI" sudo raspi-config nonint do_spi 0
+run_step "Deaktiviere unnötige Services" deactivate_services
 run_step "Installiere easyeffects" install_easyeffects
 run_step "Installiere Bildschirmtastatur" install_screen_keyboard
 

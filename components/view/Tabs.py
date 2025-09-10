@@ -27,7 +27,7 @@ class Tabs:
         self.settings_tab = settings_tab
 
     def change_tab(self, e):
-        index = e.control.selected_index
+        new_tab_index = e.control.selected_index
         self.radio_tab.get_song_info().reset()
         
         try:
@@ -38,19 +38,19 @@ class Tabs:
         except:
             pass
 
-        if index == 0:
+        if new_tab_index == 0:
             self.switch_radio_tab()
 
-        if index == 1:
+        if new_tab_index == 1:
             self.switch_bluetooth_tab()
 
-        if index == 2:
+        if new_tab_index == 2:
             if system_helper.is_party_mode():
                 self.switch_soundboard_tab()
             else:
                 self.switch_settings_tab()
 
-        if index == 3:
+        if new_tab_index == 3:
             self.settings_tab.show()
 
     def switch_radio_tab(self):

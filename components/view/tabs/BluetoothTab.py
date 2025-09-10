@@ -5,6 +5,9 @@ import time
 from components.BluetoothDeviceConnected import BluetoothDeviceConnected
 from components.BluetoothDiscoveryToggle import BluetoothDiscoveryToggle
 from components.view.Taskbar import Taskbar
+from helper.BluetoothHelper import BluetoothHelper
+
+bluetooth_helper = BluetoothHelper()
 
 class BluetoothTab(ft.Column):
     taskbar: Taskbar = None
@@ -18,7 +21,7 @@ class BluetoothTab(ft.Column):
 
         self.taskbar = taskbar
         self.btn_toggle_discovery = BluetoothDiscoveryToggle(self.start_bluetooth_update_process, self.stop_bluetooth_update_process)
-        self.device_connected = BluetoothDeviceConnected(taskbar, self.btn_toggle_discovery.disable_discovery)
+        self.device_connected = BluetoothDeviceConnected(taskbar, self.btn_toggle_discovery.disable_discovery, self.show)
 
         self.alignment=ft.alignment.center
         self.expand=True
@@ -37,9 +40,11 @@ class BluetoothTab(ft.Column):
         ]
 
     def show(self):
+        if not bluetooth_helper.is_connected():
+            self.update_device_connection = True
+            self.process_bluetooth_connection()
+
         self.visible = True
-        self.update_device_connection = True
-        self.process_bluetooth_connection()
         self.update()
 
     def hide(self):

@@ -17,11 +17,13 @@ class BluetoothDeviceConnected:
     paired_devices = []
     bluetooth_device_edit_dialog: BluetoothDeviceEditDialog = None
     on_connected = None
+    on_disconnected = None
 
-    def __init__(self, taskbar: Taskbar, on_connected):
+    def __init__(self, taskbar: Taskbar, on_connected, on_disconnected):
         self.taskbar = taskbar
         self.bluetooth_device_edit_dialog = BluetoothDeviceEditDialog()
         self.on_connected = on_connected
+        self.on_disconnected = on_disconnected
 
         PageState.page.add(self.bluetooth_device_edit_dialog)
 
@@ -70,6 +72,7 @@ class BluetoothDeviceConnected:
         if bluetooth_helper.get_connected_device_mac().upper() == device["mac_address"].upper():
             bluetooth_helper.disconnect(device["mac_address"])
             audio_helper.bluetooth_disconnected()
+            self.on_disconnected()
         
         self.reload_devices()
 
