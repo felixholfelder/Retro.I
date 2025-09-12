@@ -27,13 +27,13 @@ class SystemHelper:
         audio_helper.shutdown_sound()
         self.strip.disable()
         time.sleep(3)
-        os.system('sudo shutdown -h 0')
+        os.system("sudo shutdown -h 0")
 
     def restart_system(self, _):
         audio_helper.shutdown_sound()
         self.strip.disable()
         time.sleep(3)
-        os.system('sudo reboot')
+        os.system("sudo reboot")
 
     def stopp_app(self, _):
         PageState.page.window_destroy()
@@ -41,12 +41,12 @@ class SystemHelper:
         os._exit(0)
 
     def get_cpu_temp(self):
-        line = subprocess.run(['vcgencmd', 'measure_temp'], stdout=subprocess.PIPE).stdout.decode('utf-8')
+        line = subprocess.run(["vcgencmd", "measure_temp"], stdout=subprocess.PIPE).stdout.decode("utf-8")
         temp = line[5:].strip()
         return temp
 
     def get_curr_date(self):
-        return datetime.today().strftime('%d.%m.%Y')
+        return datetime.today().strftime("%d.%m.%Y")
 
     def get_img_path(self, img_src):
         if "http" in img_src:
@@ -71,29 +71,29 @@ class SystemHelper:
         os.system("pkill wvkbd-mobintl")
 
     def get_default_interface(self):
-        return netifaces.gateways()['default'][netifaces.AF_INET][1]
+        return netifaces.gateways()["default"][netifaces.AF_INET][1]
 
     def get_current_ssid(self):
-        ssid = subprocess.run(['iwgetid', '-r'], stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
+        ssid = subprocess.run(["iwgetid", "-r"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
         return ssid
 
     def get_ip_address(self):
         ifname = self.get_default_interface()
-        return netifaces.ifaddresses(ifname)[netifaces.AF_INET][0]['addr']
+        return netifaces.ifaddresses(ifname)[netifaces.AF_INET][0]["addr"]
 
     def get_hostname(self):
         return socket.gethostname()
 
     def get_netmask(self):
         ifname = self.get_default_interface()
-        return netifaces.ifaddresses(ifname)[netifaces.AF_INET][0]['netmask']
+        return netifaces.ifaddresses(ifname)[netifaces.AF_INET][0]["netmask"]
 
     def get_mac_address(self):
         ifname = self.get_default_interface()
-        return netifaces.ifaddresses(ifname)[netifaces.AF_LINK][0]['addr']
+        return netifaces.ifaddresses(ifname)[netifaces.AF_LINK][0]["addr"]
 
     def get_gateway(self):
-        return netifaces.gateways()['default'][netifaces.AF_INET][0]
+        return netifaces.gateways()["default"][netifaces.AF_INET][0]
 
     def get_dns_servers(self):
         dns_servers = []
@@ -112,16 +112,16 @@ class SystemHelper:
                 "subnetmask": self.get_netmask(),
                 "mac_address": self.get_mac_address(),
                 "gateway": self.get_gateway(),
-                "dns": self.get_dns_servers()
+                "dns": self.get_dns_servers(),
             }
-        except:
+        except Exception:
             return {
                 "ip": "",
                 "hostname": "",
                 "subnetmask": "",
                 "mac_address": "",
                 "gateway": "",
-                "dns": ["", ""]
+                "dns": ["", ""],
             }
 
     def change_screen_brightness(self, value):
@@ -130,12 +130,14 @@ class SystemHelper:
 
     def get_curr_brightness(self):
         try:
-            line = subprocess.run(['sudo', 'cat', '/sys/class/backlight/10-0045/brightness'],
-                                  stdout=subprocess.PIPE).stdout.decode('utf-8')
+            line = subprocess.run(
+                ["sudo", "cat", "/sys/class/backlight/10-0045/brightness"],
+                stdout=subprocess.PIPE,
+            ).stdout.decode("utf-8")
             value = int(line) / 255 * 100
             if value < 10:
                 return 10
 
             return value
-        except:
+        except Exception:
             return 100

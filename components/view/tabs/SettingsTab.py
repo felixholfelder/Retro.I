@@ -1,11 +1,11 @@
 import flet as ft
 
-from components.SettingsButton import SettingsButton
 from components.dialogs.SettingsBrightnessDialog import SettingsBrightnessDialog
 from components.dialogs.SettingsCreditsDialog import SettingsCreditsDialog
 from components.dialogs.SettingsInfoDialog import SettingsInfoDialog
 from components.dialogs.SettingsLedDialog import SettingsLedDialog
 from components.dialogs.SettingsShutdownDialog import SettingsShutdownDialog
+from components.SettingsButton import SettingsButton
 from helper.PageState import PageState
 from helper.Sounds import Sounds
 
@@ -40,13 +40,29 @@ class SettingsTab(ft.Column):
                 spacing=20,
                 run_spacing=50,
                 controls=[
-                    SettingsButton(ft.icons.POWER_SETTINGS_NEW, "Ausschalten", lambda e: self.shutdown_dialog.open_dialog()),
-                    SettingsButton(ft.icons.COLOR_LENS, "LED-Streifen", lambda e: self.led_dialog.open_dialog()),
-                    SettingsButton(ft.icons.SETTINGS_DISPLAY_ROUNDED, "Helligkeit", lambda e: self.brightness_dialog.open_dialog()),
+                    SettingsButton(
+                        ft.icons.POWER_SETTINGS_NEW,
+                        "Ausschalten",
+                        lambda e: self.shutdown_dialog.open_dialog(),
+                    ),
+                    SettingsButton(
+                        ft.icons.COLOR_LENS,
+                        "LED-Streifen",
+                        lambda e: self.led_dialog.open_dialog(),
+                    ),
+                    SettingsButton(
+                        ft.icons.SETTINGS_DISPLAY_ROUNDED,
+                        "Helligkeit",
+                        lambda e: self.brightness_dialog.open_dialog(),
+                    ),
                     SettingsButton(ft.icons.INFO, "Info", lambda e: self.info_dialog.open_dialog()),
-                    SettingsButton(ft.icons.STAR, "Credits", lambda e: self.credits_dialog.open_dialog()),
-                ]
-            )
+                    SettingsButton(
+                        ft.icons.STAR,
+                        "Credits",
+                        lambda e: self.credits_dialog.open_dialog(),
+                    ),
+                ],
+            ),
         ]
 
         PageState.page.add(self.shutdown_dialog)

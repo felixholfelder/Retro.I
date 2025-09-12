@@ -1,7 +1,7 @@
 import flet as ft
 
-from components.RadioGrid import RadioGrid
 from components.dialogs.DuplicateDialog import DuplicateDialog
+from components.RadioGrid import RadioGrid
 from helper.Constants import Constants
 from helper.PageState import PageState
 from helper.Stations import Stations
@@ -34,11 +34,7 @@ class StationAddDialog(ft.AlertDialog):
         self.btn_play = ft.FilledButton("Abspielen", on_click=lambda e: self.play(), disabled=False)
         self.btn_add = ft.FilledButton("Zu Liste hinzufügen", on_click=lambda e: self.add_to_list(), disabled=False)
 
-        self.content = ft.Column(
-            width=500,
-            tight=True,
-            alignment=ft.MainAxisAlignment.CENTER
-        )
+        self.content = ft.Column(width=500, tight=True, alignment=ft.MainAxisAlignment.CENTER)
         self.title = self.text
         self.actions = [
             self.btn_play,
@@ -48,11 +44,9 @@ class StationAddDialog(ft.AlertDialog):
 
         PageState.page.add(self)
 
-
     def play(self):
         self.close()
         self.radio_grid.change_radio_station(self.station)
-
 
     def add_to_list(self):
         self.btn_add.text = "Wird hinzugefügt..."
@@ -73,11 +67,9 @@ class StationAddDialog(ft.AlertDialog):
 
         self.close()
 
-
     def close(self):
         self.open = False
         self.update()
-
 
     def open_dialog(self, element):
         self.station = element

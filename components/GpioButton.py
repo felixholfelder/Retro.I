@@ -1,6 +1,5 @@
-import time
+from gpiozero import Button
 
-from gpiozero import LED, Button
 
 class GpioButton:
     button = None

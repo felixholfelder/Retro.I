@@ -1,17 +1,16 @@
 import flet as ft
 
-from helper.PageState import PageState
-from scripts import button
-
 from components.NavigationBar import NavigationBar
 from components.view.Tabs import Tabs
-from components.view.Taskbar import Taskbar
 from components.view.tabs.BluetoothTab import BluetoothTab
 from components.view.tabs.RadioTab import RadioTab
 from components.view.tabs.SettingsTab import SettingsTab
 from components.view.tabs.SoundboardTab import SoundboardTab
+from components.view.Taskbar import Taskbar
+from helper.PageState import PageState
 from helper.Strip import Strip
 from helper.SystemHelper import SystemHelper
+from scripts import button  # noqa: F401
 
 system_helper = SystemHelper()
 
@@ -35,18 +34,24 @@ class Theme:
         self.taskbar = taskbar
 
         self.theme = ft.Theme(
-            color_scheme_seed='green',
+            color_scheme_seed="green",
             scrollbar_theme=ft.ScrollbarTheme(
                 thumb_visibility=False,
                 track_visibility=False,
-            )
+            ),
         )
 
         self.radio_tab = RadioTab(on_strip_run_color, self.on_updated_radio_station, self.update)
         self.bluetooth_tab = BluetoothTab(self.taskbar)
         self.soundboard_tab = SoundboardTab()
         self.settings_tab = SettingsTab()
-        self.tabs = Tabs(taskbar, self.radio_tab, self.bluetooth_tab, self.soundboard_tab, self.settings_tab)
+        self.tabs = Tabs(
+            taskbar,
+            self.radio_tab,
+            self.bluetooth_tab,
+            self.soundboard_tab,
+            self.settings_tab,
+        )
         self.navbar = NavigationBar(self.tabs)
 
     def update(self):
@@ -69,6 +74,9 @@ class Theme:
         tabs.append(self.settings_tab)
 
         return tabs
-    
-    def get(self): return self.theme
-    def get_radio_tab(self): return self.radio_tab
+
+    def get(self):
+        return self.theme
+
+    def get_radio_tab(self):
+        return self.radio_tab

@@ -1,13 +1,14 @@
 import flet as ft
 
-from components.SoundCard import SoundCard
-from components.SoundboardSearchBar import SoundboardSearchBar
-from components.ToastCard import ToastCard
 from components.dialogs.SoundDeleteDialog import SoundDeleteDialog
+from components.SoundboardSearchBar import SoundboardSearchBar
+from components.SoundCard import SoundCard
+from components.ToastCard import ToastCard
 from helper.PageState import PageState
 from helper.Sounds import Sounds
 
 sounds = Sounds()
+
 
 class SoundboardTab(ft.Column):
     soundboard_grid = None
@@ -32,15 +33,15 @@ class SoundboardTab(ft.Column):
 
         self.soundboard_search_bar = SoundboardSearchBar(self.on_add_favorite_sound)
 
-        self.expand=True
-        self.visible=False
-        self.controls=[
+        self.expand = True
+        self.visible = False
+        self.controls = [
             self.soundboard_search_bar,
             self.soundboard_grid,
         ]
 
     def reload(self):
-        controls=[ToastCard()]
+        controls = [ToastCard()]
 
         for i in range(len(sounds.load_favorite_sounds())):
             sound = sounds.load_favorite_sounds()[i]
@@ -49,9 +50,7 @@ class SoundboardTab(ft.Column):
         self.soundboard_grid.controls = controls
 
     def open_delete_dialog(self, sound):
-        self.sound_delete_dialog.open_dialog(
-            submit_callback=lambda s=sound: self.on_delete_favorite_sound(s)
-        )
+        self.sound_delete_dialog.open_dialog(submit_callback=lambda s=sound: self.on_delete_favorite_sound(s))
 
     def on_add_favorite_sound(self, sound):
         result = sounds.add_favorite_sound(sound)

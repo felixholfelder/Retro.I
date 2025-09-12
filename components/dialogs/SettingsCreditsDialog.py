@@ -1,5 +1,6 @@
 import flet as ft
 
+
 class SettingsCreditsDialog(ft.AlertDialog):
     def __init__(self):
         super().__init__()
@@ -25,7 +26,7 @@ class SettingsCreditsDialog(ft.AlertDialog):
                         ft.Text("Thomas Holfelder", size=20),
                     ]
                 )
-            ]
+            ],
         )
 
     def open_dialog(self):

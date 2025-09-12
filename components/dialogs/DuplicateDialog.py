@@ -8,9 +8,7 @@ class DuplicateDialog(ft.AlertDialog):
         super().__init__()
 
         self.title = self.text
-        self.actions = [
-            ft.FilledButton("Ok", on_click=lambda e: self.close_dialog())
-        ]
+        self.actions = [ft.FilledButton("Ok", on_click=lambda e: self.close_dialog())]
         self.actions_alignment = ft.MainAxisAlignment.END
 
     def open_dialog(self, name):

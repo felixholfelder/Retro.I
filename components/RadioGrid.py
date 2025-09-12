@@ -6,7 +6,6 @@ from helper.Constants import Constants
 from helper.PageState import PageState
 from helper.RadioHelper import RadioHelper
 from helper.Stations import Stations
-from helper.Strip import Strip
 from helper.SystemHelper import SystemHelper
 
 constants = Constants()
@@ -22,7 +21,12 @@ class RadioGrid(ft.GridView):
     on_theme_change_radio_station = None
     on_theme_stop_radio_station = None
 
-    def __init__(self, on_strip_run_color, on_theme_change_radio_station, on_theme_stop_radio_station):
+    def __init__(
+        self,
+        on_strip_run_color,
+        on_theme_change_radio_station,
+        on_theme_stop_radio_station,
+    ):
         super().__init__()
 
         self.delete_dialog = StationDeleteDialog()
@@ -33,12 +37,12 @@ class RadioGrid(ft.GridView):
         PageState.page.add(self.delete_dialog)
 
         # Gridview attributes
-        self.expand=True
-        self.runs_count=5
-        self.max_extent=150
-        self.child_aspect_ratio=1.0
-        self.spacing=20
-        self.run_spacing=50
+        self.expand = True
+        self.runs_count = 5
+        self.max_extent = 150
+        self.child_aspect_ratio = 1.0
+        self.spacing = 20
+        self.run_spacing = 50
 
     def open_delete_station_dialog(self, index):
         Constants.current_station_index_to_delete = index
@@ -58,7 +62,9 @@ class RadioGrid(ft.GridView):
                         ft.Container(
                             alignment=ft.alignment.center,
                             bgcolor=ft.colors.GREY_200,
-                            on_click=lambda e, src=station, index=i: self.change_radio_station(src, self.on_theme_change_radio_station, index),
+                            on_click=lambda e, src=station, index=i: self.change_radio_station(
+                                src, self.on_theme_change_radio_station, index
+                            ),
                             on_long_press=lambda e, index=i: self.open_delete_station_dialog(index),
                             border_radius=10,
                             content=self.get_content(station),
@@ -68,9 +74,9 @@ class RadioGrid(ft.GridView):
                             ref=Constants.indicator_refs[i],
                             on_click=lambda e: self.stop_radio_station(self.on_theme_stop_radio_station),
                             visible=False,
-                            content=ft.Image(src=f"{constants.pwd()}/assets/party.gif", opacity=0.7)
-                        )
-                    ]
+                            content=ft.Image(src=f"{constants.pwd()}/assets/party.gif", opacity=0.7),
+                        ),
+                    ],
                 )
             )
         self.update()
@@ -108,13 +114,16 @@ class RadioGrid(ft.GridView):
             Constants.indicator_refs[index].current.visible = True
 
     def get_logo(self, station):
-        return ft.Image(src=system_helper.get_img_path(station["logo"]), border_radius=ft.border_radius.all(4),
-                        fit=ft.ImageFit.FIT_WIDTH)
+        return ft.Image(
+            src=system_helper.get_img_path(station["logo"]),
+            border_radius=ft.border_radius.all(4),
+            fit=ft.ImageFit.FIT_WIDTH,
+        )
 
     def get_text(self, station):
         return ft.Text(station["name"], text_align=ft.TextAlign.CENTER, weight=ft.FontWeight.BOLD)
 
-    def get_content(self, station):        
+    def get_content(self, station):
         if station["logo"] != "":
             return self.get_logo(station)
 

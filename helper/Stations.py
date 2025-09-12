@@ -1,9 +1,11 @@
 import json
-from helper.Constants import Constants
+
 from helper.ColorHelper import ColorHelper
+from helper.Constants import Constants
 
 c = Constants()
 color_helper = ColorHelper()
+
 
 class Stations:
     def load_radio_stations(self):
@@ -27,4 +29,4 @@ class Stations:
             file_data.pop(index)
 
         with open(f"{c.pwd()}/assets/radio-stations.json", "w") as file:
-            file.write(json.dumps(file_data, sort_keys=True, indent=4, separators=(',', ': ')))
+            file.write(json.dumps(file_data, sort_keys=True, indent=4, separators=(",", ": ")))

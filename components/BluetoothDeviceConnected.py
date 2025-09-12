@@ -1,15 +1,16 @@
-import flet as ft
-
 import time
+
+import flet as ft
 
 from components.dialogs.BluetoothDeviceEditDialog import BluetoothDeviceEditDialog
 from components.view.Taskbar import Taskbar
-from helper.BluetoothHelper import BluetoothHelper
 from helper.Audio import Audio
+from helper.BluetoothHelper import BluetoothHelper
 from helper.PageState import PageState
 
 bluetooth_helper = BluetoothHelper()
 audio_helper = Audio()
+
 
 class BluetoothDeviceConnected:
     listview = ft.ListView(spacing=10, expand=True)
@@ -37,7 +38,7 @@ class BluetoothDeviceConnected:
                 time.sleep(1)
 
         self.taskbar.update()
-        
+
         return name != ""
 
     def reload_devices(self):
@@ -48,17 +49,23 @@ class BluetoothDeviceConnected:
             ico = ft.Icon(ft.icons.DONE, visible=False)
             btn = ft.TextButton(
                 content=ft.Container(
-                    content=ft.Row([
-                        ico,
-                        ft.Column(
-                            controls=[
-                                ft.Text(device["name"], size=18, weight=ft.FontWeight.BOLD),
-                                ft.Text(device["mac_address"], size=14)
-                            ]
-                        ),
-                    ]),
+                    content=ft.Row(
+                        [
+                            ico,
+                            ft.Column(
+                                controls=[
+                                    ft.Text(
+                                        device["name"],
+                                        size=18,
+                                        weight=ft.FontWeight.BOLD,
+                                    ),
+                                    ft.Text(device["mac_address"], size=14),
+                                ]
+                            ),
+                        ]
+                    ),
                     on_click=lambda e, name=device: self.on_device_click(name),
-                    on_long_press=lambda e, name=device: self.on_device_long_click(name)
+                    on_long_press=lambda e, name=device: self.on_device_long_click(name),
                 )
             )
 
@@ -73,7 +80,7 @@ class BluetoothDeviceConnected:
             bluetooth_helper.disconnect(device["mac_address"])
             audio_helper.bluetooth_disconnected()
             self.on_disconnected()
-        
+
         self.reload_devices()
 
     def on_device_long_click(self, device):
@@ -83,4 +90,5 @@ class BluetoothDeviceConnected:
 
         self.bluetooth_device_edit_dialog.open_dialog(device["name"], on_device_remove)
 
-    def get(self): return self.listview
+    def get(self):
+        return self.listview

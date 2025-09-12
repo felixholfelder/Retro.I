@@ -1,6 +1,7 @@
-import flet as ft
 import threading
 import time
+
+import flet as ft
 
 from components.BluetoothDeviceConnected import BluetoothDeviceConnected
 from components.BluetoothDiscoveryToggle import BluetoothDiscoveryToggle
@@ -8,6 +9,7 @@ from components.view.Taskbar import Taskbar
 from helper.BluetoothHelper import BluetoothHelper
 
 bluetooth_helper = BluetoothHelper()
+
 
 class BluetoothTab(ft.Column):
     taskbar: Taskbar = None
@@ -20,22 +22,31 @@ class BluetoothTab(ft.Column):
         super().__init__()
 
         self.taskbar = taskbar
-        self.btn_toggle_discovery = BluetoothDiscoveryToggle(self.start_bluetooth_update_process, self.stop_bluetooth_update_process)
-        self.device_connected = BluetoothDeviceConnected(taskbar, self.btn_toggle_discovery.disable_discovery, self.show)
+        self.btn_toggle_discovery = BluetoothDiscoveryToggle(
+            self.start_bluetooth_update_process, self.stop_bluetooth_update_process
+        )
+        self.device_connected = BluetoothDeviceConnected(
+            taskbar, self.btn_toggle_discovery.disable_discovery, self.show
+        )
 
-        self.alignment=ft.alignment.center
-        self.expand=True
-        self.visible=False
-        self.controls=[
+        self.alignment = ft.alignment.center
+        self.expand = True
+        self.visible = False
+        self.controls = [
             ft.Row(
                 spacing=50,
                 alignment=ft.MainAxisAlignment.CENTER,
                 controls=[
                     self.btn_toggle_discovery,
-                ]
+                ],
             ),
             ft.Divider(),
-            ft.Text("Gekoppelte Geräte:", size=20, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.LEFT),
+            ft.Text(
+                "Gekoppelte Geräte:",
+                size=20,
+                weight=ft.FontWeight.BOLD,
+                text_align=ft.TextAlign.LEFT,
+            ),
             self.device_connected.get(),
         ]
 
@@ -71,5 +82,8 @@ class BluetoothTab(ft.Column):
         process = threading.Thread(target=self.update_connected_device)
         process.start()
 
-    def get_btn_toggle(self): return self.btn_toggle_discovery
-    def get_device_connected(self): return self.device_connected
+    def get_btn_toggle(self):
+        return self.btn_toggle_discovery
+
+    def get_device_connected(self):
+        return self.device_connected

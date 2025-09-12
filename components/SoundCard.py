@@ -22,13 +22,14 @@ class SoundCard(ft.Container):
                         content=ft.Image(
                             src=c.get_button_img(),
                             border_radius=ft.border_radius.all(4),
-                            fit=ft.ImageFit.FIT_WIDTH),
+                            fit=ft.ImageFit.FIT_WIDTH,
+                        ),
                         height=130,
                     ),
                     ft.Container(
-                        ft.Text(sound ["title"], size=20, text_align=ft.TextAlign.CENTER),
+                        ft.Text(sound["title"], size=20, text_align=ft.TextAlign.CENTER),
                         width=300,
-                    )
+                    ),
                 ]
             )
         )

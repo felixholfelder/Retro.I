@@ -1,7 +1,7 @@
 import flet as ft
 
-from components.RadioGrid import RadioGrid
 from components.dialogs.StationAddDialog import StationAddDialog
+from components.RadioGrid import RadioGrid
 from helper.Constants import Constants
 from helper.RadioHelper import RadioHelper
 from helper.SystemHelper import SystemHelper
@@ -21,7 +21,7 @@ class RadioSearchDialog(ft.AlertDialog):
         label="Radiosender",
         expand=True,
         on_focus=lambda e: system_helper.open_keyboard(),
-        on_blur=lambda e: system_helper.close_keyboard()
+        on_blur=lambda e: system_helper.close_keyboard(),
     )
 
     station_add_dialog: StationAddDialog = None
@@ -38,22 +38,19 @@ class RadioSearchDialog(ft.AlertDialog):
             alignment=ft.MainAxisAlignment.CENTER,
             horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             controls=[
-                ft.Row([
+                ft.Row(
+                    [
                         self.search_textfield,
                         ft.FilledButton("Suchen", on_click=lambda e: self.search_stations()),
                     ],
-                    spacing=ft.MainAxisAlignment.SPACE_BETWEEN
+                    spacing=ft.MainAxisAlignment.SPACE_BETWEEN,
                 ),
                 ft.Column(
-                    controls=[
-                        self.loading,
-                        self.not_found_text,
-                        self.listview
-                    ],
+                    controls=[self.loading, self.not_found_text, self.listview],
                     expand=True,
-                    alignment=ft.MainAxisAlignment.CENTER
-                )
-            ]
+                    alignment=ft.MainAxisAlignment.CENTER,
+                ),
+            ],
         )
 
     def open_dialog(self):
@@ -88,8 +85,13 @@ class RadioSearchDialog(ft.AlertDialog):
         for el in stations:
             img = ft.Container(ft.Icon(ft.icons.MUSIC_NOTE), width=60, height=60)
             if el["logo"] != "":
-                img = ft.Image(el["logo"], fit=ft.ImageFit.SCALE_DOWN, border_radius=ft.border_radius.all(10), width=50,
-                               height=50)
+                img = ft.Image(
+                    el["logo"],
+                    fit=ft.ImageFit.SCALE_DOWN,
+                    border_radius=ft.border_radius.all(10),
+                    width=50,
+                    height=50,
+                )
 
             element = ft.Container(
                 content=ft.Row(
@@ -99,12 +101,12 @@ class RadioSearchDialog(ft.AlertDialog):
                             expand=True,
                             controls=[
                                 ft.Text(el["name"], weight=ft.FontWeight.BOLD),
-                                ft.Text(el["src"])
-                            ]
-                        )
+                                ft.Text(el["src"]),
+                            ],
+                        ),
                     ]
                 ),
-                on_click=lambda e, item=el: self.station_add_dialog.open_dialog(item)
+                on_click=lambda e, item=el: self.station_add_dialog.open_dialog(item),
             )
 
             self.listview.controls.append(element)

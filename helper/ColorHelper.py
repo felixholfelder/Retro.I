@@ -1,47 +1,49 @@
-from PIL import Image, ImageColor
-import numpy as np
-import cairosvg
-from sklearn.cluster import KMeans
-import requests
 from io import BytesIO
+
+import cairosvg
+import numpy as np
+import requests
+from PIL import Image, ImageColor
+from sklearn.cluster import KMeans
 
 tmp_path = "/tmp/output.png"
 
-class ColorHelper:	
-	def toRgb(self, hex_value):
-		return ImageColor.getcolor(hex_value, "RGB")
-	
-	def extract_color(self, img_src):
-		if img_src == "":
-			return "#46a94b"
-		
-		if ".svg".upper() not in img_src.upper():
-			response = requests.get(img_src)
-			img = Image.open(BytesIO(response.content))
-		else:
-			cairosvg.svg2png(url=img_src, write_to=tmp_path)
-			img = Image.open(tmp_path)
 
-		img = img.convert("RGB")
-		img_array = np.array(img)
+class ColorHelper:
+    def toRgb(self, hex_value):
+        return ImageColor.getcolor(hex_value, "RGB")
 
-		pixels = img_array.reshape((-1, 3))
+    def extract_color(self, img_src):
+        if img_src == "":
+            return "#46a94b"
 
-		kmeans = KMeans(n_clusters=1)
-		kmeans.fit(pixels)
+        if ".svg".upper() not in img_src.upper():
+            response = requests.get(img_src)
+            img = Image.open(BytesIO(response.content))
+        else:
+            cairosvg.svg2png(url=img_src, write_to=tmp_path)
+            img = Image.open(tmp_path)
 
-		dominant_color = kmeans.cluster_centers_[0].astype(int)
+        img = img.convert("RGB")
+        img_array = np.array(img)
 
-		return f"#{dominant_color[0]:02x}{dominant_color[1]:02x}{dominant_color[2]:02x}".upper()
+        pixels = img_array.reshape((-1, 3))
 
-	def get_navbar_icon_color(self, theme_color):
-		color = theme_color[1:]
+        kmeans = KMeans(n_clusters=1)
+        kmeans.fit(pixels)
 
-		hex_red = int(color[0:2], base=16)
-		hex_green = int(color[2:4], base=16)
-		hex_blue = int(color[4:6], base=16)
+        dominant_color = kmeans.cluster_centers_[0].astype(int)
 
-		if (hex_red*0.299 + hex_green*0.587 + hex_blue*0.114) > 186:
-			return "#000000"
+        return f"#{dominant_color[0]:02x}{dominant_color[1]:02x}{dominant_color[2]:02x}".upper()
 
-		return "#ffffff"
+    def get_navbar_icon_color(self, theme_color):
+        color = theme_color[1:]
+
+        hex_red = int(color[0:2], base=16)
+        hex_green = int(color[2:4], base=16)
+        hex_blue = int(color[4:6], base=16)
+
+        if (hex_red * 0.299 + hex_green * 0.587 + hex_blue * 0.114) > 186:
+            return "#000000"
+
+        return "#ffffff"

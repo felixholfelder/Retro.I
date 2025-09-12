@@ -33,14 +33,16 @@ class Taskbar(ft.AppBar):
     def __init__(self):
         super().__init__()
 
-        self.leading = ft.Row([
-            ft.Row([self.ico_volume, self.txt_volume]),
-            ft.VerticalDivider(),
-            ft.Row([self.ico_bass, self.txt_bass]),
-            ft.VerticalDivider(),
-            ft.Row([self.ico_pitch, self.txt_pitch]),
-            ft.VerticalDivider(),
-        ])
+        self.leading = ft.Row(
+            [
+                ft.Row([self.ico_volume, self.txt_volume]),
+                ft.VerticalDivider(),
+                ft.Row([self.ico_bass, self.txt_bass]),
+                ft.VerticalDivider(),
+                ft.Row([self.ico_pitch, self.txt_pitch]),
+                ft.VerticalDivider(),
+            ]
+        )
         self.title = ft.Text("Retro.I")
         self.center_title = True
         self.bgcolor = ft.colors.SURFACE_VARIANT
@@ -95,7 +97,11 @@ class Taskbar(ft.AppBar):
         self.txt_volume.update()
 
     def update_bass(self):
-        self.txt_bass.value = f"+{audio_effects.get_bass_value()} dB" if audio_effects.get_bass_value() > 0 else f"{audio_effects.get_bass_value()} dB"
+        self.txt_bass.value = (
+            f"+{audio_effects.get_bass_value()} dB"
+            if audio_effects.get_bass_value() > 0
+            else f"{audio_effects.get_bass_value()} dB"
+        )
         self.txt_bass.update()
 
     def update_pitch(self):

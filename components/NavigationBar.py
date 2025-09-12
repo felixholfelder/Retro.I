@@ -33,20 +33,25 @@ class NavigationBar(ft.NavigationBar):
             ft.NavigationDestination(
                 label="Radiosender",
                 icon_content=ft.Icon(ft.icons.RADIO_OUTLINED, size=ICON_SIZE, color=self.icon_color),
-                selected_icon_content=ft.Icon(ft.icons.RADIO, size=ICON_SIZE)
-            ), ft.NavigationDestination(
+                selected_icon_content=ft.Icon(ft.icons.RADIO, size=ICON_SIZE),
+            ),
+            ft.NavigationDestination(
                 label="Bluetooth",
                 icon_content=ft.Icon(ft.icons.BLUETOOTH_OUTLINED, size=ICON_SIZE, color=self.icon_color),
-                selected_icon_content=ft.Icon(ft.icons.BLUETOOTH, size=ICON_SIZE)
-            )
+                selected_icon_content=ft.Icon(ft.icons.BLUETOOTH, size=ICON_SIZE),
+            ),
         ]
 
         if system_helper.is_party_mode():
             destinations.append(
                 ft.NavigationDestination(
                     label="Soundboard",
-                    icon_content=ft.Icon(ft.icons.SPACE_DASHBOARD_OUTLINED, size=ICON_SIZE, color=self.icon_color),
-                    selected_icon_content=ft.Icon(ft.icons.SPACE_DASHBOARD, size=ICON_SIZE)
+                    icon_content=ft.Icon(
+                        ft.icons.SPACE_DASHBOARD_OUTLINED,
+                        size=ICON_SIZE,
+                        color=self.icon_color,
+                    ),
+                    selected_icon_content=ft.Icon(ft.icons.SPACE_DASHBOARD, size=ICON_SIZE),
                 ),
             )
 

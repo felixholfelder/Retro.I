@@ -1,17 +1,19 @@
-from components.view.Taskbar import Taskbar
+import time
+
 from components.view.tabs.BluetoothTab import BluetoothTab
 from components.view.tabs.RadioTab import RadioTab
 from components.view.tabs.SettingsTab import SettingsTab
 from components.view.tabs.SoundboardTab import SoundboardTab
+from components.view.Taskbar import Taskbar
 from helper.Audio import Audio
 from helper.BluetoothHelper import BluetoothHelper
-from helper.SystemHelper import SystemHelper
 from helper.Constants import Constants
-import time
+from helper.SystemHelper import SystemHelper
 
 bluetooth_helper = BluetoothHelper()
 system_helper = SystemHelper()
 audio_helper = Audio()
+
 
 class Tabs:
     taskbar: Taskbar = None
@@ -19,7 +21,14 @@ class Tabs:
     bluetooth_tab: BluetoothTab = None
     settings_tab: SettingsTab = None
 
-    def __init__(self, taskbar: Taskbar, radio_tab: RadioTab, bluetooth_tab: BluetoothTab, soundboard_tab: SoundboardTab, settings_tab: SettingsTab):
+    def __init__(
+        self,
+        taskbar: Taskbar,
+        radio_tab: RadioTab,
+        bluetooth_tab: BluetoothTab,
+        soundboard_tab: SoundboardTab,
+        settings_tab: SettingsTab,
+    ):
         self.taskbar = taskbar
         self.radio_tab = radio_tab
         self.bluetooth_tab = bluetooth_tab
@@ -29,13 +38,13 @@ class Tabs:
     def change_tab(self, e):
         new_tab_index = e.control.selected_index
         self.radio_tab.get_song_info().reset()
-        
+
         try:
             self.radio_tab.hide()
             self.bluetooth_tab.hide()
             self.settings_tab.hide()
             self.soundboard_tab.hide()
-        except:
+        except Exception:
             pass
 
         if new_tab_index == 0:

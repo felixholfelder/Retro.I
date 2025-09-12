@@ -1,7 +1,7 @@
 import flet as ft
 
-from components.RadioGrid import RadioGrid
 from components.dialogs.RadioSearchDialog import RadioSearchDialog
+from components.RadioGrid import RadioGrid
 from helper.Constants import Constants
 from helper.PageState import PageState
 from helper.RadioHelper import RadioHelper
@@ -20,16 +20,18 @@ class SongInfoRow(ft.Container):
         super().__init__()
 
         self.radio_search_dialog = RadioSearchDialog(radio_grid)
-        self.content = ft.Row([
-            ft.Icon(ft.icons.MUSIC_NOTE, size=28),
-            self.song_info_station,
-            self.song_info_title,
-            ft.TextButton(
-                text="Sendersuche",
-                icon=ft.icons.SEARCH,
-                on_click=lambda e: self.radio_search_dialog.open_dialog()
-            )
-        ])
+        self.content = ft.Row(
+            [
+                ft.Icon(ft.icons.MUSIC_NOTE, size=28),
+                self.song_info_station,
+                self.song_info_title,
+                ft.TextButton(
+                    text="Sendersuche",
+                    icon=ft.icons.SEARCH,
+                    on_click=lambda e: self.radio_search_dialog.open_dialog(),
+                ),
+            ]
+        )
         self.border = ft.border.only(bottom=ft.border.BorderSide(1, "gray"))
         self.padding = ft.padding.only(bottom=10)
 
@@ -45,7 +47,7 @@ class SongInfoRow(ft.Container):
             else:
                 self.song_info_station.value = Constants.current_radio_station["name"]
                 self.song_info_title.value = ""
-        except:
+        except Exception:
             pass
 
         self.update()

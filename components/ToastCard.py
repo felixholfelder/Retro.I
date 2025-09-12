@@ -11,7 +11,7 @@ class ToastCard(ft.Column):
     def __init__(self):
         super().__init__()
 
-        self.width=300
+        self.width = 300
         self.controls = [
             ft.Container(
                 alignment=ft.alignment.bottom_center,
@@ -22,5 +22,5 @@ class ToastCard(ft.Column):
             ft.Container(
                 ft.Text("Zufälliger Trinkspruch", size=20, text_align=ft.TextAlign.CENTER),
                 width=300,
-            )
+            ),
         ]

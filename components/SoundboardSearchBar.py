@@ -14,19 +14,20 @@ class SoundboardSearchBar(ft.Container):
         super().__init__()
 
         self.soundboard_search_dialog = SoundboardSearchDialog(on_favorite_add)
-        self.content = ft.Row([
-            ft.Text("", expand=True),
-            ft.TextButton(
-                "Soundboard durchsuchen",
-                icon=ft.icons.SEARCH,
-                on_click=lambda e: self.soundboard_search_dialog.open_dialog(),
-                # style=ft.ButtonStyle(
-                #    text_style=ft.TextStyle(size=16)
-                # )
-            )
-        ])
+        self.content = ft.Row(
+            [
+                ft.Text("", expand=True),
+                ft.TextButton(
+                    "Soundboard durchsuchen",
+                    icon=ft.icons.SEARCH,
+                    on_click=lambda e: self.soundboard_search_dialog.open_dialog(),
+                    # style=ft.ButtonStyle(
+                    #    text_style=ft.TextStyle(size=16)
+                    # )
+                ),
+            ]
+        )
         self.border = ft.border.only(bottom=ft.border.BorderSide(1, "gray"))
         self.padding = ft.padding.only(bottom=10)
 
         PageState.page.add(self.soundboard_search_dialog)
-

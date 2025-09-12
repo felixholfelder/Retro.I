@@ -2,13 +2,11 @@ import threading
 import time
 
 import flet as ft
-import vlc
 
 from components.GpioButton import GpioButton
 from components.RotaryBass import RotaryBass
 from components.RotaryPitch import RotaryPitch
 from components.RotaryVolume import RotaryVolume
-from components.dialogs.StationDeleteDialog import StationDeleteDialog
 from components.view.Taskbar import Taskbar
 from components.view.Theme import Theme
 from helper.Audio import Audio
@@ -34,6 +32,7 @@ audio_helper = Audio()
 page_helper = PageState()
 audio_effects = AudioEffects()
 
+
 def main(page: ft.Page):
     PageState.page = page
 
@@ -53,7 +52,7 @@ def main(page: ft.Page):
     button.activate()
 
     for item in theme.get_tabs():
-       page.add(item)
+        page.add(item)
 
     theme.radio_tab.radio_grid.reload()
     page.update()
@@ -61,14 +60,14 @@ def main(page: ft.Page):
     RotaryVolume(
         on_taskbar_update=taskbar.update,
         on_strip_toggle_mute=strip.toggle_mute,
-        on_strip_update_sound=strip.update_sound_strip
+        on_strip_update_sound=strip.update_sound_strip,
     )
     RotaryBass(on_taskbar_update=taskbar.update)
     RotaryPitch(on_taskbar_update=taskbar.update)
 
     audio_effects.start()
     audio_helper.startup_sound()
-    
+
     def background_processes():
         while True:
             taskbar.update()

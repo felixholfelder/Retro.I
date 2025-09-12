@@ -20,11 +20,11 @@ class RotaryPitch:
         rotary.setup(
             step=self.PITCH_STEP,
             inc_callback=lambda e: self.inc_pitch(on_taskbar_update),
-            dec_callback=lambda e: self.dec_pitch(on_taskbar_update)
+            dec_callback=lambda e: self.dec_pitch(on_taskbar_update),
         )
         rotary_thread = threading.Thread(target=rotary.watch)
         rotary_thread.start()
-        
+
     def chg_callback(self, position):
         print(position)
 

@@ -20,10 +20,7 @@ class BluetoothDiscoveryToggle(ft.FilledButton):
         # Button attributes
         self.content = ft.Row(
             alignment=ft.MainAxisAlignment.CENTER,
-            controls=[
-                self.ico_discovery_status,
-                self.txt_discovery_status
-            ]
+            controls=[self.ico_discovery_status, self.txt_discovery_status],
         )
         self.style = ft.ButtonStyle(bgcolor=ft.colors.RED)
         self.width = 500

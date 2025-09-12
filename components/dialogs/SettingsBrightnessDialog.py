@@ -29,7 +29,7 @@ class SettingsBrightnessDialog(ft.AlertDialog):
                         ),
                     ]
                 )
-            ]
+            ],
         )
 
     def slider_changed(self, e):

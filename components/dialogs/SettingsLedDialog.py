@@ -19,20 +19,22 @@ class SettingsLedDialog(ft.AlertDialog):
                     label_position=ft.LabelPosition.LEFT,
                     label_style=ft.TextStyle(size=20),
                     on_change=lambda e: strip.toggle_strip(),
-                    value=strip.is_strip_active()
+                    value=strip.is_strip_active(),
                 ),
                 ft.Divider(),
-                ft.Row([
-                    ft.Text("Helligkeit", style=ft.TextStyle(size=20)),
-                    ft.Slider(
-                        on_change=strip.change_brightness,
-                        min=0,
-                        max=100,
-                        value=strip.get_curr_brightness(),
-                        expand=True
-                    )
-                ])
-            ]
+                ft.Row(
+                    [
+                        ft.Text("Helligkeit", style=ft.TextStyle(size=20)),
+                        ft.Slider(
+                            on_change=strip.change_brightness,
+                            min=0,
+                            max=100,
+                            value=strip.get_curr_brightness(),
+                            expand=True,
+                        ),
+                    ]
+                ),
+            ],
         )
 
     def open_dialog(self):

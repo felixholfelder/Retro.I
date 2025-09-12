@@ -21,7 +21,7 @@ class SoundboardSearchDialog(ft.AlertDialog):
         label="Sounds",
         expand=True,
         on_focus=lambda e: system_helper.open_keyboard(),
-        on_blur=lambda e: system_helper.close_keyboard()
+        on_blur=lambda e: system_helper.close_keyboard(),
     )
 
     on_favorite_add = None
@@ -43,18 +43,14 @@ class SoundboardSearchDialog(ft.AlertDialog):
                         self.search_textfield,
                         ft.FilledButton("Suchen", on_click=lambda e: self.search_sounds()),
                     ],
-                    spacing=ft.MainAxisAlignment.SPACE_BETWEEN
+                    spacing=ft.MainAxisAlignment.SPACE_BETWEEN,
                 ),
                 ft.Column(
-                    controls=[
-                        self.loading,
-                        self.not_found_text,
-                        self.listview
-                    ],
+                    controls=[self.loading, self.not_found_text, self.listview],
                     expand=True,
-                    alignment=ft.MainAxisAlignment.CENTER
-                )
-            ]
+                    alignment=ft.MainAxisAlignment.CENTER,
+                ),
+            ],
         )
 
     def open_dialog(self):
@@ -87,11 +83,8 @@ class SoundboardSearchDialog(ft.AlertDialog):
 
         self.listview.controls = []
         for el in sounds:
-            fav_btn = ft.IconButton(
-                icon=ft.icons.PLAYLIST_ADD,
-                on_click=lambda e, item=el: on_add(item)
-            )
-            
+            fav_btn = ft.IconButton(icon=ft.icons.PLAYLIST_ADD, on_click=lambda e, item=el: on_add(item))
+
             def on_add(item):
                 self.on_favorite_add(item)
 
@@ -100,19 +93,28 @@ class SoundboardSearchDialog(ft.AlertDialog):
                 fit=ft.ImageFit.SCALE_DOWN,
                 border_radius=ft.border_radius.all(10),
                 width=66,
-                height=66
+                height=66,
             )
-            element = ft.Row([
-                ft.Container(
-                    content=ft.Row([
-                        img,
-                        ft.Text(el["title"], weight=ft.FontWeight.BOLD, size=20, expand=True),
-                    ]),
-                    on_click=lambda e, item=el: self.play_sound(item),
-                    expand=True,
-                ),
-                fav_btn
-            ])
+            element = ft.Row(
+                [
+                    ft.Container(
+                        content=ft.Row(
+                            [
+                                img,
+                                ft.Text(
+                                    el["title"],
+                                    weight=ft.FontWeight.BOLD,
+                                    size=20,
+                                    expand=True,
+                                ),
+                            ]
+                        ),
+                        on_click=lambda e, item=el: self.play_sound(item),
+                        expand=True,
+                    ),
+                    fav_btn,
+                ]
+            )
 
             self.listview.controls.append(element)
 
