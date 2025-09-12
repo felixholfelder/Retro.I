@@ -27,7 +27,7 @@ Das Setup-Skript wurde lediglich auf einem `Raspberry PI OS (64-bit) "Debian Boo
 Dieses Image kann über den **offiziellen** Raspberry-PI-Imager heruntergeladen und auf einer SD-Karte installiert werden.
 Dabei ist folgendes zu beachten:
 * WLAN einrichten
-* Hostname des Raspberry's auf `pi` setzen -> Wichtig für Setup-Skript
+* Benutzername muss auf `pi` gesetzt werden -> Wichtig für Setup-Skript
 
 ### Projekt klonen
 > Das Projekt muss zwingend im Ordner `/home/pi/Documents` mit folgendem Command geklont werden!
