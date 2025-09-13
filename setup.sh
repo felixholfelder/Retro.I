@@ -49,11 +49,47 @@ run_step() {
   else
     printf "\r%s ... " "$DESCRIPTION"
     error "FEHLGESCHLAGEN"
-    echo "↳ $OUTPUT" >&2
+    echo "❌ $OUTPUT" >&2
   fi
 }
 
 # System-Einrichtung
+set_project_path() {
+  printf "Projektpfad setzen ... "
+  BASHRC_PATH="$HOME/.bashrc"
+  ENV_PATH="/etc/environment"
+  current_path=$(pwd)
+
+  if [[ "$current_path" != *Retro* ]]; then
+    error "FEHLGESCHLAGEN"
+    echo "Du befindest dich im falschen Pfad. Wechsle zuerst in das \"Retro.I\" Verzeichnis" >&2
+    exit 1
+  fi
+
+  export RETROI_DIR="$current_path"
+
+  # Append venv activation to .bashrc if not already present
+  if ! grep -q "export RETROI_DIR=\"$current_path\"" "$BASHRC_PATH"; then
+    cat <<EOF >> "$BASHRC_PATH"
+export RETROI_DIR="$current_path"
+EOF
+  fi
+
+  sudo tee "$ENV_PATH" > /dev/null <<EOF
+RETROI_DIR="$current_path"
+EOF
+
+  source "$ENV_PATH"
+
+  if [ -z "$RETROI_DIR" ]; then
+    error "FEHLGESCHLAGEN"
+    echo "Pfad-Variablen konnten nicht gesetzt werden" >&2
+    return 1
+  fi
+
+  success "ERFOLGREICH"
+}
+
 remove_splashscreen() {
   firmware_config_path="/boot/firmware/config.txt"
   disable_splash_command="disable_splash=1"
@@ -79,7 +115,7 @@ create_autostart_file() {
 [Desktop Entry]
 Name=Retro.I
 Type=Application
-Exec=sh -c '/home/pi/Documents/Retro.I/scripts/start.sh >> /home/pi/autostart.log 2>&1'
+Exec=sh -c '$RETROI_DIR/scripts/start.sh >> $HOME/autostart.log 2>&1'
 Terminal=true
 EOF
 
@@ -91,7 +127,7 @@ EOF
 }
 
 hide_taskbar() {
-  wf_panel_path=/home/pi/.config/wf-panel-pi.ini
+  wf_panel_path="$HOME/.config/wf-panel-pi.ini"
 
   sudo tee "$wf_panel_path" > /dev/null <<EOF
 # Hide taskbar
@@ -111,7 +147,7 @@ EOF
 remove_background_image() {
   pcmanfm --set-wallpaper "" --wallpaper-mode=color
 
-  CONFIG_FILES=$(find ~/.config/pcmanfm -type f -name "desktop-items-*.conf" 2>/dev/null)
+  CONFIG_FILES=$(find "$HOME/.config/pcmanfm" -type f -name "desktop-items-*.conf" 2>/dev/null)
 
   if [ -z "$CONFIG_FILES" ]; then
     echo "No pcmanfm desktop config files found." >&2
@@ -131,7 +167,7 @@ remove_background_image() {
 }
 
 remove_trash_basket() {
-  CONFIG_FILES=$(find ~/.config/pcmanfm -type f -name "desktop-items-*.conf" 2>/dev/null)
+  CONFIG_FILES=$(find "$HOME/.config/pcmanfm" -type f -name "desktop-items-*.conf" 2>/dev/null)
 
   if [ -z "$CONFIG_FILES" ]; then
     echo "No pcmanfm desktop config files found." >&2
@@ -178,13 +214,13 @@ deactivate_services() {
 }
 
 install_easyeffects() {
-  project_preset="/home/pi/Documents/Retro.I/assets/effects/effects.json"
-  preset="/home/pi/.config/easyeffects/output/retroi.json"
+  project_preset="$RETROI_DIR/assets/effects/effects.json"
+  preset="$HOME/.config/easyeffects/output/retroi.json"
 
   sudo apt-get install easyeffects -y -qqq
 
   # Fehlenden config order erstellen
-  mkdir -p /home/pi/.config/easyeffects/output
+  mkdir -p "$HOME/.config/easyeffects/output"
 
   sudo cp "$project_preset" "$preset"
   sudo chmod 777 "$preset"
@@ -212,8 +248,8 @@ install_screen_keyboard() {
 }
 
 setup_venv() {
-  VENV_PATH="/home/pi/Documents/Retro.I/.venv"
-  BASHRC_PATH="/home/pi/.bashrc"
+  VENV_PATH="$RETROI_DIR/.venv"
+  BASHRC_PATH="$HOME/.bashrc"
 
   # Create virtual environment
   python -m venv "$VENV_PATH"
@@ -226,10 +262,10 @@ setup_venv() {
 
   # Append venv activation to .bashrc if not already present
   if ! grep -q "source $VENV_PATH/bin/activate" "$BASHRC_PATH"; then
-    cat <<'EOF' >> "$BASHRC_PATH"
+    cat <<EOF >> "$BASHRC_PATH"
 # venv for Retro.I
-cd /home/pi/Documents/Retro.I
-source /home/pi/Documents/Retro.I/.venv/bin/activate
+cd $RETROI_DIR
+source $VENV_PATH/bin/activate
 EOF
   fi
 
@@ -271,12 +307,12 @@ setup_fletui() {
 }
 
 install_python_packages() {
-  source /home/pi/Documents/Retro.I/.venv/bin/activate && pip install -r requirements.txt -q
+  source "$RETROI_DIR/.venv/bin/activate" && pip install -r requirements.txt -q
 }
 
 enter_led_length() {
   while true; do
-    settings_file="settings/strip-settings.csv"
+    settings_file="$RETROI_DIR/settings/strip-settings.csv"
     IFS=';' read -r is_active brightness count_led < "$settings_file"
 
     read -p "Anzahl der LED's des LED-Streifens ($count_led): " led_input
@@ -314,8 +350,9 @@ print_ascii_art
 echo -e "Sollte dieses Setup-Script bei einem Schritt fehlschlagen, kannst du im Projekt in der SETUP.md nachschlagen.\n\n"
 read -p "Drücke <ENTER> um das Setup zu beginnen..."
 
+set_project_path
 run_step "Entferne Splashscreen" remove_splashscreen
-run_step "System-Splashscreen ändern" ./update-system-splash.sh
+run_step "System-Splashscreen ändern" sudo -E bash -c "$RETROI_DIR/update-system-splash.sh"
 run_step "Erstelle Autostart-Datei" create_autostart_file
 run_step "Taskbar ausblenden" hide_taskbar
 run_step "Hintergrund entfernen" remove_background_image
@@ -333,7 +370,6 @@ printf "\nWeiter mit App-Einrichtung...\n"
 run_step "VENV einrichten" setup_venv
 run_step "Installiere Pakete für alsaaudio" setup_alsaaudio
 run_step "Installiere Pakete für flet-ui" setup_fletui
-
 run_step "Installiere Python-Pakete" install_python_packages
 
 enter_led_length
@@ -360,6 +396,5 @@ while true; do
       ;;
   esac
 done
-
 
 # App-Einrichtung abgeschlossen!
