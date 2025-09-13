@@ -20,15 +20,12 @@ class Strip:
 
     color_helper = ColorHelper()
 
-    pixel_pin = board.D10
-    pixel_num = 38
-
-    pixels = neopixel.NeoPixel(pixel_pin, pixel_num, brightness=0, auto_write=True)
-    animation = Pulse(pixels, min_intensity=0.1, speed=0.1, period=5, color=BLACK)
-
     wait_proc = WaiterProcess(None)
 
     def __init__(self):
+        self.pixels = neopixel.NeoPixel(pin=board.D10, n=self.get_led_length(), brightness=0, auto_write=True)
+        self.animation = Pulse(self.pixels, min_intensity=0.1, speed=0.1, period=5, color=BLACK)
+
         self.pixels.fill(GREEN)
         self.pixels.brightness = self.get_curr_brightness() / 100
         self.pixels.show()
@@ -88,15 +85,19 @@ class Strip:
         lines = self.get_strip_settings()
         return bool(int(lines[0]))
 
+    def get_led_length(self):
+        lines = self.get_strip_settings()
+        return int(lines[2])
+
     def toggle_strip(self):
         if self.is_strip_active():
             self.animation.fill(BLACK)
             self.animation.freeze()
-            self.update_settings(0, self.get_curr_brightness())
+            self.update_settings(is_active=0)
         else:
             self.animation.fill(self.curr_color)
             self.animation.resume()
-            self.update_settings(1, self.get_curr_brightness())
+            self.update_settings(is_active=1)
         self.pixels.show()
 
     def get_curr_brightness(self):
@@ -107,7 +108,7 @@ class Strip:
         value = e.control.value
         self.pixels.brightness = value / 100
         self.pixels.show()
-        self.update_settings(self.is_strip_active(), float(round(value, 2)))
+        self.update_settings(brightness=float(round(value, 2)))
 
     def fill(self, color):
         if not self.is_strip_active():
@@ -132,10 +133,14 @@ class Strip:
             for row in reader:
                 return row
 
-    def update_settings(self, is_active, brightness):
+    def update_settings(self, is_active=None, brightness=None, length=None):
+        _is_active = is_active if is_active is not None else self.is_strip_active()
+        _brightness = brightness if brightness is not None else self.get_curr_brightness()
+        _length = length if length is not None else self.get_led_length()
+
         with open(f"{c.pwd()}/settings/strip-settings.csv", "w", newline="") as csvfile:
             writer = csv.writer(csvfile, delimiter=";", quotechar=" ", quoting=csv.QUOTE_MINIMAL)
-            writer.writerow([int(is_active), brightness])
+            writer.writerow([int(_is_active), _brightness, _length])
 
         with open(f"{c.pwd()}/settings/strip-settings.csv", "w") as file:
             file.write(f"{int(is_active)};{brightness}")
