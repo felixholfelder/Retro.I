@@ -1,3 +1,5 @@
 #!/bin/bash
+set -e
 
-black . --line-length 120 --exclude '.\.venv'
+# Run black inside the venv, passing all arguments
+black . --line-length 120 --exclude '.\.venv' "$@"

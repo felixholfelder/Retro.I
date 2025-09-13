@@ -1,0 +1,50 @@
+name: Retro.I Pipeline
+
+on:
+  push:
+    branches:
+      - '**'
+    tags:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+    tags:
+      - '**'
+
+jobs:
+  qualitygate:
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Set up venv
+        run: |
+          python -m venv .venv
+          .venv/bin/pip install --upgrade pip
+          .venv/bin/pip install -r test-requirements.txt
+          source .venv/bin/activate
+
+      - name: black
+        id: black
+        continue-on-error: true
+        run: source .venv/bin/activate && scripts/black.sh --check
+
+      - name: isort
+        id: isort
+        continue-on-error: true
+        run: source .venv/bin/activate && isort --check-only .
+
+      - name: flake8
+        id: flake8
+        continue-on-error: true
+        run: source .venv/bin/activate && flake8 .
+
+      - name: Final linter check
+        if: steps.black.outcome == 'failure' || steps.isort.outcome == 'failure' || steps.flake8.outcome == 'failure'
+        run: exit 1
