@@ -1,3 +1,4 @@
+import csv
 import os
 import random
 
@@ -8,6 +9,11 @@ class Constants:
     indicator_refs = []
 
     def pwd(self):
+        with open("../settings/working-directory-settings.csv", newline="") as csvfile:
+            reader = csv.reader(csvfile, delimiter=";", quotechar=" ")
+            for row in reader:
+                return row
+
         return "/home/pi/Documents/Retro.I"
 
     def sound_path(self):
