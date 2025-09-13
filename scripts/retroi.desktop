@@ -1,5 +1,5 @@
 [Desktop Entry]
 Name=Retro.I
 Type=Application
-Exec=sh /home/pi/Documents/Retro.I/scripts/start.sh
-Terminal=false
+Exec=sh -c '$RETROI_DIR/scripts/start.sh >> $HOME/autostart.log 2>&1'
+Terminal=true

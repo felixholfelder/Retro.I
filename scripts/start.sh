@@ -1,5 +1,5 @@
 #!/bin/bash
 
-source /home/pi/Documents/Retro.I/.venv/bin/activate && python /home/pi/Documents/Retro.I/main.py
+source "$RETROI_DIR/.venv/bin/activate" && python "$RETROI_DIR/main.py"
 
 exit 0

@@ -26,6 +26,8 @@ spinner() {
 }
 
 run_step() {
+  cd $RETROI_DIR
+
   DESCRIPTION="$1"
   shift
   COMMAND="$@"
@@ -54,6 +56,22 @@ run_step() {
 }
 
 # System-Einrichtung
+set_project_path() {
+    env_path=/etc/environment
+    current_path=$(pwd)
+
+    sudo tee "$env_path" > /dev/null <<EOF
+RETROI_DIR="$current_path"
+EOF
+
+  source "/etc/environment"
+
+  if ! [ "$RETROI_DIR" == "$current_path" ]; then
+    echo "Pfad-Variablen konnten nicht gesetzt werden - Env-Variable = $RETROI_DIR" >&2
+    return 1
+  fi
+}
+
 remove_splashscreen() {
   firmware_config_path="/boot/firmware/config.txt"
   disable_splash_command="disable_splash=1"
@@ -79,7 +97,7 @@ create_autostart_file() {
 [Desktop Entry]
 Name=Retro.I
 Type=Application
-Exec=sh -c '/home/pi/Documents/Retro.I/scripts/start.sh >> /home/pi/autostart.log 2>&1'
+Exec=sh -c '$RETROI_DIR/scripts/start.sh >> $HOME/autostart.log 2>&1'
 Terminal=true
 EOF
 
@@ -91,7 +109,7 @@ EOF
 }
 
 hide_taskbar() {
-  wf_panel_path=/home/pi/.config/wf-panel-pi.ini
+  wf_panel_path="$HOME/.config/wf-panel-pi.ini"
 
   sudo tee "$wf_panel_path" > /dev/null <<EOF
 # Hide taskbar
@@ -111,7 +129,7 @@ EOF
 remove_background_image() {
   pcmanfm --set-wallpaper "" --wallpaper-mode=color
 
-  CONFIG_FILES=$(find ~/.config/pcmanfm -type f -name "desktop-items-*.conf" 2>/dev/null)
+  CONFIG_FILES=$(find "$HOME/.config/pcmanfm" -type f -name "desktop-items-*.conf" 2>/dev/null)
 
   if [ -z "$CONFIG_FILES" ]; then
     echo "No pcmanfm desktop config files found." >&2
@@ -131,7 +149,7 @@ remove_background_image() {
 }
 
 remove_trash_basket() {
-  CONFIG_FILES=$(find ~/.config/pcmanfm -type f -name "desktop-items-*.conf" 2>/dev/null)
+  CONFIG_FILES=$(find "$HOME/.config/pcmanfm" -type f -name "desktop-items-*.conf" 2>/dev/null)
 
   if [ -z "$CONFIG_FILES" ]; then
     echo "No pcmanfm desktop config files found." >&2
@@ -178,13 +196,13 @@ deactivate_services() {
 }
 
 install_easyeffects() {
-  project_preset="/home/pi/Documents/Retro.I/assets/effects/effects.json"
-  preset="/home/pi/.config/easyeffects/output/retroi.json"
+  project_preset="$RETROI_DIR/assets/effects/effects.json"
+  preset="$HOME/.config/easyeffects/output/retroi.json"
 
   sudo apt-get install easyeffects -y -qqq
 
   # Fehlenden config order erstellen
-  mkdir -p /home/pi/.config/easyeffects/output
+  mkdir -p "$HOME/.config/easyeffects/output"
 
   sudo cp "$project_preset" "$preset"
   sudo chmod 777 "$preset"
@@ -212,8 +230,8 @@ install_screen_keyboard() {
 }
 
 setup_venv() {
-  VENV_PATH="/home/pi/Documents/Retro.I/.venv"
-  BASHRC_PATH="/home/pi/.bashrc"
+  VENV_PATH="$RETROI_DIR/.venv"
+  BASHRC_PATH="$HOME/.bashrc"
 
   # Create virtual environment
   python -m venv "$VENV_PATH"
@@ -226,10 +244,10 @@ setup_venv() {
 
   # Append venv activation to .bashrc if not already present
   if ! grep -q "source $VENV_PATH/bin/activate" "$BASHRC_PATH"; then
-    cat <<'EOF' >> "$BASHRC_PATH"
+    cat <<EOF >> "$BASHRC_PATH"
 # venv for Retro.I
-cd /home/pi/Documents/Retro.I
-source /home/pi/Documents/Retro.I/.venv/bin/activate
+cd $RETROI_DIR
+source $VENV_PATH/bin/activate
 EOF
   fi
 
@@ -271,12 +289,12 @@ setup_fletui() {
 }
 
 install_python_packages() {
-  source /home/pi/Documents/Retro.I/.venv/bin/activate && pip install -r requirements.txt -q
+  source "$RETROI_DIR/.venv/bin/activate" && pip install -r requirements.txt -q
 }
 
 enter_led_length() {
   while true; do
-    settings_file="settings/strip-settings.csv"
+    settings_file="$RETROI_DIR/settings/strip-settings.csv"
     IFS=';' read -r is_active brightness count_led < "$settings_file"
 
     read -p "Anzahl der LED's des LED-Streifens ($count_led): " led_input
@@ -314,8 +332,9 @@ print_ascii_art
 echo -e "Sollte dieses Setup-Script bei einem Schritt fehlschlagen, kannst du im Projekt in der SETUP.md nachschlagen.\n\n"
 read -p "Drücke <ENTER> um das Setup zu beginnen..."
 
+run_step "Projektpfad setzen" set_project_path
 run_step "Entferne Splashscreen" remove_splashscreen
-run_step "System-Splashscreen ändern" ./update-system-splash.sh
+run_step "System-Splashscreen ändern" "$RETROI_DIR/update-system-splash.sh"
 run_step "Erstelle Autostart-Datei" create_autostart_file
 run_step "Taskbar ausblenden" hide_taskbar
 run_step "Hintergrund entfernen" remove_background_image
@@ -360,6 +379,5 @@ while true; do
       ;;
   esac
 done
-
 
 # App-Einrichtung abgeschlossen!

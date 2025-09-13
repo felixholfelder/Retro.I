@@ -1,4 +1,5 @@
 import json
+import os
 import subprocess
 
 from helper.Constants import Constants
@@ -7,10 +8,9 @@ c = Constants()
 
 
 class AudioEffects:
-    effects_path = "/home/pi/.config/easyeffects/output/retroi.json"
-
     def __init__(self):
-        pass
+        home_dir = os.environ.get("HOME")
+        self.effects_path = f"{home_dir}/.config/easyeffects/output/retroi.json"
 
     def start(self):
         self.stop()
