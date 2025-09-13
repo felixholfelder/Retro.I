@@ -274,6 +274,27 @@ install_python_packages() {
   source /home/pi/Documents/Retro.I/.venv/bin/activate && pip install -r requirements.txt -q
 }
 
+enter_led_length() {
+  while true; do
+    settings_file="settings/strip-settings.csv"
+    IFS=';' read -r is_active brightness count_led < "$settings_file"
+
+    read -p "Anzahl der LED's des LED-Streifens ($count_led): " led_input
+
+    if [ "$led_input" == "" ]; then
+      printf "%s;%s;%s" "$is_active" "$brightness" "$count_led" > "$settings_file"
+      break
+    fi
+
+    if [[ "$led_input" =~ ^[0-9]+$ ]]; then
+      printf "%s;%s;%s" "$is_active" "$brightness" "$led_input" > "$settings_file"
+      break
+    else
+      echo "Bitte eine gültige Zahl eingeben!"
+    fi
+  done
+}
+
 print_ascii_art() {
   echo "
  _______  _______  _________ _______  _______    _________
@@ -313,15 +334,13 @@ run_step "VENV einrichten" setup_venv
 run_step "Installiere Pakete für alsaaudio" setup_alsaaudio
 run_step "Installiere Pakete für flet-ui" setup_fletui
 
-# TODO - User fragen, wie viele LED's sein LED-Streifen hat
-# -> Mit Hinweis "Wichtig für Animation der Lautstärke"
-
 run_step "Installiere Python-Pakete" install_python_packages
+
+enter_led_length
 
 success "Setup erfolgreich abgeschlossen!\n\n"
 
 print_ascii_art
-
 
 echo "Retro.I neustarten, um Setup abzuschließen..."
 
