@@ -7,7 +7,7 @@ adafruit-circuitpython-neopixel==6.3.12
 adafruit-circuitpython-led-animation==2.9.3
 scikit-learn==1.5.2
 python-vlc==3.0.21203
-gpiozero==2.0
+gpiozero==2.0.1
 pillow==11.3.0
 CairoSVG==2.8.2
 requests==2.32.5
