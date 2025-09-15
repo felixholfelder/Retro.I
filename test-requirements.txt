@@ -1,5 +1,5 @@
 flet==0.24.1
-RPi.GPIO==0.7.1a4
+RPi.GPIO==0.7.1
 lgpio==0.2.2.0
 rpi-rotary-encoder==0.2.0
 pyky040==0.1.4
