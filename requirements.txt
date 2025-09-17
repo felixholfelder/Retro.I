@@ -1,4 +1,4 @@
-flet==0.24.1
+flet==0.28.3
 RPi.GPIO==0.7.1a4
 lgpio==0.2.2.0
 rpi-rotary-encoder==0.2.0
