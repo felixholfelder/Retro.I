@@ -4,7 +4,7 @@ lgpio==0.2.2.0
 rpi-rotary-encoder==0.2.0
 pyky040==0.1.4
 adafruit-circuitpython-neopixel==6.3.12
-adafruit-circuitpython-led-animation==2.9.3
+adafruit-circuitpython-led-animation==2.12.3
 scikit-learn==1.5.2
 playsound==1.3.0
 playsound3==3.2.3
