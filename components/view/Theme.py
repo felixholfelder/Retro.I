@@ -10,7 +10,6 @@ from components.view.Taskbar import Taskbar
 from helper.PageState import PageState
 from helper.Strip import Strip
 from helper.SystemHelper import SystemHelper
-from scripts import button  # noqa: F401
 
 system_helper = SystemHelper()
 

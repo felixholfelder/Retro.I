@@ -27,10 +27,9 @@ Das Setup-Skript wurde lediglich auf einem `Raspberry PI OS (64-bit) "Debian Boo
 Dieses Image kann über den **offiziellen** Raspberry-PI-Imager heruntergeladen und auf einer SD-Karte installiert werden.
 Dabei ist folgendes zu beachten:
 * WLAN einrichten
-* Benutzername muss auf `pi` gesetzt werden -> Wichtig für Setup-Skript
+* Geeigneten Benutzernamen für den Raspberry setzen
 
 ### Projekt klonen
-> Das Projekt muss zwingend im Ordner `/home/pi/Documents` mit folgendem Command geklont werden!
 ```commandline
 git clone https://github.com/felixholfelder/Retro.I.git
 ```
@@ -39,15 +38,13 @@ Im Normalfall, sollte `git` schon vorinstalliert sein. Sollte dies nicht der Fal
 sudo apt-get install git -y
 ```
 
-Danach ist die Ordnerstruktur folgende: `/home/pi/Documents/Retro.I`
-
 ### Setup.sh ausführen
-Wechsle in das Verzeichnis `/home/pi/Documents/Retro.I` und führe mit
+Wechsle mit `cd Retro.I` in das Verzeichnis des Projekts und führe mit
 ```
 ./setup.sh
 ```
 das Setup-Skript aus.
-> Sollte ein Schritt in diesem Skript fehlschlagen, kannst du in der [SETUP.md](SETUP.md) nachschlagen\
+> Sollte ein Schritt in diesem Skript fehlschlagen, kannst du in der [SETUP.md](SETUP.md) nachschlagen.\
 > Dieses Skript ist wahrlich kein Hexenwerk, weswegen die einzelnen Command's auch per Hand ausgeführt werden können!
 
 <!-- TODO - noch in Arbeit!!!
