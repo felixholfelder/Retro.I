@@ -1,3 +1,4 @@
+import os
 import time
 
 import alsaaudio as a
@@ -18,13 +19,16 @@ class Audio:
     toast_playing = False
 
     def __init__(self):
+        home_dir = os.environ.get("HOME")
+        self.mixers_path = f"{home_dir}/mixers.txt"
+
         self.init_sound()
 
     def init_sound(self):
         self.update_sound(30)
 
     def mixer(self):
-        with open("/home/pi/mixers.txt", "w") as f:
+        with open(self.mixers_path, "w") as f:
             f.write(str(a.mixers()))
         return a.Mixer()
 

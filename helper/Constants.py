@@ -1,5 +1,6 @@
 import os
 import random
+from pathlib import Path
 
 
 class Constants:
@@ -7,8 +8,12 @@ class Constants:
     current_station_index_to_delete = None
     indicator_refs = []
 
-    def pwd(self):
-        return "/home/pi/Documents/Retro.I"
+    def pwd(self) -> str:
+        retroi_dir = os.environ.get("RETROI_DIR")
+        if retroi_dir:
+            return retroi_dir
+
+        return str(Path(__file__).resolve().parent.parent)
 
     def sound_path(self):
         return f"{self.pwd()}/assets/sounds"
