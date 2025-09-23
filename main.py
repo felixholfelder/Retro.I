@@ -71,7 +71,6 @@ def main(page: ft.Page):
     def background_processes():
         while True:
             taskbar.update()
-            theme.get_radio_tab().update_color()
             time.sleep(5)
 
     process = threading.Thread(target=background_processes)
