@@ -1,5 +1,6 @@
 import flet as ft
 
+from scripts import button
 from components.NavigationBar import NavigationBar
 from components.view.Tabs import Tabs
 from components.view.tabs.BluetoothTab import BluetoothTab

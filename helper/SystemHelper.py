@@ -18,7 +18,7 @@ c = Constants()
 
 class SystemHelper:
     strip = Strip()
-    is_party = "1"  # Read button.py
+    is_party = "0"
 
     def __init__(self):
         self.init_party_mode()
