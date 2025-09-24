@@ -1,4 +1,4 @@
 [flake8]
 exclude = .venv build
 max-line-length = 120
-per-file-ignores = */main.py: F401
+per-file-ignores = */Theme.py: F401

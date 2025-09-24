@@ -34,7 +34,10 @@ audio_effects = AudioEffects()
 
 
 def main(page: ft.Page):
+    start = time.time()
     PageState.page = page
+
+    bluetooth_helper.on_startup()
 
     strip = Strip()
     taskbar = Taskbar()
@@ -67,6 +70,9 @@ def main(page: ft.Page):
 
     audio_effects.start()
     audio_helper.startup_sound()
+
+    end = time.time()
+    print(f"Startup took: {end-start}")
 
     def background_processes():
         while True:
