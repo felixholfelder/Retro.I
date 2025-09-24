@@ -13,6 +13,9 @@ Environment=DISPLAY=:0
 Environment=XAUTHORITY=/home/pi/.Xauthority
 Environment=XDG_RUNTIME_DIR=/run/user/$user_id
 Environment=PULSE_SERVER=unix:/run/user/$user_id/pulse/native
+TimeoutStopSec=1
+KillSignal=SIGKILL
+KillMode=control-group
 
 [Install]
 WantedBy=graphical.target
