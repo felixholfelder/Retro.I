@@ -37,6 +37,8 @@ def main(page: ft.Page):
     start = time.time()
     PageState.page = page
 
+    bluetooth_helper.on_startup()
+
     strip = Strip()
     taskbar = Taskbar()
     theme = Theme(taskbar, strip.run_color)

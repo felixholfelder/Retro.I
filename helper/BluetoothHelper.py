@@ -11,8 +11,7 @@ system_helper = SystemHelper()
 class BluetoothHelper:
     discovery_on = False
 
-    def __init__(self):
-        self.turn_on()
+    def on_startup(self):
         self.bluetooth_discovery_off()
         self.turn_off()
 
@@ -32,7 +31,7 @@ class BluetoothHelper:
         os.system("rfkill unblock 0")
 
     def turn_off(self):
-        os.system("rfkill block 0")
+        subprocess.run(["rfkill", "block", "0"], stdout=subprocess.DEVNULL)
 
     def is_bluetooth_on(self):
         status = subprocess.run(["hciconfig"], stdout=subprocess.PIPE).stdout.decode("utf-8")
