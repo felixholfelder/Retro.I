@@ -1,5 +1,0 @@
-[Desktop Entry]
-Name=Retro.I
-Type=Application
-Exec=sh -c '$RETROI_DIR/scripts/start.sh >> $HOME/autostart.log 2>&1'
-Terminal=true

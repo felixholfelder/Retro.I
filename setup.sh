@@ -108,22 +108,43 @@ remove_splashscreen() {
   fi
 }
 
-create_autostart_file() {
-  autostart_path="/etc/xdg/autostart/retroi.desktop"
+apply_audio_group() {
+  sudo usermod -aG audio $USER
+}
 
-  sudo tee "$autostart_path" > /dev/null <<EOF
-[Desktop Entry]
-Name=Retro.I
-Type=Application
-Exec=sh -c '$RETROI_DIR/scripts/start.sh >> $HOME/autostart.log 2>&1'
-Terminal=true
+create_systemd_service() {
+  systemd_path="/etc/systemd/system/retroi.service"
+
+  user_id=$(id -u)
+
+  sudo tee "$systemd_path" > /dev/null <<EOF
+[Unit]
+Description=Retro.I Desktop App
+After=graphical.target
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+WorkingDirectory=$RETROI_DIR
+ExecStart=$RETROI_DIR/.venv/bin/python $RETROI_DIR/main.py
+Restart=always
+Environment=DISPLAY=:0
+Environment=XAUTHORITY=/home/pi/.Xauthority
+Environment=XDG_RUNTIME_DIR=/run/user/$user_id
+Environment=PULSE_SERVER=unix:/run/user/$user_id/pulse/native
+
+[Install]
+WantedBy=graphical.target
 EOF
 
   # Verify creation
-  if ! grep -q -- "^\[Desktop Entry\]" "$autostart_path"; then
-    echo "Autostart file could not be created correctly!" >&2
+  if ! grep -q -- "^\[Service\]" "$systemd_path"; then
+    echo "Systemd file could not be created correctly!" >&2
     return 1
   fi
+
+  sudo systemctl enable retroi.service
 }
 
 hide_taskbar() {
@@ -374,7 +395,8 @@ read -p "Drücke <ENTER> um das Setup zu beginnen..."
 set_project_path
 run_step "Entferne Splashscreen" remove_splashscreen
 run_step "System-Splashscreen ändern" sudo -E bash -c "$RETROI_DIR/update-system-splash.sh"
-run_step "Erstelle Autostart-Datei" create_autostart_file
+run_step "User zur \"audio\" Gruppe hinzufügen" apply_audio_group
+run_step "Systemd-Datei für Systemstart erstellen" create_systemd_service
 run_step "Taskbar ausblenden" hide_taskbar
 run_step "Hintergrund entfernen" remove_background_image
 run_step "Mülleimer entfernen" remove_trash_basket
