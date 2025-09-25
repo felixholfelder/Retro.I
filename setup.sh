@@ -171,6 +171,11 @@ EOF
 remove_background_image() {
   pcmanfm --set-wallpaper "" --wallpaper-mode=color
 
+  mkdir -p "$HOME/.config/pcmanfm"
+
+  pcmanfm --reconfigure
+  sleep 0.5
+
   CONFIG_FILES=$(find "$HOME/.config/pcmanfm" -type f -name "desktop-items-*.conf" 2>/dev/null)
 
   if [ -z "$CONFIG_FILES" ]; then
