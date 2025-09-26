@@ -53,7 +53,7 @@ class SettingsShutdownDialog(ft.AlertDialog):
                                 ft.IconButton(
                                     ft.icons.HIGHLIGHT_OFF,
                                     icon_size=75,
-                                    on_click=system_helper.stopp_app,
+                                    on_click=system_helper.stop_app,
                                 ),
                                 ft.Text(
                                     "App beenden",

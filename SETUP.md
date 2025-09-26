@@ -24,16 +24,15 @@ Im Plymouth Poweroff-Service muss eine Kleinigkeit ausgetauscht werden, damit da
 In der Datei `/usr/lib/systemd/system/plymouth-poweroff.service` muss `--mode=shutdown` durch `--mode=reboot` ersetzt werden.\
 Klingt nach einer Art "Trick-17"... Aber es funktioniert ;)
 
-### Erstelle Autostart-Datei
+### User zur "audio" Gruppe hinzufügen
+Mit dem Befehl wird der aktuelle User zur `audio`-Gruppe hinzugefügt:
+```
+sudo usermod -aG audio $USER
+```
+
+### Systemd-Datei für Systemstart erstellen
 Damit die Software nach dem Systemstart von selbst startet, muss eine Autostart-Datei angelegt werden.\
-Unter `/etc/xdg/autostart/retroi.desktop` wird folgendes hinzugefügt:
-```
-[Desktop Entry]
-Name=Retro.I
-Type=Application
-Exec=sh -c '$RETROI_DIR/scripts/start.sh >> $HOME/autostart.log 2>&1'
-Terminal=true
-```
+In `/etc/systemd/system/retroi.service` wird der Inhalt der Datei [`retroi.service`](scripts/retroi.service) hinzugefügt.
 
 ### Taskbar ausblenden
 Die Datei `$HOME/.config/wf-panel-pi.ini` wird angepasst und folgendes hinzugefügt:

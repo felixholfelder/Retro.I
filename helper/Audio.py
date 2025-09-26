@@ -30,7 +30,7 @@ class Audio:
     def mixer(self):
         with open(self.mixers_path, "w") as f:
             f.write(str(a.mixers()))
-        return a.Mixer()
+        return a.Mixer("Master")
 
     def update_sound(self, value):
         if 0 <= value <= 100:
