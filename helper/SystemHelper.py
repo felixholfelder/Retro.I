@@ -35,7 +35,7 @@ class SystemHelper:
         time.sleep(3)
         os.system("sudo reboot")
 
-    def stopp_app(self, _):
+    def stop_app(self, _):
         PageState.page.window_destroy()
         time.sleep(0.5)
         os._exit(0)

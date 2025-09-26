@@ -8,7 +8,7 @@ User=pi
 Group=pi
 WorkingDirectory=$RETROI_DIR
 ExecStart=$RETROI_DIR/.venv/bin/python $RETROI_DIR/main.py
-Restart=always
+Restart=no
 Environment=DISPLAY=:0
 Environment=XAUTHORITY=/home/pi/.Xauthority
 Environment=XDG_RUNTIME_DIR=/run/user/$user_id
