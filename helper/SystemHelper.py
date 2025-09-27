@@ -71,6 +71,9 @@ class SystemHelper:
         os.system("pkill wvkbd-mobintl")
 
     def get_default_interface(self):
+        if netifaces.gateways()["default"] == {}:
+            return None
+
         return netifaces.gateways()["default"][netifaces.AF_INET][1]
 
     def get_current_ssid(self):
@@ -79,21 +82,22 @@ class SystemHelper:
 
     def get_ip_address(self):
         ifname = self.get_default_interface()
-        return netifaces.ifaddresses(ifname)[netifaces.AF_INET][0]["addr"]
+        return "" if ifname is None else netifaces.ifaddresses(ifname)[netifaces.AF_INET][0]["addr"]
 
     def get_hostname(self):
         return socket.gethostname()
 
     def get_netmask(self):
         ifname = self.get_default_interface()
-        return netifaces.ifaddresses(ifname)[netifaces.AF_INET][0]["netmask"]
+        return "" if ifname is None else netifaces.ifaddresses(ifname)[netifaces.AF_INET][0]["netmask"]
 
     def get_mac_address(self):
         ifname = self.get_default_interface()
-        return netifaces.ifaddresses(ifname)[netifaces.AF_LINK][0]["addr"]
+        return "" if ifname is None else netifaces.ifaddresses(ifname)[netifaces.AF_LINK][0]["addr"]
 
     def get_gateway(self):
-        return netifaces.gateways()["default"][netifaces.AF_INET][0]
+        ifname = self.get_default_interface()
+        return "" if ifname is None else netifaces.gateways()["default"][netifaces.AF_INET][0]
 
     def get_dns_servers(self):
         dns_servers = []
@@ -104,18 +108,9 @@ class SystemHelper:
         return dns_servers
 
     def get_network_config(self):
-        try:
+        if self.get_default_interface() is None:
             return {
-                "ssid": self.get_current_ssid(),
-                "ip": self.get_ip_address(),
-                "hostname": self.get_hostname(),
-                "subnetmask": self.get_netmask(),
-                "mac_address": self.get_mac_address(),
-                "gateway": self.get_gateway(),
-                "dns": self.get_dns_servers(),
-            }
-        except Exception:
-            return {
+                "ssid": "",
                 "ip": "",
                 "hostname": "",
                 "subnetmask": "",
@@ -123,6 +118,16 @@ class SystemHelper:
                 "gateway": "",
                 "dns": ["", ""],
             }
+
+        return {
+            "ssid": self.get_current_ssid(),
+            "ip": self.get_ip_address(),
+            "hostname": self.get_hostname(),
+            "subnetmask": self.get_netmask(),
+            "mac_address": self.get_mac_address(),
+            "gateway": self.get_gateway(),
+            "dns": self.get_dns_servers(),
+        }
 
     def change_screen_brightness(self, value):
         brightness = int(value / 100 * 255)
