@@ -5,6 +5,7 @@ from components.dialogs.SettingsCreditsDialog import SettingsCreditsDialog
 from components.dialogs.SettingsInfoDialog import SettingsInfoDialog
 from components.dialogs.SettingsLedDialog import SettingsLedDialog
 from components.dialogs.SettingsShutdownDialog import SettingsShutdownDialog
+from components.dialogs.SettingsUpdateDialog import SettingsUpdateDialog
 from components.SettingsButton import SettingsButton
 from helper.PageState import PageState
 from helper.Sounds import Sounds
@@ -27,6 +28,7 @@ class SettingsTab(ft.Column):
         self.brightness_dialog = SettingsBrightnessDialog()
         self.info_dialog = SettingsInfoDialog()
         self.credits_dialog = SettingsCreditsDialog()
+        self.update_dialog = SettingsUpdateDialog()
 
         self.visible = False
         self.expand = True
@@ -57,6 +59,11 @@ class SettingsTab(ft.Column):
                     ),
                     SettingsButton(ft.icons.INFO, "Info", lambda e: self.info_dialog.open_dialog()),
                     SettingsButton(
+                        ft.icons.BROWSER_UPDATED,
+                        "Updates",
+                        lambda e: self.update_dialog.open_dialog(),
+                    ),
+                    SettingsButton(
                         ft.icons.STAR,
                         "Credits",
                         lambda e: self.credits_dialog.open_dialog(),
@@ -69,6 +76,7 @@ class SettingsTab(ft.Column):
         PageState.page.add(self.led_dialog)
         PageState.page.add(self.brightness_dialog)
         PageState.page.add(self.info_dialog)
+        PageState.page.add(self.update_dialog)
         PageState.page.add(self.credits_dialog)
 
     def show(self):
