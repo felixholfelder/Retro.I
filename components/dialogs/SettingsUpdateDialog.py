@@ -20,7 +20,9 @@ class SettingsUpdateDialog(ft.AlertDialog):
 
     def __init__(self):
         super().__init__()
+        # TODO - bold title (or maybe only bold revision)
         self.title = ft.Text(f"Aktueller Stand: {self.get_current_revision()}")
+        # TODO - check if scrolling works with more items
         self.content = ft.Column(
             width=500,
             tight=True,
@@ -29,6 +31,7 @@ class SettingsUpdateDialog(ft.AlertDialog):
                 ft.Tabs(
                     animation_duration=300,
                     tabs=[
+                        # TODO - strech tabs for complete width
                         ft.Tab(
                             text="Branches",
                             content=self.branches_list,
@@ -73,6 +76,7 @@ class SettingsUpdateDialog(ft.AlertDialog):
                             ft.Text(
                                 r,
                                 size=18,
+                                # TODO - remove BOLD
                                 weight=ft.FontWeight.BOLD,
                             ),
                         ],

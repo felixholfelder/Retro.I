@@ -3,6 +3,8 @@ import subprocess
 
 class RevisionHelper:
 
+    # TODO - get only remote branches
+    # TODO - hide HEAD "branch/tag"
     def get_branches(self) -> list[str]:
         local = subprocess.check_output(["git", "branch", "--format=%(refname:short)"], text=True).splitlines()
 
